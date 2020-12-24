@@ -69,7 +69,7 @@ app.post("/getContourImage", (request, response) => {
             console.log("###### Contour image generated and saved #########")
             result = {
                 "orignal": ImgUri,
-                "contour": `http://ai.bluekaktus.com/api/contourApi/${request.file.filename}`
+                "contour": `http://ai.bluekaktus.com/api/contourApi/static/contourImages/${request.file.filename}`
                 // "contour": `http://${hostname}:${port}/static/contourImages/${request.file.filename}`
             }
             console.log(result)
