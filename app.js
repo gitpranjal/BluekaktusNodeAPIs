@@ -64,12 +64,24 @@ app.post("/getContourImage", (request, response) => {
 
 
         getContourImage(ImgUri, request.file.filename)
-        
-        result = {
-            "orignal": ImgUri,
-            "contour": `http://${hostname}:${port}/static/contourImages/${request.file.filename}`
-        }
-        response.json(result)
+        .then(() => {
+            console.log("###### Contour image generated and saved #########")
+            result = {
+                "orignal": ImgUri,
+                "contour": `http://${hostname}:${port}/static/contourImages/${request.file.filename}`
+            }
+            console.log(result)
+            response.json(result)
+        })
+        .catch((e) => {
+            console.log("######## Countour imgage url sending error #######")
+            console.log(e)
+        })
+        // result = {
+        //     "orignal": ImgUri,
+        //     "contour": `http://${hostname}:${port}/static/contourImages/${request.file.filename}`
+        // }
+        // response.json(result)
 
         })
         

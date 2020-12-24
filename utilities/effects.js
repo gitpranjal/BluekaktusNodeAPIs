@@ -1396,12 +1396,10 @@ function rasterizeSvgToCanvas(svg, callback, area = Math.pow(2000, 2)) {
 
 
 
-
-
 async function getContourImage(imgSrc, fileName)
 {
 
-    loadImage(imgSrc)
+    await loadImage(imgSrc)
         .then(async (image) => {
 
         var destCanvas = effects.greyscale(image)
@@ -1418,7 +1416,7 @@ async function getContourImage(imgSrc, fileName)
         await exportCanvasAsPNG(destCanvas, fileName)
         
         // return destCanvas
-
+        console.log("##### exported image as PNG #####")
         })
         .catch((e) => { console.log(e)})
         
