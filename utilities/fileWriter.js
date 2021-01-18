@@ -1,12 +1,16 @@
 const fs = require('fs');
 
 var ObjectFromAPI = {
-      headerSections: ["name", "email"],
-      detailSections: ["gst"],
+      headerSections: {"fields": ["name", "email"], "flexDirection": "column"},
+      detailSections: {fields: ["gst"], "flexDirection": "row"},
       textFileds: ["name", "email", "phone", "adhaar", "pan", "dlNo"],
       dropDowns: [
         {"name": "gst",
         "valueListFunction": "getGstList"
+         },
+         {
+           "name": "jailNo",
+           "valueListFunction": "getJailList"
          }
       ],
       functions: `{"frameSentence": (FieldsObject) => {
@@ -20,14 +24,19 @@ var ObjectFromAPI = {
 
       "getGstList": () => {
         return [{"id":"1", "name": "abc1"}, {"id": "2", "name": "pqr2"}]
-      }
+      },
       
+      "getJailList": () => {
+        return [{"id":"1", "name": "lmn1"}, {"id": "2", "name": "opq2"}]
+      }
     
     }`
 }
 
 var fieldObjectList = {}
 var dropDownList = {}
+
+
 for(var key of ObjectFromAPI.textFileds)
   fieldObjectList[key] = ""
 
@@ -36,6 +45,82 @@ for(var dropDownObject of ObjectFromAPI.dropDowns)
 {
   dropDownList[dropDownObject.name] = {"SelectedValue": "", "ValuesListFunction": dropDownObject.valueListFunction}
 }
+
+var dropDownListCode = ``
+for (var dropDownObject of ObjectFromAPI.dropDowns)
+{
+  var newDropDownCode = `
+  
+  <SearchableDropdown
+     //On text change listner on the searchable input
+       onTextChange={(text) => console.log(text)}
+       onItemSelect={selectedObject => { 
+         var newDropdownList = {...DropdownList}
+         newDropdownList.${dropDownObject.name}["SelectedValue"] = selectedObject
+         console.log("#### New dropdown list ######")
+         console.log(newDropdownList)
+         SetDropdownList(newDropdownList)
+         
+       }}
+       selectedItems={DropdownList.${dropDownObject.name}["SelectedValue"]}
+       //onItemSelect called after the selection from the dropdown
+       containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.1 ,
+       borderWidth:3,
+       borderRadius:10,
+       borderColor:"black",
+       marginTop: 10,
+       }}
+       //suggestion container style
+       textInputStyle={{
+         //inserted text style
+         paddingLeft:10,
+         fontSize: 20,
+         fontWeight: "bold",
+         color:"blue"
+
+       }}
+       itemStyle={{
+         //single dropdown item style
+         padding: 3,
+         marginLeft:5,
+         width:Dimensions.get("window").width / 1.25 ,
+         marginTop: 2,
+         borderBottomColor:"#00334e80",
+         borderBottomWidth: 1,
+       }}
+       itemTextStyle={{
+         //text style of a single dropdown item
+         fontSize: 18,
+         fontWeight: "bold",
+         color:"blue",
+       }}
+       itemsContainerStyle={{
+         //items container style you can pass maxHeight
+         //to restrict the items dropdown hieght
+         maxHeight: '100%',
+       }}
+       items={screenFunctions[DropdownList.${dropDownObject.name}["ValuesListFunction"]]()}
+       //mapping of item array
+       //default selected item index
+       placeholder={"Select ${dropDownObject.name}"}
+       placeholderTextColor="#00334e80"
+       //place holder for the search input
+       resetValue={false}
+       //reset textInput Value with true and false state
+       underlineColorAndroid="transparent"
+       //To remove the underline from the android input
+   />
+  
+  `
+  dropDownListCode = `
+
+  ${dropDownListCode}
+
+  ${newDropDownCode}
+
+  `
+}
+
 
 let lyrics = 
 `
@@ -77,67 +162,8 @@ const GeneratedCode = () => {
          )
          }}
      /> 
-    
-     <SearchableDropdown
-     //On text change listner on the searchable input
-       key={"gst"}
-       onTextChange={(text) => console.log(text)}
-       onItemSelect={selectedObject => { 
-         var newDropdownList = {...DropdownList}
-         newDropdownList["gst"]["SelectedValue"] = selectedObject
-         console.log("#### New dropdown list ######")
-         console.log(newDropdownList)
-         SetDropdownList(newDropdownList)
-         
-       }}
-       selectedItems={DropdownList["gst"]["SelectedValue"]}
-       //onItemSelect called after the selection from the dropdown
-       containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.1 ,
-       borderWidth:3,
-       borderRadius:10,
-       borderColor:"black",
-       marginTop: 10,
-       }}
-       //suggestion container style
-       textInputStyle={{
-         //inserted text style
-         paddingLeft:10,
-         fontSize: 20,
-         fontWeight: "bold",
-         color:"blue"
-
-       }}
-       itemStyle={{
-         //single dropdown item style
-         padding: 3,
-         marginLeft:5,
-         width:Dimensions.get("window").width / 1.25 ,
-         marginTop: 2,
-         borderBottomColor:"#00334e80",
-         borderBottomWidth: 1,
-       }}
-       itemTextStyle={{
-         //text style of a single dropdown item
-         fontSize: 18,
-         fontWeight: "bold",
-         color:"blue",
-       }}
-       itemsContainerStyle={{
-         //items container style you can pass maxHeight
-         //to restrict the items dropdown hieght
-         maxHeight: '100%',
-       }}
-       items={screenFunctions[DropdownList["gst"]["ValuesListFunction"]]()}
-       //mapping of item array
-       //default selected item index
-       placeholder={"Select "+"gst"}
-       placeholderTextColor="#00334e80"
-       //place holder for the search input
-       resetValue={false}
-       //reset textInput Value with true and false state
-       underlineColorAndroid="transparent"
-       //To remove the underline from the android input
-   />
+     
+       ${dropDownListCode}
 
         <TouchableOpacity
         style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10}}
