@@ -1,9 +1,45 @@
 const fs = require('fs');
 
 var ObjectFromAPI = {
-      headerSections: {"fields": ["name", "email"], "flexDirection": "column"},
-      detailSections: {fields: ["gst"], "flexDirection": "row"},
-      textFileds: ["name", "email", "phone", "adhaar", "pan", "dlNo"],
+      
+      viewObjects: [
+        {
+          type: "dropdown",
+          componentPerRow: 1,
+          fieldNames: ["gst"]
+        },
+        {
+          type: "textField",
+          componentPerRow: 3,
+          fieldNames: ["firstName", "lastName", "email", "phone", "pan", "dlNo", "brand"]
+        },
+        {
+          type: "dropdown",
+          componentPerRow: 2,
+          fieldNames: ["jailNo", "adhaar"]
+        },
+        {
+          type: "textField",
+          componentPerRow: 2,
+          fieldNames: ["style", "color"]
+        },
+        {
+          type: "textField",
+          componentPerRow: 2,
+          fieldNames: ["enemyFName", "enemyLName"]
+        },
+        {
+          type: "textField",
+          componentPerRow: 1,
+          fieldNames: ["enemyAddress", "Address"]
+        }
+        
+      ],
+
+      
+      textFileds: ["firstname", "lastName", "email", "phone",
+                  "pan", "dlNo", "brand", "style", "color", 
+                  "enemyFName", "enemyLName", "enemyAddress", "Address"],
       dropDowns: [
         {"name": "gst",
         "valueListFunction": "getGstList"
@@ -11,6 +47,10 @@ var ObjectFromAPI = {
          {
            "name": "jailNo",
            "valueListFunction": "getJailList"
+         },
+         {
+           "name": "adhaar",
+           "valueListFunction": "getAdhaarList"
          }
       ],
       functions: `{"frameSentence": (FieldsObject) => {
@@ -28,10 +68,171 @@ var ObjectFromAPI = {
       
       "getJailList": () => {
         return [{"id":"1", "name": "lmn1"}, {"id": "2", "name": "opq2"}]
+      },
+
+      "getAdhaarList": () => {
+        return [{"id":"1", "name": "uvw1"}, {"id": "2", "name": "xyz2"}]
       }
     
     }`
 }
+
+
+
+var mainCode = `
+<View id="mainSection" style={{borderWidth: 2, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5}}>
+`
+var ViewNumber = 1
+for(var ViewObject of ObjectFromAPI.viewObjects)
+{ 
+  
+  
+  var newViewCode = 
+  `
+   <View id="view${ViewNumber}" style={{marginVertical: 2, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+  `
+  
+    var componentsLeft = ViewObject.fieldNames.length
+    var componentNumber = 0
+    var widthPerCompenent = (100/(ViewObject.componentPerRow)-1).toString()+"%"
+    while(componentsLeft != 0)
+    {
+
+      var newRowCode = `
+      <View style={{flexDirection: "row"}}>
+      `
+
+      for (var j = 0; j <ViewObject.componentPerRow; j++)
+      {
+        if(componentsLeft == 0)
+          break
+        
+          var fieldName = ViewObject.fieldNames[componentNumber]
+          var newComponentCode  = ``
+          if(ViewObject.type == "dropdown")
+          {
+            newComponentCode = `
+  
+            <SearchableDropdown
+               //On text change listner on the searchable input
+                 onTextChange={(text) => console.log(text)}
+                 onItemSelect={selectedObject => { 
+                   var newDropdownList = {...DropdownList}
+                   newDropdownList.${fieldName}["SelectedValue"] = selectedObject
+                   console.log("#### New dropdown list ######")
+                   console.log(newDropdownList)
+                   SetDropdownList(newDropdownList)
+                   
+                 }}
+                 selectedItems={DropdownList.${fieldName}["SelectedValue"]}
+                 //onItemSelect called after the selection from the dropdown
+                 containerStyle={{ padding: 8 ,width: "${widthPerCompenent}" ,
+                 borderWidth:3,
+                 borderRadius:10,
+                 borderColor:"black",
+                 marginHorizontal: 5,
+                 marginVertical:5,
+                 }}
+                 //suggestion container style
+                 textInputStyle={{
+                   //inserted text style
+                   paddingLeft:10,
+                   fontSize: 20,
+                   fontWeight: "bold",
+                   color:"blue"
+          
+                 }}
+                 itemStyle={{
+                   //single dropdown item style
+                   padding: 3,
+                   marginLeft:5,
+                   width:Dimensions.get("window").width / 1.25 ,
+                   marginTop: 2,
+                   borderBottomColor:"#00334e80",
+                   borderBottomWidth: 1,
+                 }}
+                 itemTextStyle={{
+                   //text style of a single dropdown item
+                   fontSize: 18,
+                   fontWeight: "bold",
+                   color:"blue",
+                 }}
+                 itemsContainerStyle={{
+                   //items container style you can pass maxHeight
+                   //to restrict the items dropdown hieght
+                   maxHeight: '100%',
+                 }}
+                 items={screenFunctions[DropdownList.${fieldName}["ValuesListFunction"]]()}
+                 //mapping of item array
+                 //default selected item index
+                 placeholder={"Select ${fieldName}"}
+                 placeholderTextColor="#00334e80"
+                 //place holder for the search input
+                 resetValue={false}
+                 //reset textInput Value with true and false state
+                 underlineColorAndroid="transparent"
+                 //To remove the underline from the android input
+             />
+            
+            `
+          }
+          
+          if(ViewObject.type == "textField")
+          {
+            newComponentCode = `
+            <TextInput
+             // style= {{marginLeft: 4, color: "blue"}}
+             style={{...styles.input, width: "${widthPerCompenent}"}}
+             placeholder={"${fieldName}"}
+             placeholderTextColor={"grey"}
+             maxLength={50}
+             // onBlur={Keyboard.dismiss}
+             value={FieldList.item}
+             onChangeText = {(newValue) => {
+                 var newFieldsObject = {...FieldList}
+                 newFieldsObject["${fieldName}"] = newValue
+                 SetFieldList(newFieldsObject)
+             }}
+         /> 
+            `
+          }
+
+          newRowCode = `
+          ${newRowCode}
+          ${newComponentCode}
+          `
+
+          componentNumber += 1
+          componentsLeft -=1
+        
+      }
+
+      newRowCode = `
+      ${newRowCode}
+      </View>
+      `
+      newViewCode = `
+      ${newViewCode}
+      ${newRowCode}
+      `
+    }
+    
+  newViewCode = `
+  ${newViewCode}
+  </View>
+  `
+  mainCode = `
+  ${mainCode}
+  ${newViewCode}
+  `
+  ViewNumber += 1
+}
+
+mainCode= `
+${mainCode}
+</View>
+`
+
 
 var fieldObjectList = {}
 var dropDownList = {}
@@ -46,80 +247,6 @@ for(var dropDownObject of ObjectFromAPI.dropDowns)
   dropDownList[dropDownObject.name] = {"SelectedValue": "", "ValuesListFunction": dropDownObject.valueListFunction}
 }
 
-var dropDownListCode = ``
-for (var dropDownObject of ObjectFromAPI.dropDowns)
-{
-  var newDropDownCode = `
-  
-  <SearchableDropdown
-     //On text change listner on the searchable input
-       onTextChange={(text) => console.log(text)}
-       onItemSelect={selectedObject => { 
-         var newDropdownList = {...DropdownList}
-         newDropdownList.${dropDownObject.name}["SelectedValue"] = selectedObject
-         console.log("#### New dropdown list ######")
-         console.log(newDropdownList)
-         SetDropdownList(newDropdownList)
-         
-       }}
-       selectedItems={DropdownList.${dropDownObject.name}["SelectedValue"]}
-       //onItemSelect called after the selection from the dropdown
-       containerStyle={{ padding: 8 ,width:Dimensions.get("window").width / 1.1 ,
-       borderWidth:3,
-       borderRadius:10,
-       borderColor:"black",
-       marginTop: 10,
-       }}
-       //suggestion container style
-       textInputStyle={{
-         //inserted text style
-         paddingLeft:10,
-         fontSize: 20,
-         fontWeight: "bold",
-         color:"blue"
-
-       }}
-       itemStyle={{
-         //single dropdown item style
-         padding: 3,
-         marginLeft:5,
-         width:Dimensions.get("window").width / 1.25 ,
-         marginTop: 2,
-         borderBottomColor:"#00334e80",
-         borderBottomWidth: 1,
-       }}
-       itemTextStyle={{
-         //text style of a single dropdown item
-         fontSize: 18,
-         fontWeight: "bold",
-         color:"blue",
-       }}
-       itemsContainerStyle={{
-         //items container style you can pass maxHeight
-         //to restrict the items dropdown hieght
-         maxHeight: '100%',
-       }}
-       items={screenFunctions[DropdownList.${dropDownObject.name}["ValuesListFunction"]]()}
-       //mapping of item array
-       //default selected item index
-       placeholder={"Select ${dropDownObject.name}"}
-       placeholderTextColor="#00334e80"
-       //place holder for the search input
-       resetValue={false}
-       //reset textInput Value with true and false state
-       underlineColorAndroid="transparent"
-       //To remove the underline from the android input
-   />
-  
-  `
-  dropDownListCode = `
-
-  ${dropDownListCode}
-
-  ${newDropDownCode}
-
-  `
-}
 
 
 let lyrics = 
@@ -136,34 +263,8 @@ const GeneratedCode = () => {
   const [DropdownList, SetDropdownList] = useState(${JSON.stringify(dropDownList)})
 
   return (
-    <View style={{marginHorizontal: 10}}>
-     <FlatList 
-         id="textFields"
-         data={Object.keys(FieldList)}
-         keyExtractor={(fieldName) => fieldName.toString()}
-         renderItem={({item}) => {
-         return (
-        
-
-             <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={styles.input}
-              placeholder={item.toLowerCase()}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList.item}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject[item] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         />
-         )
-         }}
-     /> 
-     
-       ${dropDownListCode}
+    <View style={{marginHorizontal:10, alignItems: "center"}}>
+       ${mainCode}
 
         <TouchableOpacity
         style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10}}
@@ -188,7 +289,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderColor: "black",
         padding: 3,
-        marginTop: 12,
+        marginVertical: 5,
+        marginHorizontal: 5,
         color: "blue",
         fontSize: 20,
         fontWeight: "bold",
