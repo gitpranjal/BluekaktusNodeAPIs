@@ -37,10 +37,10 @@ var ObjectFromAPI = {
       ],
 
       
-      textFileds: ["firstname", "lastName", "email", "phone",
+      textFiledsPool: ["firstname", "lastName", "email", "phone",
                   "pan", "dlNo", "brand", "style", "color", 
                   "enemyFName", "enemyLName", "enemyAddress", "Address"],
-      dropDowns: [
+      dropDownsPool: [
         {"name": "gst",
         "valueListFunction": "getGstList"
          },
@@ -238,11 +238,11 @@ var fieldObjectList = {}
 var dropDownList = {}
 
 
-for(var key of ObjectFromAPI.textFileds)
+for(var key of ObjectFromAPI.textFiledsPool)
   fieldObjectList[key] = ""
 
 
-for(var dropDownObject of ObjectFromAPI.dropDowns)
+for(var dropDownObject of ObjectFromAPI.dropDownsPool)
 {
   dropDownList[dropDownObject.name] = {"SelectedValue": "", "ValuesListFunction": dropDownObject.valueListFunction}
 }
