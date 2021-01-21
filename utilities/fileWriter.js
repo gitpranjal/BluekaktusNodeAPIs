@@ -6,59 +6,74 @@ const fs = require('fs');
 var ObjectFromAPI = {
       
       viewObjects: [
+       
         {
           type: "dropdown",
           componentPerRow: 1,
-          fieldNames: ["AqlIndex"]
+          fields: [
+            {"name": "AqlIndex",
+            "valueListFunction": "getAqlList"
+             },
+             {"name": "Factory",
+            "valueListFunction": "getFactoryList"
+             },
+          ]
         },
         {
-          type: "textField",
+          type: "textInputField",
           componentPerRow: 1,
-          fieldNames: ["brand", "orderNo"]
+          fields: [
+            {"name": "brand"}, 
+            {"name": "orderNo"}
+          ]
         },
         {
-          type: "textField",
+          type: "textInputField",
           componentPerRow: 2,
-          fieldNames: ["orderQuantity", "offeredQuantity", "excessQuantity",]
+          fields: [
+            {"name": "orderQuantity"}, 
+            {"name": "offeredQuantity"},
+            {"name": "excessQuantity"},
+          ]
         },
         {
-          type: "textField",
+          type: "textInputField",
           componentPerRow: 1,
-          fieldNames: ["factoryRepresentative"]
+          fields: [
+            {"name": "factoryRepresentative"}
+          ]
         },
         {
           type: "radioButton",
           name: "Inspection Type",
           componentPerRow: 1,
-          fieldNames: ["Part Inspection","Normal Inspection", "Sub Inspection"]
+          fields: [
+            {"name": "Part Inspection"},
+            {"name": "Normal Inspection"}, 
+            {"name": "Sub Inspection"}
+          ]
         },
 
         {
-          type: "textField",
+          type: "textInputField",
           componentPerRow: 2,
-          fieldNames: ["packedQty", "sampleSize", "cartonSampleSize", "CartonSelected", "TotalCartons"]
+          fields: [
+            {"name": "packedQty"}, 
+            {"name": "sampleSize"}, 
+            {"name": "cartonSampleSize"}, 
+            {"name": "CartonSelected"}, 
+            {"name": "TotalCartons"}]
         },
         {
           type: "radioButton",
           name: "Result",
           componentPerRow: 1,
-          fieldNames: ["Passed","Failed",]
+          fields: [
+            {"name": "Passed"},
+            {"name": "Failed"},]
         },
       ],
 
-      dropDownsPool: [
-        {"name": "AqlIndex",
-        "valueListFunction": "getAqlList"
-         },
-         {
-           "name": "jailNo",
-           "valueListFunction": "getJailList"
-         },
-         {
-           "name": "adhaar",
-           "valueListFunction": "getAdhaarList"
-         }
-      ],
       functions: `{"frameSentence": (FieldsObject) => {
         var sentence = ""
         for(var key of Object.keys(FieldsObject))
@@ -72,8 +87,8 @@ var ObjectFromAPI = {
         return [{"id":"1", "name": "1"}, {"id": "2", "name": "2"}, {"id": "3", "name": "2.5"}, {"id":4, "name":"4"}]
       },
       
-      "getJailList": () => {
-        return [{"id":"1", "name": "lmn1"}, {"id": "2", "name": "opq2"}]
+      "getFactoryList": () => {
+        return [{"id":"1", "name": "Factory1"}, {"id": "2", "name": "Factory2"}]
       },
 
       "getAdhaarList": () => {
@@ -100,7 +115,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
    <View id="view${ViewNumber}" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
   `
   
-    var componentsLeft = ViewObject.fieldNames.length
+    var componentsLeft = ViewObject.fields.length
     var componentNumber = 0
     var widthPerCompenent = (100/(ViewObject.componentPerRow)-1).toString()+"%"
     while(componentsLeft != 0)
@@ -115,7 +130,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
         if(componentsLeft == 0)
           break
         
-          var fieldName = ViewObject.fieldNames[componentNumber]
+          var fieldName = ViewObject.fields[componentNumber].name
           var newComponentCode  = ``
           if(ViewObject.type == "dropdown")
           {
@@ -185,7 +200,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             `
           }
           
-          if(ViewObject.type == "textField")
+          if(ViewObject.type == "textInputField")
           {
             newComponentCode = `
             <TextInput
@@ -217,8 +232,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
                         (() => {
                           var labelList = []
-                          for (var labelName of ${JSON.stringify(ViewObject.fieldNames)})
-                            labelList.push({label: labelName})
+                          for (var labelObject of ${JSON.stringify(ViewObject.fields)})
+                            labelList.push({label: labelObject.name})
 
                           return labelList
                         })()
@@ -284,31 +299,29 @@ ${mainCode}
 `
 
 
-var fieldObjectList = {}
-var dropDownList = {}
-var radioButtonList = {}
+var TextInputObjectList = {}
+var DropdownInputObjectList = {}
+var RadioButtonSelectionObjectList = {}
 
 
 for(var viewObj of ObjectFromAPI.viewObjects)
 {
-  if(viewObj.type == "textField")
+  if(viewObj.type == "textInputField")
   {
-    for(var fieldName of viewObj.fieldNames)
-      fieldObjectList[fieldName] = ""
+    for(var field of viewObj.fields)
+      TextInputObjectList[field.name] = ""
+  }
+  if(viewObj.type == "dropdown")
+  {
+    for(var field of viewObj.fields)
+      DropdownInputObjectList[field.name] = {"SelectedValue": "", "ValuesListFunction": field.valueListFunction}
   }
   if(viewObj.type == "radioButton")
   {
-    radioButtonList[viewObj.name] = ""
+    RadioButtonSelectionObjectList[viewObj.name] = ""
   }
 
 }
-
-
-for(var dropDownObject of ObjectFromAPI.dropDownsPool)
-{
-  dropDownList[dropDownObject.name] = {"SelectedValue": "", "ValuesListFunction": dropDownObject.valueListFunction}
-}
-
 
 
 let lyrics = 
@@ -322,13 +335,14 @@ import RadioButtonRN from 'radio-buttons-react-native'
 const screenFunctions = ${ObjectFromAPI.functions}
 const GeneratedCode = () => {
   const [Sentence, SetSentence] = useState("")
-  const [FieldList, SetFieldList] = useState(${JSON.stringify(fieldObjectList)})
-  const [DropdownList, SetDropdownList] = useState(${JSON.stringify(dropDownList)})
-  const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(radioButtonList)})
+  const [FieldList, SetFieldList] = useState(${JSON.stringify(TextInputObjectList)})
+  const [DropdownList, SetDropdownList] = useState(${JSON.stringify(DropdownInputObjectList)})
+  const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(RadioButtonSelectionObjectList)})
 
   return (
     <ScrollView 
     contentContainerStyle={{alignItems: "center"}}
+    keyboardShouldPersistTaps="always"
     >
        ${mainCode}
 
