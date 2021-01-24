@@ -24,9 +24,20 @@ var ObjectFromAPI = {
           componentPerRow: 1,
           fields: [
             {"name": "brand"}, 
+
             {"name": "orderNo"}
           ]
         },
+        {
+          type: "textField",
+          componentPerRow: 2,
+          textHeading: "",
+          fields: [
+            {"name": "date", "type":"fromApi" , "value": "21-01-2021"},
+            {"name": "brand", "type":"fromScreen"}
+          ]
+        },
+
         {
           type: "textInputField",
           componentPerRow: 2,
@@ -56,7 +67,7 @@ var ObjectFromAPI = {
 
         {
           type: "textInputField",
-          componentPerRow: 2,
+          componentPerRow: 3,
           fields: [
             {"name": "packedQty"}, 
             {"name": "sampleSize"}, 
@@ -132,6 +143,27 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
         
           var fieldName = ViewObject.fields[componentNumber].name
           var newComponentCode  = ``
+          if(ViewObject.type == "textField")
+          {
+            var currentTextFieldObject = ViewObject.fields[componentNumber]
+            if(currentTextFieldObject.type == "fromApi")
+              newComponentCode = `
+                <Text
+                style={{...styles.input, width: "${widthPerCompenent}"}}
+                >
+                ${currentTextFieldObject.name} : ${currentTextFieldObject.value}
+                </Text> 
+                    `
+            else
+              newComponentCode = `
+              <Text
+              style={{...styles.input, width: "${widthPerCompenent}"}}
+              >
+              ${currentTextFieldObject.name} : {FieldList["${currentTextFieldObject.name}"]}
+              </Text> 
+                  `
+
+          }
           if(ViewObject.type == "dropdown")
           {
             newComponentCode = `
