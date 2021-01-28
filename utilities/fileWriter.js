@@ -67,7 +67,7 @@ var ObjectFromAPI = {
 
         {
           type: "textInputField",
-          componentPerRow: 3,
+          componentPerRow: 2,
           fields: [
             {"name": "packedQty"}, 
             {"name": "sampleSize"}, 
@@ -76,6 +76,70 @@ var ObjectFromAPI = {
             {"name": "TotalCartons"}]
         },
         {
+          type: "hybrid",
+          name: "Main Defect",
+          groups: [
+            {
+              type: "dropdown",
+              componentPerRow: 1,
+              fields: [
+                {"name": "MainDefect",
+                "valueListFunction": "getMaindefectsList"
+                 },
+              ]
+            },
+            {
+              type: "textInputField",
+              componentPerRow: 3,
+              fields: [
+                {"name": "mainCritical"}, 
+                {"name": "mainMajor"}, 
+                {"name": "mainMinor",}, 
+                ]
+            },
+            {
+              type: "button",
+              componentPerRow: 1,
+              fields: [
+                {"name": "Add", "onClick": "executeSomeFunction"}, 
+                ]
+            },
+          ]
+          
+        },
+        {
+          type: "hybrid",
+          name: "Miss Defect",
+          // positioning group component based on flex 
+          groups: [
+            {
+              type: "textInputField",
+              componentPerRow: 1,
+              fields: [
+                {"name": "MiscellaneousDefect"}
+              ]
+            },
+            {
+              type: "textInputField",
+              componentPerRow: 3,
+              fields: [
+                {"name": "missCritical"}, 
+                {"name": "missMajor"}, 
+                {"name": "missMinor"}, 
+                ]
+            },
+            {
+              type: "button",
+              componentPerRow: 1,
+              fields: [
+                {"name": "Add", "onClick": "executeSomeFunction"}, 
+                ]
+            },
+          ]
+          
+        },
+        
+        {
           type: "radioButton",
           name: "Result",
           componentPerRow: 1,
@@ -83,21 +147,34 @@ var ObjectFromAPI = {
             {"name": "Passed"},
             {"name": "Failed"},]
         },
+        {
+          type: "button",
+          componentPerRow: 1,
+          fields: [
+            {"name": "Done", "onClick": "frameSentence", "args": ["FieldList", "DropdownList", "RadioButtonList"]},
+            ]
+        },
       ],
 
-      functions: `{"frameSentence": (FieldsObject) => {
+      functions: `{"frameSentence": (FieldsObjectList) => {
         var sentence = ""
-        for(var key of Object.keys(FieldsObject))
+        for (var FieldsObject of FieldsObjectList)
         {
-          sentence = sentence+key.toString()+":"+FieldsObject[key].toString()+"\\n"
+          for(var key of Object.keys(FieldsObject))
+          {
+            sentence = sentence+key.toString()+":"+FieldsObject[key].toString()+"\\n"
+          }
         }
+        
         return sentence
       },
 
       "getAqlList": () => {
         return [{"id":"1", "name": "1"}, {"id": "2", "name": "2"}, {"id": "3", "name": "2.5"}, {"id":4, "name":"4"}]
       },
-      
+      "getMaindefectsList": () => {
+        return [{"id":"1", "name": "Defect1"}, {"id": "2", "name": "Defect2"}, {"id": "3", "name": "Defect3"}, {"id":4, "name":"Defect4"}]
+      },
       "getFactoryList": () => {
         return [{"id":"1", "name": "Factory1"}, {"id": "2", "name": "Factory2"}]
       },
@@ -125,10 +202,204 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   `
    <View id="view${ViewNumber}" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
   `
+  if(ViewObject.type == "hybrid")
+  {
+    var SubViewNumber = 1
+    var newSubViewCode = 
+    `
+     <View id="subview${SubViewNumber}" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+    `
+
+    for(var subViewObject of ViewObject.groups)
+    {
+      var componentsLeft = subViewObject.fields.length
+      var componentNumber = 0
+      var widthPerCompenent = (100/(subViewObject.componentPerRow)-1).toString()+"%"
+
+      while(componentsLeft != 0)
+    {
+
+      var newRowCode = `
+      <View style={{flexDirection: "row"}}>
+      `
+
+      for (var j = 0; j <subViewObject.componentPerRow; j++)
+      {
+        if(componentsLeft == 0)
+          break
+        
+          var fieldName = subViewObject.fields[componentNumber].name
+          var newComponentCode  = ``
+          if(subViewObject.type == "textField")
+          {
+            var currentTextFieldObject = subViewObject.fields[componentNumber]
+            if(currentTextFieldObject.type == "fromApi")
+              newComponentCode = `
+                <Text
+                style={{...styles.input, width: "${widthPerCompenent}"}}
+                >
+                ${currentTextFieldObject.name} : ${currentTextFieldObject.value}
+                </Text> 
+                    `
+            else
+              newComponentCode = `
+              <Text
+              style={{...styles.input, width: "${widthPerCompenent}"}}
+              >
+              ${currentTextFieldObject.name} : {FieldList["${currentTextFieldObject.name}"]}
+              </Text> 
+                  `
+
+          }
+          if(subViewObject.type == "dropdown")
+          {
+            newComponentCode = `
   
-    var componentsLeft = ViewObject.fields.length
+            <SearchableDropdown
+               //On text change listner on the searchable input
+                 onTextChange={(text) => console.log(text)}
+                 onItemSelect={selectedObject => { 
+                   var newDropdownList = {...DropdownList}
+                   newDropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"] = selectedObject
+                   console.log("#### New dropdown list ######")
+                   console.log(newDropdownList)
+                   SetDropdownList(newDropdownList)
+                   
+                 }}
+                 selectedItems={DropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"]}
+                 //onItemSelect called after the selection from the dropdown
+                 containerStyle={{ padding: 8 ,width: "${widthPerCompenent}" ,
+                 borderWidth:3,
+                 borderRadius:10,
+                 borderColor:"black",
+                 marginHorizontal: 5,
+                 marginVertical:5,
+                 }}
+                 //suggestion container style
+                 textInputStyle={{
+                   //inserted text style
+                   paddingLeft:10,
+                   fontSize: 20,
+                   fontWeight: "bold",
+                   color:"blue"
+          
+                 }}
+                 itemStyle={{
+                   //single dropdown item style
+                   padding: 3,
+                   marginLeft:5,
+                   width:Dimensions.get("window").width / 1.25 ,
+                   marginTop: 2,
+                   borderBottomColor:"#00334e80",
+                   borderBottomWidth: 1,
+                 }}
+                 itemTextStyle={{
+                   //text style of a single dropdown item
+                   fontSize: 18,
+                   fontWeight: "bold",
+                   color:"blue",
+                 }}
+                 itemsContainerStyle={{
+                   //items container style you can pass maxHeight
+                   //to restrict the items dropdown hieght
+                   maxHeight: '100%',
+                 }}
+                 items={screenFunctions[DropdownList.${subViewObject.fields[componentNumber].name}["ValuesListFunction"]]()}
+                 //mapping of item array
+                 //default selected item index
+                 placeholder={"Select ${subViewObject.fields[componentNumber].name}"}
+                 placeholderTextColor="#00334e80"
+                 //place holder for the search input
+                 resetValue={false}
+                 //reset textInput Value with true and false state
+                 underlineColorAndroid="transparent"
+                 //To remove the underline from the android input
+             />
+            
+            `
+          }
+          
+          if(subViewObject.type == "textInputField")
+          {
+            newComponentCode = `
+            <TextInput
+             // style= {{marginLeft: 4, color: "blue"}}
+             style={{...styles.input, width: "${widthPerCompenent}"}}
+             placeholder={"${subViewObject.fields[componentNumber].name}"}
+             placeholderTextColor={"grey"}
+             maxLength={50}
+             // onBlur={Keyboard.dismiss}
+             value={FieldList.item}
+             onChangeText = {(newValue) => {
+                 var newFieldsObject = {...FieldList}
+                 newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
+                 SetFieldList(newFieldsObject)
+             }}
+         /> 
+            `
+          }
+
+
+          if(subViewObject.type == "button")
+          {
+            newComponentCode = `
+            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+              <TouchableOpacity
+                style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
+                onPress={() => {
+                    console.log("Something happens")
+                }}
+              >
+                <Text style={styles.textStyle}>${subViewObject.fields[componentNumber].name}</Text>
+      
+              </TouchableOpacity>
+            </View>
+            `
+            
+          }
+
+          newRowCode = `
+          ${newRowCode}
+          ${newComponentCode}
+          `
+          
+          componentNumber += 1
+          componentsLeft -=1
+        
+      
+          
+      }
+
+      newRowCode = `
+      ${newRowCode}
+      </View>
+      `
+      newSubViewCode = `
+      ${newSubViewCode}
+      ${newRowCode}
+      `
+    }             // while loop of hybrid ends here
+
+    }
+    newSubViewCode = `
+      ${newSubViewCode}
+      </View>
+      `
+    newViewCode = `
+      ${newViewCode}
+      ${newSubViewCode}
+      `
+      
+      SubViewNumber += 1
+
+  }               // block for hybrid ends here           
+  
+    var componentsLeft = ViewObject.type != "hybrid" ? ViewObject.fields.length : 0
     var componentNumber = 0
-    var widthPerCompenent = (100/(ViewObject.componentPerRow)-1).toString()+"%"
+    var widthPerCompenent = ViewObject.type != "hybrid" ? (100/(ViewObject.componentPerRow)-1).toString()+"%": "0%"
+
+    
+
     while(componentsLeft != 0)
     {
 
@@ -290,6 +561,26 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             
           }
 
+          if(ViewObject.type == "button")
+          {
+            newComponentCode = `
+            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+              <TouchableOpacity
+                style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
+                onPress={() => {
+                  var FieldsObjectList = [${ViewObject.fields[componentNumber].args}]
+                  var newSentence = screenFunctions.${ViewObject.fields[componentNumber].onClick}(FieldsObjectList)
+                  SetSentence(newSentence)
+              }}
+              >
+                <Text style={styles.textStyle}>${ViewObject.fields[componentNumber].name}</Text>
+      
+              </TouchableOpacity>
+            </View>
+            `
+            
+          }
+
           newRowCode = `
           ${newRowCode}
           ${newComponentCode}
@@ -338,6 +629,24 @@ var RadioButtonSelectionObjectList = {}
 
 for(var viewObj of ObjectFromAPI.viewObjects)
 {
+  if(viewObj.type == "hybrid")
+  {
+    for(var subViewObject of viewObj.groups)
+    {
+      if(subViewObject.type == "textInputField")
+      {
+        for(var field of subViewObject.fields)
+          TextInputObjectList[field.name] = ""
+      }
+      if(subViewObject.type == "dropdown")
+      {
+        for(var field of subViewObject.fields)
+          DropdownInputObjectList[field.name] = {"SelectedValue": "", "ValuesListFunction": field.valueListFunction}
+      }
+
+    }
+  }              // block of hybrid ends here
+
   if(viewObj.type == "textInputField")
   {
     for(var field of viewObj.fields)
@@ -377,17 +686,6 @@ const GeneratedCode = () => {
     keyboardShouldPersistTaps="always"
     >
        ${mainCode}
-
-        <TouchableOpacity
-        style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10}}
-        onPress={() => {
-            var newSentence = screenFunctions.frameSentence(FieldList)
-            SetSentence(newSentence)
-        }}
-        >
-        <Text style={styles.textStyle}>Done</Text>
-
-        </TouchableOpacity>
 
         <Text style={{color: "grey", fontSize: 20, fontWeight: "bold", marginVertical: 10}}>{Sentence}</Text>
     
