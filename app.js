@@ -72,8 +72,8 @@ app.post("/getContourImage", (request, response) => {
         }
 
         
-        const ImgUri =  `http://${hostname}:${port}/static/ImageUploads/${request.file.path.split("ImageUploads/")[1]}`
-        // const ImgUri =  `http://ai.bluekaktus.com/api/contourApi/${request.file.path}`
+        // const ImgUri =  `http://${hostname}:${port}/static/ImageUploads/${request.file.path.split("ImageUploads/")[1]}`
+        const ImgUri =  `http://ai.bluekaktus.com/api/contourApi/static/ImageUploads/${request.file.path.split("ImageUploads/")[1]}`
         
 
         getContourImage(ImgUri, request.file.filename)
@@ -82,8 +82,8 @@ app.post("/getContourImage", (request, response) => {
             console.log(`Date and time: ${moment().format('MMMM Do YYYY, h:mm:ss a')}`)
             result = {
                 "orignal": ImgUri,
-                // "contour": `http://ai.bluekaktus.com/api/contourApi/static/contourImages/${request.file.filename}`
-                "contour": `http://${hostname}:${port}/static/contourImages/${request.file.filename}`
+                "contour": `http://ai.bluekaktus.com/api/contourApi/static/contourImages/${request.file.filename}`
+                // "contour": `http://${hostname}:${port}/static/contourImages/${request.file.filename}`
             }
             console.log(result)
             response.json(result)
