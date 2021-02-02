@@ -101,7 +101,7 @@ var ObjectFromAPI = {
               type: "button",
               componentPerRow: 1,
               fields: [
-                {"name": "Add", "onClick": "executeSomeFunction"}, 
+                {"name": "Add", "onClick": "addMainDefect"}, 
                 ]
             },
           ]
@@ -170,9 +170,11 @@ var ObjectFromAPI = {
       },
 
       "getAqlList": () => {
+
         return [{"id":"1", "name": "1"}, {"id": "2", "name": "2"}, {"id": "3", "name": "2.5"}, {"id":4, "name":"4"}]
       },
       "getMaindefectsList": () => {
+
         return [{"id":"1", "name": "Defect1"}, {"id": "2", "name": "Defect2"}, {"id": "3", "name": "Defect3"}, {"id":4, "name":"Defect4"}]
       },
       "getFactoryList": () => {
@@ -181,9 +183,15 @@ var ObjectFromAPI = {
 
       "getAdhaarList": () => {
         return [{"id":"1", "name": "uvw1"}, {"id": "2", "name": "xyz2"}]
-      }
+      },
+
+      "addMainDefect": () => {
+
+      },
+      
     
-    }`
+    }`,
+
 }
 
 
@@ -205,6 +213,64 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   if(ViewObject.type == "hybrid")
   {
     var SubViewNumber = 1
+    
+    var newTableCode = `
+    <View id ="${ViewObject.name}" style={{marginVertical: 10, width: "90%", marginLeft: "1%"}}>
+      <View style={{flexDirection: "row", height: 35, backgroundColor: "blue", justifyContent: "flex-start", alignItems: "center", borderRadius: 5}}>
+        <FlatList
+          id="Headings"
+          data={(() => {
+            var sampleObjectWithIdNegative1 = {}
+            for(var obj of HybridDataObjects["${ViewObject.name}"])
+            {
+              if(obj["id"] == "-1")
+                sampleObjectWithIdNegative1 = obj
+            }
+            return Object.keys(sampleObjectWithIdNegative1)
+          })() }
+          keyExtractor={(columnName) => columnName}
+          contentContainerStyle = {{flexDirection: "row"}}
+          renderItem = {({item}) => {
+            return <Text style={{color: "white", fontWeight: "bold", fontSize: 20, marginHorizontal: "2%"}}>{item}</Text>
+          }}
+        />
+      </View>
+      <FlatList
+        id="Table content"
+        data={(() => {
+          var dataArr = []
+          var fieldNames = Object.keys(HybridDataObjects["${ViewObject.name}"])
+          for(var i = 0; i<HybridDataObjects["${ViewObject.name}"][fieldNames[0]].length; i++)
+          {
+            var newObj = {"id": i.toString()}
+            for(var fieldName of fieldNames)
+              newObj[fieldName] = HybridDataObjects["${ViewObject.name}"][fieldName][i]
+            
+          }
+          
+          return dataArr
+        })()}
+        keyExtractor={(dataObject) => dataObject.id}
+        contentContainerStyle = {{borderColor: "black"}}
+        renderItem = {({item}) => {
+          var currentRowObject = item
+          return (
+            <FlatList 
+              id="rowContent"
+              data={Object.keys(currentRowObject)}
+              keyExtractor={(keyname) => keyname}
+              contentContainerStyle = {{flexDirection: "row"}}
+              renderItem = {({item}) => {
+                return <Text style={{color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "2%"}}>{currentRowObject[item]}</Text>
+              }}
+              
+            />
+          )
+        }}
+      />
+    </View>
+    `
+
     var newSubViewCode = 
     `
      <View id="subview${SubViewNumber}" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
@@ -388,6 +454,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     newViewCode = `
       ${newViewCode}
       ${newSubViewCode}
+      ${newTableCode}
       `
       
       SubViewNumber += 1
@@ -625,25 +692,36 @@ ${mainCode}
 var TextInputObjectList = {}
 var DropdownInputObjectList = {}
 var RadioButtonSelectionObjectList = {}
-
+var HybridDataObjects = {}
 
 for(var viewObj of ObjectFromAPI.viewObjects)
 {
   if(viewObj.type == "hybrid")
   {
+    HybridDataObjects[viewObj.name] = []
+    var newFieldCollectionForHybridObject = {"id": "-1"}
     for(var subViewObject of viewObj.groups)
     {
       if(subViewObject.type == "textInputField")
       {
+        
         for(var field of subViewObject.fields)
+        {
           TextInputObjectList[field.name] = ""
+          newFieldCollectionForHybridObject[field.name] = ""
+          //HybridDataObjects[viewObj.name][field.name] = []
+        }
       }
       if(subViewObject.type == "dropdown")
       {
         for(var field of subViewObject.fields)
+        {
           DropdownInputObjectList[field.name] = {"SelectedValue": "", "ValuesListFunction": field.valueListFunction}
+          newFieldCollectionForHybridObject[field.name] = ""
+          //HybridDataObjects[viewObj.name][field.name] = []
+        }
       }
-
+      HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
     }
   }              // block of hybrid ends here
 
@@ -679,7 +757,8 @@ const GeneratedCode = () => {
   const [FieldList, SetFieldList] = useState(${JSON.stringify(TextInputObjectList)})
   const [DropdownList, SetDropdownList] = useState(${JSON.stringify(DropdownInputObjectList)})
   const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(RadioButtonSelectionObjectList)})
-
+  const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
+  
   return (
     <ScrollView 
     contentContainerStyle={{alignItems: "center"}}
