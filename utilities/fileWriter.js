@@ -215,8 +215,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     var SubViewNumber = 1
     
     var newTableCode = `
-    <View id ="${ViewObject.name}" style={{marginVertical: 10, width: "90%", marginLeft: "1%"}}>
-      <View style={{flexDirection: "row", height: 35, backgroundColor: "blue", justifyContent: "flex-start", alignItems: "center", borderRadius: 5}}>
+    <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "90%", marginLeft: "1%"}}>
+      <View style={{flexDirection: "row", height: 35, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -231,37 +231,31 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           keyExtractor={(columnName) => columnName}
           contentContainerStyle = {{flexDirection: "row"}}
           renderItem = {({item}) => {
-            return <Text style={{color: "white", fontWeight: "bold", fontSize: 20, marginHorizontal: "2%"}}>{item}</Text>
+            return <Text style={{color: "white", fontWeight: "bold", fontSize: 20, marginHorizontal: "3%"}}>{item}</Text>
           }}
         />
       </View>
       <FlatList
         id="Table content"
-        data={(() => {
-          var dataArr = []
-          var fieldNames = Object.keys(HybridDataObjects["${ViewObject.name}"])
-          for(var i = 0; i<HybridDataObjects["${ViewObject.name}"][fieldNames[0]].length; i++)
-          {
-            var newObj = {"id": i.toString()}
-            for(var fieldName of fieldNames)
-              newObj[fieldName] = HybridDataObjects["${ViewObject.name}"][fieldName][i]
-            
-          }
-          
-          return dataArr
-        })()}
+        data={HybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
         keyExtractor={(dataObject) => dataObject.id}
         contentContainerStyle = {{borderColor: "black"}}
         renderItem = {({item}) => {
-          var currentRowObject = item
+          var currentRowArray = []
+          var i = 0
+          for(var key of Object.keys(item))
+          {
+            currentRowArray.push({"id": i.toString(), value: item[key]})
+            i += 1
+          }
           return (
             <FlatList 
               id="rowContent"
-              data={Object.keys(currentRowObject)}
-              keyExtractor={(keyname) => keyname}
-              contentContainerStyle = {{flexDirection: "row"}}
+              data={currentRowArray}
+              keyExtractor={(currentElementObject) => currentElementObject.id}
+              style={{flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, height: 35, alignItem: "center"}}
               renderItem = {({item}) => {
-                return <Text style={{color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "2%"}}>{currentRowObject[item]}</Text>
+                return <Text style={{color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "7%"}}>{item.value}</Text>
               }}
               
             />
@@ -413,7 +407,50 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
-                    console.log("Something happens")
+                    
+                    var fieldNames = [] 
+                    for(var obj of HybridDataObjects["${ViewObject.name}"])
+                    {
+                      if(obj["id"] == "-1")
+                      {
+                        fieldNames = Object.keys(obj)
+                        break
+                      }
+                    }
+                    
+
+                    var newRowObject = {}
+                    newRowObject["id"] = HybridDataObjects["${ViewObject.name}"].length
+
+                    for(var fieldName of fieldNames)
+                    {
+                      if(fieldName in FieldList)
+                      {
+             
+                        newRowObject[fieldName] = FieldList[fieldName]
+                        continue
+                      }
+                      if(fieldName in DropdownList)
+                      {
+                        newRowObject[fieldName] = DropdownList[fieldName].SelectedValue.name
+                        continue
+                      }
+                      if(fieldName in RadioButtonList)
+                      {
+                        newRowObject[fieldName] = RadioButtonList[fieldName]
+                        continue
+                      }
+                    }
+                   
+                    var newHybridObjectList = {...HybridDataObjects}
+                    newHybridObjectList["${ViewObject.name}"].push(newRowObject)
+                    console.log("####### Adding new row to table for ${ViewObject.name} ############")
+                    console.log(newRowObject)
+
+                    console.log("############# Hybrid data object ##############")
+                    console.log(newHybridObjectList)
+                    SetHybridDataObjects(newHybridObjectList)
+
                 }}
               >
                 <Text style={styles.textStyle}>${subViewObject.fields[componentNumber].name}</Text>
@@ -721,8 +758,9 @@ for(var viewObj of ObjectFromAPI.viewObjects)
           //HybridDataObjects[viewObj.name][field.name] = []
         }
       }
-      HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
+      
     }
+    HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
   }              // block of hybrid ends here
 
   if(viewObj.type == "textInputField")
@@ -741,7 +779,8 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   }
 
 }
-
+console.log("############## Hybrid Objects ##########")
+console.log(HybridDataObjects)
 
 let lyrics = 
 `
