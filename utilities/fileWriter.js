@@ -1,7 +1,76 @@
 const fs = require('fs');
 
 
-
+var objectFromAPI = {                                        //Object from Divyang
+  "viewObjects": [
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "AQL Level"
+              }
+          ],
+          "groups": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Factory Representative"
+              }
+          ],
+          "groups": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 2,
+          "fields": [
+              {
+                  "name": "Packed Qty"
+              },
+              {
+                  "name": "Sample Size"
+              }
+          ],
+          "groups": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 2,
+          "fields": [
+              {
+                  "name": "Carton Sample Size"
+              },
+              {
+                  "name": "Carton Selected"
+              }
+          ],
+          "groups": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Remarks"
+              }
+          ],
+          "groups": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Result"
+              }
+          ],
+          "groups": []
+      }
+  ]
+}
 
 var ObjectFromAPI = {
       
@@ -226,10 +295,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               if(obj["id"] == "-1")
                 sampleObjectWithIdNegative1 = obj
             }
-            return Object.keys(sampleObjectWithIdNegative1)
+            return Object.keys(sampleObjectWithIdNegative1).filter((columnName) => columnName != "id")
           })() }
           keyExtractor={(columnName) => columnName}
-          contentContainerStyle = {{flexDirection: "row"}}
+          contentContainerStyle = {{flexDirection: "row", marginLeft: "10%"}}
           renderItem = {({item}) => {
             return <Text style={{color: "white", fontWeight: "bold", fontSize: 20, marginHorizontal: "3%"}}>{item}</Text>
           }}
@@ -245,7 +314,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           var i = 0
           for(var key of Object.keys(item))
           {
-            currentRowArray.push({"id": i.toString(), value: item[key]})
+            currentRowArray.push({"id": i.toString(), value: item[key], type: key})
             i += 1
           }
           return (
@@ -253,9 +322,25 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               id="rowContent"
               data={currentRowArray}
               keyExtractor={(currentElementObject) => currentElementObject.id}
-              style={{flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, height: 35, alignItem: "center"}}
+              style={{flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, height: 35, alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
-                return <Text style={{color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "7%"}}>{item.value}</Text>
+                if(item.type == "id")
+                  return (
+                      <TouchableOpacity
+                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center", marginHorizontal: "7%"}}
+                          onPress={() => {
+                              console.log("deletion will take place")
+                              var newHybridDataObjects = {...HybridDataObjects}
+                              newHybridDataObjects["${ViewObject.name}"] = newHybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != item.value )
+                              SetHybridDataObjects(newHybridDataObjects)
+                          }}
+                  
+                      >
+                          <Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>X</Text>
+                      </TouchableOpacity>    
+                  )
+
+                return <Text style={{color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "8%"}}>{item.value}</Text>
               }}
               
             />
@@ -389,7 +474,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
              placeholderTextColor={"grey"}
              maxLength={50}
              // onBlur={Keyboard.dismiss}
-             value={FieldList.item}
+             value={FieldList["${subViewObject.fields[componentNumber].name}"]}
              onChangeText = {(newValue) => {
                  var newFieldsObject = {...FieldList}
                  newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
@@ -420,6 +505,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     
 
                     var newRowObject = {}
+                    var newFieldList = {...FieldList}
+                    var newRadioButtonList = {...RadioButtonList}
+
                     newRowObject["id"] = HybridDataObjects["${ViewObject.name}"].length
 
                     for(var fieldName of fieldNames)
@@ -428,6 +516,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       {
              
                         newRowObject[fieldName] = FieldList[fieldName]
+                        newFieldList[fieldName] = ""
                         continue
                       }
                       if(fieldName in DropdownList)
@@ -438,6 +527,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       if(fieldName in RadioButtonList)
                       {
                         newRowObject[fieldName] = RadioButtonList[fieldName]
+                        
+                        newRadioButtonList[fieldName] = ""
+                        
                         continue
                       }
                     }
@@ -450,6 +542,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     console.log("############# Hybrid data object ##############")
                     console.log(newHybridObjectList)
                     SetHybridDataObjects(newHybridObjectList)
+
+                    SetFieldList(newFieldList)
+                    SetRadioButtonList(newRadioButtonList)
 
                 }}
               >
