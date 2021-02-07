@@ -285,7 +285,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     
     var newTableCode = `
     <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "90%", marginLeft: "1%"}}>
-      <View style={{flexDirection: "row", height: 35, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -300,7 +300,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           keyExtractor={(columnName) => columnName}
           contentContainerStyle = {{flexDirection: "row", marginLeft: "10%"}}
           renderItem = {({item}) => {
-            return <Text style={{color: "white", fontWeight: "bold", fontSize: 20, marginHorizontal: "3%"}}>{item}</Text>
+            return <Text numberOfLines={10} style={{color: "white", width: 70, textAlign: 'center', fontWeight: "bold", fontSize: 20, marginHorizontal: "3%"}}>{item}</Text>
           }}
         />
       </View>
@@ -308,7 +308,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
         id="Table content"
         data={HybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
         keyExtractor={(dataObject) => dataObject.id}
-        contentContainerStyle = {{borderColor: "black"}}
+        contentContainerStyle = {{borderColor: "black", }}
         renderItem = {({item}) => {
           var currentRowArray = []
           var i = 0
@@ -322,12 +322,12 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               id="rowContent"
               data={currentRowArray}
               keyExtractor={(currentElementObject) => currentElementObject.id}
-              style={{flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, height: 35, alignItem: "center", alignItems: "center"}}
+              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
                 if(item.type == "id")
                   return (
                       <TouchableOpacity
-                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center", marginHorizontal: "7%"}}
+                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center", marginHorizontal: "4%"}}
                           onPress={() => {
                               console.log("deletion will take place")
                               var newHybridDataObjects = {...HybridDataObjects}
@@ -340,7 +340,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       </TouchableOpacity>    
                   )
 
-                return <Text style={{color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "8%"}}>{item.value}</Text>
+                return <Text numberOfLines={10} style={{textAlign: 'left', width: 100, color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "2%"}}>{item.value}</Text>
               }}
               
             />
