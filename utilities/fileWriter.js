@@ -192,7 +192,7 @@ var ObjectFromAPI = {
               type: "textInputField",
               componentPerRow: 3,
               fields: [
-                {"name": "missCritical"}, 
+                {"name": "missCritical", "width": 100, "align": "left", "title": "Critical", "editable":true}, 
                 {"name": "missMajor"}, 
                 {"name": "missMinor"}, 
                 ]
@@ -284,7 +284,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     var SubViewNumber = 1
     
     var newTableCode = `
-    <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "90%", marginLeft: "1%"}}>
+    <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%", }}>
+    <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
+    
       <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
@@ -298,17 +300,17 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             return Object.keys(sampleObjectWithIdNegative1).filter((columnName) => columnName != "id")
           })() }
           keyExtractor={(columnName) => columnName}
-          contentContainerStyle = {{flexDirection: "row", marginLeft: "10%"}}
+          contentContainerStyle = {{flexDirection: "row"}}
           renderItem = {({item}) => {
-            return <Text numberOfLines={10} style={{color: "white", width: 70, textAlign: 'center', fontWeight: "bold", fontSize: 20, marginHorizontal: "3%"}}>{item}</Text>
+            return <Text numberOfLines={10} style={{color: "white", width: 120, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item}</Text>
           }}
         />
       </View>
       <FlatList
         id="Table content"
         data={HybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
-        keyExtractor={(dataObject) => dataObject.id}
-        contentContainerStyle = {{borderColor: "black", }}
+        keyExtractor={(dataObject) => dataObject.id.toString()}
+        contentContainerStyle = {{borderColor: "black",}}
         renderItem = {({item}) => {
           var currentRowArray = []
           var i = 0
@@ -318,16 +320,19 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             i += 1
           }
           return (
+            
             <FlatList 
               id="rowContent"
               data={currentRowArray}
-              keyExtractor={(currentElementObject) => currentElementObject.id}
-              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, alignItem: "center", alignItems: "center"}}
+              keyExtractor={(currentElementObject) => currentElementObject.id.toString()}
+              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
                 if(item.type == "id")
                   return (
+                    <View style={{flexDirection: "row",}}>
                       <TouchableOpacity
-                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center", marginHorizontal: "4%"}}
+                          id="rowDeletion"
+                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 5, justifyContent: "center", marginHorizontal: 10}}
                           onPress={() => {
                               console.log("deletion will take place")
                               var newHybridDataObjects = {...HybridDataObjects}
@@ -337,16 +342,38 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   
                       >
                           <Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>X</Text>
-                      </TouchableOpacity>    
+                      </TouchableOpacity> 
+                      
+                      {(() => {
+                        if(currentRowArray.length > 5)
+                          return (
+                            <TouchableOpacity
+                            id="ViewingDetail"
+                            style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 5}}
+                            onPress={() => {
+                                console.log("for viewing details")
+                               
+                            }}
+                    
+                        >
+                            <Text style={{color: "grey", fontSize: 12, fontWeight: "bold"}}>Detail</Text>
+                          </TouchableOpacity>   
+                          )
+                      })()}
+                     
+                    </View>  
                   )
 
-                return <Text numberOfLines={10} style={{textAlign: 'left', width: 100, color: "grey", fontWeight: "bold", fontSize: 20, marginHorizontal: "2%"}}>{item.value}</Text>
+                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
               }}
               
             />
+           
           )
         }}
       />
+    
+    </ScrollView>
     </View>
     `
 
@@ -414,7 +441,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  selectedItems={DropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
                  containerStyle={{ padding: 8 ,width: "${widthPerCompenent}" ,
-                 borderWidth:3,
+                 borderWidth:2,
                  borderRadius:10,
                  borderColor:"black",
                  marginHorizontal: 5,
@@ -424,7 +451,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  textInputStyle={{
                    //inserted text style
                    paddingLeft:10,
-                   fontSize: 20,
+                   fontSize: 15,
                    fontWeight: "bold",
                    color:"blue"
           
@@ -440,7 +467,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  }}
                  itemTextStyle={{
                    //text style of a single dropdown item
-                   fontSize: 18,
+                   fontSize: 15,
                    fontWeight: "bold",
                    color:"blue",
                  }}
@@ -508,7 +535,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     var newFieldList = {...FieldList}
                     var newRadioButtonList = {...RadioButtonList}
 
-                    newRowObject["id"] = HybridDataObjects["${ViewObject.name}"].length
+                    
 
                     for(var fieldName of fieldNames)
                     {
@@ -533,7 +560,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                         continue
                       }
                     }
-                   
+                    
+                    newRowObject["id"] = HybridDataObjects["${ViewObject.name}"].length
+
                     var newHybridObjectList = {...HybridDataObjects}
                     newHybridObjectList["${ViewObject.name}"].push(newRowObject)
                     console.log("####### Adding new row to table for ${ViewObject.name} ############")
@@ -652,7 +681,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  selectedItems={DropdownList.${fieldName}["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
                  containerStyle={{ padding: 8 ,width: "${widthPerCompenent}" ,
-                 borderWidth:3,
+                 borderWidth:2,
                  borderRadius:10,
                  borderColor:"black",
                  marginHorizontal: 5,
@@ -662,7 +691,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  textInputStyle={{
                    //inserted text style
                    paddingLeft:10,
-                   fontSize: 20,
+                   fontSize: 15,
                    fontWeight: "bold",
                    color:"blue"
           
@@ -678,7 +707,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  }}
                  itemTextStyle={{
                    //text style of a single dropdown item
-                   fontSize: 18,
+                   fontSize: 15,
                    fontWeight: "bold",
                    color:"blue",
                  }}
@@ -908,14 +937,14 @@ const GeneratedCode = () => {
 
 const styles = StyleSheet.create({
     input: {
-        borderWidth: 3,
-        paddingHorizontal: 20,
+        borderWidth: 2,
+        paddingHorizontal: 15,
         borderColor: "black",
         padding: 3,
         marginVertical: 5,
         marginHorizontal: 5,
         color: "blue",
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: "bold",
         borderRadius: 10,
         width: "100%"
