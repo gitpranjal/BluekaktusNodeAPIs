@@ -163,9 +163,12 @@ var ObjectFromAPI = {
               fields: [
                 {"name": "mainCritical"}, 
                 {"name": "mainMajor"}, 
-                {"name": "mainMinor",}, 
+                {"name": "mainMinor"}, 
+                {"name": "mean",},
+                {"name": "median",}
                 ]
             },
+            
             {
               type: "button",
               componentPerRow: 1,
@@ -345,7 +348,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       </TouchableOpacity> 
                       
                       {(() => {
-                        if(currentRowArray.length > 5)
+                        if(currentRowArray.length > 10)
                           return (
                             <TouchableOpacity
                             id="ViewingDetail"
