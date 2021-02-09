@@ -154,7 +154,8 @@ var ObjectFromAPI = {
               componentPerRow: 1,
               fields: [
                 {"name": "MainDefect",
-                "valueListFunction": "getMaindefectsList"
+                "valueListFunction": "getMaindefectsList",
+                "title": "Main defect name"
                  },
               ]
             },
@@ -189,7 +190,7 @@ var ObjectFromAPI = {
               type: "textInputField",
               componentPerRow: 1,
               fields: [
-                {"name": "MiscellaneousDefect"}
+                {"name": "MiscellaneousDefect", "title": "Miscellaneous Defect"}
               ]
             },
             {
@@ -301,7 +302,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               if(obj["id"] == "-1")
                 sampleObjectWithIdNegative1 = obj
             }
-            return Object.keys(sampleObjectWithIdNegative1).filter((columnName) => columnName != "id")
+            return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
           })() }
           keyExtractor={(columnName) => columnName}
           contentContainerStyle = {{flexDirection: "row"}}
@@ -873,7 +874,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         for(var field of subViewObject.fields)
         {
           TextInputObjectList[field.name] = ""
-          newFieldCollectionForHybridObject[field.name] = ""
+          newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
           //HybridDataObjects[viewObj.name][field.name] = []
         }
       }
@@ -882,7 +883,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         for(var field of subViewObject.fields)
         {
           DropdownInputObjectList[field.name] = {"SelectedValue": "", "ValuesListFunction": field.valueListFunction}
-          newFieldCollectionForHybridObject[field.name] = ""
+          newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
           //HybridDataObjects[viewObj.name][field.name] = []
         }
       }
