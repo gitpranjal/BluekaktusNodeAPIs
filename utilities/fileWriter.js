@@ -112,7 +112,7 @@ var ObjectFromAPI = {
           type: "textInputField",
           componentPerRow: 2,
           fields: [
-            {"name": "orderQuantity", "title": "Order Qty"}, 
+            {"name": "orderQuantity", "title": "Order Qty",}, 
             {"name": "offeredQuantity", "title": "Offered Qty"},
             {"name": "excessQuantity", "title": "Excess Qty"},
           ]
@@ -121,7 +121,7 @@ var ObjectFromAPI = {
           type: "textInputField",
           componentPerRow: 1,
           fields: [
-            {"name": "factoryRepresentative", "title": "Factory Representative"}
+            {"name": "factoryRepresentative", "title": "Factory Representative", "editable": false, "default": "Babu Rao Apte"}
           ]
         },
         {
@@ -184,20 +184,20 @@ var ObjectFromAPI = {
         {
           type: "hybrid",
           name: "Miss Defect",
-          // positioning group component based on flex 
+
           groups: [
             {
               type: "textInputField",
               componentPerRow: 1,
               fields: [
-                {"name": "MiscellaneousDefect", "title": "Miscellaneous Defect"}
+                {"name": "MiscellaneousDefect", "title": "Miscellaneous Defect", "editable": false, "default": "mera apna defect"}
               ]
             },
             {
               type: "textInputField",
               componentPerRow: 3,
               fields: [
-                {"name": "missCritical", "width": 100, "align": "left", "title": "Critical", "editable":true}, 
+                {"name": "missCritical", "title": "Critical", }, 
                 {"name": "missMajor", "title": "Major"}, 
                 {"name": "missMinor", "title": "Minor"}, 
                 ]
@@ -507,6 +507,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
              maxLength={50}
              // onBlur={Keyboard.dismiss}
              value={FieldList["${subViewObject.fields[componentNumber].name}"]}
+             editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
              onChangeText = {(newValue) => {
                  var newFieldsObject = {...FieldList}
                  newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
@@ -746,7 +747,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
              placeholderTextColor={"grey"}
              maxLength={50}
              // onBlur={Keyboard.dismiss}
-             value={FieldList.item}
+             value={FieldList["${ViewObject.fields[componentNumber].name}"]}
+             editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true}}
              onChangeText = {(newValue) => {
                  var newFieldsObject = {...FieldList}
                  newFieldsObject["${fieldName}"] = newValue
@@ -873,7 +875,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         
         for(var field of subViewObject.fields)
         {
-          TextInputObjectList[field.name] = ""
+          TextInputObjectList[field.name] = field.default != null ?  field.default: ""
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
           //HybridDataObjects[viewObj.name][field.name] = []
         }
@@ -895,7 +897,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "textInputField")
   {
     for(var field of viewObj.fields)
-      TextInputObjectList[field.name] = ""
+      TextInputObjectList[field.name] = field.default != null ?  field.default: ""
   }
   if(viewObj.type == "dropdown")
   {
