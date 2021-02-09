@@ -81,10 +81,11 @@ var ObjectFromAPI = {
           componentPerRow: 1,
           fields: [
             {"name": "AqlIndex",
-            "valueListFunction": "getAqlList"
+            "valueListFunction": "getAqlList",
+            "title": "AQL Value"
              },
              {"name": "Factory",
-            "valueListFunction": "getFactoryList"
+            "valueListFunction": "getFactoryList",
              },
           ]
         },
@@ -92,9 +93,9 @@ var ObjectFromAPI = {
           type: "textInputField",
           componentPerRow: 1,
           fields: [
-            {"name": "brand"}, 
+            {"name": "brand", "title": "Brand"}, 
 
-            {"name": "orderNo"}
+            {"name": "orderNo", "title": "Order Number"}
           ]
         },
         {
@@ -111,16 +112,16 @@ var ObjectFromAPI = {
           type: "textInputField",
           componentPerRow: 2,
           fields: [
-            {"name": "orderQuantity"}, 
-            {"name": "offeredQuantity"},
-            {"name": "excessQuantity"},
+            {"name": "orderQuantity", "title": "Order Qty"}, 
+            {"name": "offeredQuantity", "title": "Offered Qty"},
+            {"name": "excessQuantity", "title": "Excess Qty"},
           ]
         },
         {
           type: "textInputField",
           componentPerRow: 1,
           fields: [
-            {"name": "factoryRepresentative"}
+            {"name": "factoryRepresentative", "title": "Factory Representative"}
           ]
         },
         {
@@ -138,7 +139,7 @@ var ObjectFromAPI = {
           type: "textInputField",
           componentPerRow: 2,
           fields: [
-            {"name": "packedQty"}, 
+            {"name": "packedQty", "title": "Packed Quantity"}, 
             {"name": "sampleSize"}, 
             {"name": "cartonSampleSize"}, 
             {"name": "CartonSelected"}, 
@@ -161,11 +162,11 @@ var ObjectFromAPI = {
               type: "textInputField",
               componentPerRow: 3,
               fields: [
-                {"name": "mainCritical"}, 
-                {"name": "mainMajor"}, 
-                {"name": "mainMinor"}, 
-                {"name": "mean",},
-                {"name": "median",}
+                {"name": "mainCritical", "title": "Critical"}, 
+                {"name": "mainMajor", "title": "Major"}, 
+                {"name": "mainMinor", "title": "Minor"}, 
+                {"name": "mean", "title": "Mean"},
+                {"name": "median", "title": "Median"}
                 ]
             },
             
@@ -196,8 +197,8 @@ var ObjectFromAPI = {
               componentPerRow: 3,
               fields: [
                 {"name": "missCritical", "width": 100, "align": "left", "title": "Critical", "editable":true}, 
-                {"name": "missMajor"}, 
-                {"name": "missMinor"}, 
+                {"name": "missMajor", "title": "Major"}, 
+                {"name": "missMinor", "title": "Minor"}, 
                 ]
             },
             {
@@ -482,7 +483,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  items={screenFunctions[DropdownList.${subViewObject.fields[componentNumber].name}["ValuesListFunction"]]()}
                  //mapping of item array
                  //default selected item index
-                 placeholder={"Select ${subViewObject.fields[componentNumber].name}"}
+                 placeholder={"Select ${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"}
                  placeholderTextColor="#00334e80"
                  //place holder for the search input
                  resetValue={false}
@@ -500,7 +501,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             <TextInput
              // style= {{marginLeft: 4, color: "blue"}}
              style={{...styles.input, width: "${widthPerCompenent}"}}
-             placeholder={"${subViewObject.fields[componentNumber].name}"}
+             placeholder={"${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"}
              placeholderTextColor={"grey"}
              maxLength={50}
              // onBlur={Keyboard.dismiss}
@@ -722,7 +723,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  items={screenFunctions[DropdownList.${fieldName}["ValuesListFunction"]]()}
                  //mapping of item array
                  //default selected item index
-                 placeholder={"Select ${fieldName}"}
+                 placeholder={"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"}
                  placeholderTextColor="#00334e80"
                  //place holder for the search input
                  resetValue={false}
@@ -740,7 +741,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             <TextInput
              // style= {{marginLeft: 4, color: "blue"}}
              style={{...styles.input, width: "${widthPerCompenent}"}}
-             placeholder={"${fieldName}"}
+             placeholder={"${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"}
              placeholderTextColor={"grey"}
              maxLength={50}
              // onBlur={Keyboard.dismiss}
