@@ -975,11 +975,11 @@ const GeneratedCode = () => {
           )
           .then(res => res.json())
           .then(body => {
-            console.log("########## Values List ##########")
-            console.log(body)
             
             dropdownObject[field]["ValuesList"] = body
-            SetDropdownList(dropdownObject)
+            console.log("########### Drop down object structure #########")
+            console.log(dropdownObject)
+            //SetDropdownList(dropdownObject)
           })
           .catch((error) => {
             console.log("############### Error fetching from url #############")
@@ -989,6 +989,7 @@ const GeneratedCode = () => {
         
       }
     })
+    SetDropdownList(dropdownObject)
   }, [])
   
   
