@@ -85,7 +85,7 @@ var ObjectFromAPI = {
             "title": "AQL Value"
              },
              {"name": "Factory",
-            "valueListFunction": "getFactoryList",
+             "valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
              },
           ]
         },
@@ -201,6 +201,16 @@ var ObjectFromAPI = {
                 {"name": "missMajor", "title": "Major"}, 
                 {"name": "missMinor", "title": "Minor"}, 
                 ]
+            },
+            {
+              type: "dropdown",
+              componentPerRow: 1,
+              fields: [
+                {"name": "randomDropDown",
+                "valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
+                "title": "A random value"
+                 },
+              ]
             },
             {
               type: "button",
@@ -481,7 +491,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    //to restrict the items dropdown hieght
                    maxHeight: '100%',
                  }}
-                 items={screenFunctions[DropdownList.${subViewObject.fields[componentNumber].name}["ValuesListFunction"]]()}
+                 items={DropdownList["${subViewObject.fields[componentNumber].name}"].ValuesList}
                  //mapping of item array
                  //default selected item index
                  placeholder={"Select ${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"}
@@ -722,7 +732,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    //to restrict the items dropdown hieght
                    maxHeight: '100%',
                  }}
-                 items={screenFunctions[DropdownList.${fieldName}["ValuesListFunction"]]()}
+                 items={DropdownList["${ViewObject.fields[componentNumber].name}"].ValuesList}
                  //mapping of item array
                  //default selected item index
                  placeholder={"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"}
@@ -861,6 +871,9 @@ var TextInputObjectList = {}
 var DropdownInputObjectList = {}
 var RadioButtonSelectionObjectList = {}
 var HybridDataObjects = {}
+var DropdownUrlValueListMapper = {}
+
+
 
 for(var viewObj of ObjectFromAPI.viewObjects)
 {
@@ -884,7 +897,11 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       {
         for(var field of subViewObject.fields)
         {
-          DropdownInputObjectList[field.name] = {"SelectedValue": "", "ValuesListFunction": field.valueListFunction}
+          DropdownInputObjectList[field.name] = {"SelectedValue": "", 
+                                                  "ValuesListFunction": field.valueListFunction, 
+                                                  "ValuesListUrl": field.valueListUrl != null ? field.valueListUrl : "",
+                                                  "ValuesList": [{"id": "-1", "name": "no values found"}]
+                                                }
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
           //HybridDataObjects[viewObj.name][field.name] = []
         }
@@ -902,7 +919,11 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "dropdown")
   {
     for(var field of viewObj.fields)
-      DropdownInputObjectList[field.name] = {"SelectedValue": "", "ValuesListFunction": field.valueListFunction}
+      DropdownInputObjectList[field.name] = {"SelectedValue": "", 
+                                              "ValuesListFunction": field.valueListFunction != null ? field.valueListFunction : "", 
+                                              "ValuesListUrl": field.valueListUrl != null ? field.valueListUrl : "",
+                                              "ValuesList": [{"id": "-1", "name": "no values found"}]
+                                            }
   }
   if(viewObj.type == "radioButton")
   {
@@ -915,7 +936,7 @@ console.log(HybridDataObjects)
 
 let lyrics = 
 `
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
@@ -929,6 +950,50 @@ const GeneratedCode = () => {
   const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(RadioButtonSelectionObjectList)})
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
   
+
+  var dropdownObject = {...DropdownList}
+  useEffect(() => {
+    Object.keys(dropdownObject).forEach((field) => {
+      if(dropdownObject[field].ValuesListUrl != "")
+      {
+        
+        //useEffect(() => {
+          console.log("########### Requesting url ############")
+          console.log(dropdownObject[field].ValuesListUrl)
+          fetch(
+            dropdownObject[field].ValuesListUrl,
+            {
+              method: "POST",
+              //body: JSON.stringify({
+                
+              //}),
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            }
+          )
+          .then(res => res.json())
+          .then(body => {
+            console.log("########## Values List ##########")
+            console.log(body)
+            
+            dropdownObject[field]["ValuesList"] = body
+            SetDropdownList(dropdownObject)
+          })
+          .catch((error) => {
+            console.log("############### Error fetching from url #############")
+            console.log(error)
+          })
+        //}, [])
+        
+      }
+    })
+  }, [])
+  
+  
+  
+
   return (
     <ScrollView 
     contentContainerStyle={{alignItems: "center"}}
