@@ -1,6 +1,6 @@
 const fs = require('fs');
-
-
+const { Placeholders } = require("./placeholders")
+console.log(Placeholders)
 var objectFromAPI = {                                        //Object from Divyang
   "viewObjects": [
       {
@@ -175,7 +175,7 @@ var ObjectFromAPI = {
               type: "button",
               componentPerRow: 1,
               fields: [
-                {"name": "Add", "onClick": "addMainDefect"}, 
+                {"name": "Add Main defect", "onClick": "addMainDefect"}, 
                 ]
             },
           ]
@@ -533,7 +533,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             newComponentCode = `
             <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
-                style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
+                style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
                     
                     var fieldNames = [] 
