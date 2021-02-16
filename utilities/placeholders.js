@@ -2,9 +2,16 @@ const Placeholders = {
     "ApiUrls": {
         "ApiUrl1": "",
     },
-
     "CodeSnippets": {
-        "textInput1": ``
+        "TotalCriticalDefect": `
+        
+        `,
+        "TotalMajorDefect": `
+        
+        `,
+        "TotalMinorDefect": `
+        
+        `
     }
 }
 

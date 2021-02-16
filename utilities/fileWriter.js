@@ -103,8 +103,8 @@ var ObjectFromAPI = {
           componentPerRow: 2,
           textHeading: "",
           fields: [
-            {"name": "date", "type":"fromApi" , "value": "21-01-2021"},
-            {"name": "brand", "type":"fromScreen"}
+            {"name": "date", "title":"Date", "type":"fromApi" , "value": "21-01-2021"},
+            {"name": "brand", "title": "Brand", "type":"fromScreen"}
           ]
         },
 
@@ -230,6 +230,16 @@ var ObjectFromAPI = {
           fields: [
             {"name": "Passed"},
             {"name": "Failed"},]
+        },
+        {
+          type: "textField",
+          componentPerRow: 1,
+          textHeading: "",
+          fields: [
+            {"name": "TotalCriticalDefect", "title": "Total Critical Defect", "type": "fromPlaceholder"},
+            {"name": "TotalMajorDefect", "title": "Total Major Defect", "type":"fromPlaceholder"},
+            {"name": "TotalMinorDefect", "title": "Total Minor Defect", "type": "fromPlaceholder"}
+          ]
         },
         {
           type: "button",
@@ -419,23 +429,47 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           var newComponentCode  = ``
           if(subViewObject.type == "textField")
           {
+            console.log("########## Text field encountered #########")
+            console.log(subViewObject.fields[componentNumber])
             var currentTextFieldObject = subViewObject.fields[componentNumber]
             if(currentTextFieldObject.type == "fromApi")
-              newComponentCode = `
+              {
+                console.log("############# currentTextfieldObject ########")
+                console,log(currentTextFieldObject)
+                newComponentCode = `
                 <Text
                 style={{...styles.input, width: "${widthPerCompenent}"}}
                 >
-                ${currentTextFieldObject.name} : ${currentTextFieldObject.value}
+                ${currentTextFieldObject.title} : ${currentTextFieldObject.value}
                 </Text> 
-                    `
-            else
-              newComponentCode = `
+                    `}
+            else if(currentTextFieldObject.type == "fromPlaceholder")
+              {
+                console.log("############# currentTextfieldObject ########")
+                console,log(currentTextFieldObject)
+                newComponentCode = `
               <Text
               style={{...styles.input, width: "${widthPerCompenent}"}}
               >
-              ${currentTextFieldObject.name} : {FieldList["${currentTextFieldObject.name}"]}
+              ${currentTextFieldObject.title} : {(
+                () => {
+                  return "From Placeholder"
+                }
+                
+                )()}
               </Text> 
-                  `
+                  `}
+            else
+              {
+                console.log("############# currentTextfieldObject ########")
+                console,log(currentTextFieldObject)
+                newComponentCode = `
+              <Text
+              style={{...styles.input, width: "${widthPerCompenent}"}}
+              >
+              ${currentTextFieldObject.title} : {FieldList["${currentTextFieldObject.name}"]}
+              </Text> 
+                  `}
 
           }
           if(subViewObject.type == "dropdown")
@@ -666,15 +700,28 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 <Text
                 style={{...styles.input, width: "${widthPerCompenent}"}}
                 >
-                ${currentTextFieldObject.name} : ${currentTextFieldObject.value}
+                ${currentTextFieldObject.title} : ${currentTextFieldObject.value}
                 </Text> 
                     `
+            else if(currentTextFieldObject.type == "fromPlaceholder")
+            newComponentCode = `
+            <Text
+            style={{...styles.input, width: "${widthPerCompenent}"}}
+            >
+            ${currentTextFieldObject.title} : {(
+              () => {
+                return "From Placeholder"
+              }
+              
+              )()}
+            </Text> 
+                `
             else
               newComponentCode = `
               <Text
               style={{...styles.input, width: "${widthPerCompenent}"}}
               >
-              ${currentTextFieldObject.name} : {FieldList["${currentTextFieldObject.name}"]}
+              ${currentTextFieldObject.title} : {FieldList["${currentTextFieldObject.name}"]}
               </Text> 
                   `
 
@@ -899,7 +946,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         {
           DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                                   "ValuesListFunction": field.valueListFunction, 
-                                                  "ValuesListUrl": field.valueListUrl != null ? field.valueListUrl : "",
+                                                  "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : "",
                                                   "ValuesList": [{"id": "-1", "name": "no values found"}]
                                                 }
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
@@ -921,7 +968,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     for(var field of viewObj.fields)
       DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                               "ValuesListFunction": field.valueListFunction != null ? field.valueListFunction : "", 
-                                              "ValuesListUrl": field.valueListUrl != null ? field.valueListUrl : "",
+                                              "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : "",
                                               "ValuesList": [{"id": "-1", "name": "no values found"}]
                                             }
   }
