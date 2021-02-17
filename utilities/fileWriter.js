@@ -85,7 +85,7 @@ var ObjectFromAPI = {
             "title": "AQL Value"
              },
              {"name": "Factory",
-             "valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
+             //"valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
              },
           ]
         },
@@ -175,7 +175,7 @@ var ObjectFromAPI = {
               type: "button",
               componentPerRow: 1,
               fields: [
-                {"name": "Add Main defect", "onClick": "addMainDefect"}, 
+                {"name": "AddMainDefect", "title": "Add Main defect", "onClick": "addMainDefect"}, 
                 ]
             },
           ]
@@ -190,7 +190,7 @@ var ObjectFromAPI = {
               type: "textInputField",
               componentPerRow: 1,
               fields: [
-                {"name": "MiscellaneousDefect", "title": "Miscellaneous Defect", "editable": false, "default": "mera apna defect"}
+                {"name": "MiscellaneousDefect", "title": "Miscellaneous Defect",}
               ]
             },
             {
@@ -207,7 +207,7 @@ var ObjectFromAPI = {
               componentPerRow: 1,
               fields: [
                 {"name": "randomDropDown",
-                "valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
+                //"valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
                 "title": "A random value"
                  },
               ]
@@ -216,7 +216,7 @@ var ObjectFromAPI = {
               type: "button",
               componentPerRow: 1,
               fields: [
-                {"name": "Add", "onClick": "executeSomeFunction"}, 
+                {"name": "AddMissDefect", "title": "Add Miscellaneous Defect" ,"onClick": "executeSomeFunction"}, 
                 ]
             },
           ]
@@ -245,7 +245,7 @@ var ObjectFromAPI = {
           type: "button",
           componentPerRow: 1,
           fields: [
-            {"name": "Done", "onClick": "frameSentence", "args": ["FieldList", "DropdownList", "RadioButtonList"]},
+            {"name": "Done", title: "Done", "onClick": "frameSentence", "args": ["FieldList", "DropdownList", "RadioButtonList"]},
             ]
         },
       ],
@@ -302,7 +302,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   
   var newViewCode = 
   `
-   <View id="view${ViewNumber}" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view${ViewNumber}" style={{marginVertical: 10, borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
   `
   if(ViewObject.type == "hybrid")
   {
@@ -404,7 +404,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
     var newSubViewCode = 
     `
-     <View id="subview${SubViewNumber}" style={{marginVertical: 10, borderWidth: 2, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+     <View id="subview${SubViewNumber}" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
     `
 
     for(var subViewObject of ViewObject.groups)
@@ -625,9 +625,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     SetFieldList(newFieldList)
                     SetRadioButtonList(newRadioButtonList)
 
+                    ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                 }}
               >
-                <Text style={styles.textStyle}>${subViewObject.fields[componentNumber].name}</Text>
+                <Text style={styles.textStyle}>${subViewObject.fields[componentNumber].title}</Text>
       
               </TouchableOpacity>
             </View>
@@ -710,7 +711,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             >
             ${currentTextFieldObject.title} : {(
               () => {
-                return "From Placeholder"
+                ${Placeholders.CodeSnippets[currentTextFieldObject.name] != null ? Placeholders.CodeSnippets[currentTextFieldObject.name]: `return "Value to come from Placeholder"`}
+                
               }
               
               )()}
@@ -863,9 +865,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   var FieldsObjectList = [${ViewObject.fields[componentNumber].args}]
                   var newSentence = screenFunctions.${ViewObject.fields[componentNumber].onClick}(FieldsObjectList)
                   SetSentence(newSentence)
+                  ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
               }}
               >
-                <Text style={styles.textStyle}>${ViewObject.fields[componentNumber].name}</Text>
+                <Text style={styles.textStyle}>${ViewObject.fields[componentNumber].title}</Text>
       
               </TouchableOpacity>
             </View>
@@ -996,7 +999,7 @@ const GeneratedCode = () => {
   const [DropdownList, SetDropdownList] = useState(${JSON.stringify(DropdownInputObjectList)})
   const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(RadioButtonSelectionObjectList)})
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
-  
+  const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
 
   var dropdownObject = {...DropdownList}
   useEffect(() => {
