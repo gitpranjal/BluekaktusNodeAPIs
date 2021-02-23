@@ -146,6 +146,27 @@ var ObjectFromAPI = {
             {"name": "TotalCartons"}]
         },
         {
+          type: "checklist",
+          name: "checkList1",
+          title: "Check List 1",
+          columns: {
+            "columnA": {type: "textField", title: "Column A"},
+            "columnB": {type: "textInputField", title: "Enter B"}
+          },
+
+          rows: [
+            {
+              "columnA": "Value 1",
+              "columnB": ""
+            },
+            {
+              "columnA": "Value 2",
+              "columnB": ""
+            }
+          ]
+          
+        },
+        {
           type: "hybrid",
           name: "Main Defect",
           groups: [
@@ -304,6 +325,124 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   `
    <View id="view${ViewNumber}" style={{marginVertical: 10, borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
   `
+  //########################################### CHECKLIST ###################################################
+  if(ViewObject.type == "checklist")
+  {
+    var newTableCode = `
+    <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%", }}>
+    <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
+    
+      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+        <FlatList
+          id="Headings"
+          data={(() => {
+            var sampleObjectWithIdNegative1 = {}
+            for(var obj of HybridDataObjects["${ViewObject.name}"])
+            {
+              if(obj["id"] == "-1")
+                sampleObjectWithIdNegative1 = obj
+            }
+            return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
+          })() }
+          keyExtractor={(columnName) => columnName}
+          contentContainerStyle = {{flexDirection: "row"}}
+          renderItem = {({item}) => {
+            return <Text numberOfLines={10} style={{color: "white", width: 120, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item}</Text>
+          }}
+        />
+      </View>
+      <FlatList
+        id="Table content"
+        data={HybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
+        keyExtractor={(dataObject) => dataObject.id.toString()}
+        contentContainerStyle = {{borderColor: "black",}}
+        renderItem = {({item}) => {
+          var currentRowArray = []
+          var i = 0
+          for(var key of Object.keys(item))
+          {
+            currentRowArray.push({"id": i.toString(), "value": item[key], "type": key})
+            i += 1
+          }
+          return (
+            
+            <FlatList 
+              id="rowContent"
+              data={currentRowArray}
+              keyExtractor={(currentElementObject) => currentElementObject.id.toString()}
+              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
+              renderItem = {({item}) => {
+                
+                if((item["value"].toString()).split(":")[0]  == "INPUT")
+                {
+                  
+                  
+                  const InputKey = (item["value"].toString()).split(":")[2].toString()
+                  const InputType = (item["value"].toString()).split(":")[1].toString()
+
+                  if(InputType == "textInputField")
+                  {  
+                    return (
+                      <TextInput
+                      // style= {{marginLeft: 4, color: "blue"}}
+                      style={{...styles.input}}
+                      placeholder={""}
+                      placeholderTextColor={"grey"}
+                      maxLength={50}
+                      // onBlur={Keyboard.dismiss}
+                      value={FieldList[InputKey]}
+                      editable={${true}}
+                      onChangeText = {(newValue) => {
+                          var newFieldsObject = {...FieldList}
+                          newFieldsObject[InputKey] = newValue
+                          SetFieldList(newFieldsObject)
+                      }}
+                  /> 
+                    )
+                  }
+
+                }
+
+                if(item.type == "id")
+                  return (
+                    <View style={{flexDirection: "row",}}>
+                      <TouchableOpacity
+                          id="rowDeletion"
+                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 5, justifyContent: "center", marginHorizontal: 10}}
+                          onPress={() => {
+                              console.log("deletion will take place")
+                              var newHybridDataObjects = {...HybridDataObjects}
+                              newHybridDataObjects["${ViewObject.name}"] = newHybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != item.value )
+                              SetHybridDataObjects(newHybridDataObjects)
+                          }}
+                  
+                      >
+                          <Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>X</Text>
+                      </TouchableOpacity> 
+                      
+                     
+                    </View>  
+                  )
+
+                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
+              }}
+              
+            />
+           
+          )
+        }}
+      />
+    
+    </ScrollView>
+    </View>
+    `
+
+    newViewCode = `
+      ${newViewCode}
+      ${newTableCode}
+      `
+  }
+  //########################################## HYBRID ######################################################
   if(ViewObject.type == "hybrid")
   {
     var SubViewNumber = 1
@@ -672,14 +811,16 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
       SubViewNumber += 1
 
   }               // block for hybrid ends here           
+
+  // ############################################################################################
   
-    var componentsLeft = ViewObject.type != "hybrid" ? ViewObject.fields.length : 0
+    var componentsLeft = ViewObject.type != "hybrid" && ViewObject.type != "checklist" ? ViewObject.fields.length : 0
     var componentNumber = 0
-    var widthPerCompenent = ViewObject.type != "hybrid" ? (100/(ViewObject.componentPerRow)-1).toString()+"%": "0%"
+    var widthPerCompenent = ViewObject.type != "hybrid" && ViewObject.type != "checklist" ? (100/(ViewObject.componentPerRow)-1).toString()+"%": "0%"
 
     
 
-    while(componentsLeft != 0)
+    while(componentsLeft != 0)      // Wont be executed if ViewObject.type was hybrid, since components left made zero
     {
 
       var newRowCode = `
@@ -693,6 +834,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
         
           var fieldName = ViewObject.fields[componentNumber].name
           var newComponentCode  = ``
+ //############################################## TEXT FIELD #############################################
           if(ViewObject.type == "textField")
           {
             var currentTextFieldObject = ViewObject.fields[componentNumber]
@@ -728,6 +870,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   `
 
           }
+//################################################# DROPDOWN #############################################
           if(ViewObject.type == "dropdown")
           {
             newComponentCode = `
@@ -795,7 +938,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             
             `
           }
-          
+//############################################### TEXTINPUT FIELD ###########################################
           if(ViewObject.type == "textInputField")
           {
             newComponentCode = `
@@ -816,7 +959,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
          /> 
             `
           }
-
+//################################################## RADIO BUTTON ##########################################
           if(ViewObject.type == "radioButton")
           {
             newComponentCode = `
@@ -854,7 +997,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             `
             
           }
-
+// ################################################## BUTTON ################################################
           if(ViewObject.type == "button")
           {
             newComponentCode = `
@@ -875,7 +1018,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             `
             
           }
-
+// ##########################################################################################################
           newRowCode = `
           ${newRowCode}
           ${newComponentCode}
@@ -921,7 +1064,7 @@ var TextInputObjectList = {}
 var DropdownInputObjectList = {}
 var RadioButtonSelectionObjectList = {}
 var HybridDataObjects = {}
-var DropdownUrlValueListMapper = {}
+
 
 
 
@@ -960,6 +1103,39 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     }
     HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
   }              // block of hybrid ends here
+
+  if(viewObj.type == "checklist")
+  {
+    HybridDataObjects[viewObj.name.toString()] = []
+    var newFieldCollectionForHybridObject = {"id": "-1"}
+
+    for(var column of Object.keys(viewObj.columns))
+    {
+      newFieldCollectionForHybridObject[column] = (viewObj.columns[column]).title
+
+    }
+    HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
+
+    for(var i = 0; i< viewObj.rows.length; i++)
+    {
+      var newRowObject = viewObj.rows[i]
+      newRowObject["id"] = i
+      
+
+      for( var column of Object.keys(newRowObject))
+      { 
+        if(column == "id")
+          continue
+        if(viewObj["columns"][column]["type"] == "textInputField") 
+        {
+          TextInputObjectList[`${column}_id_${i}`] = ""
+          newRowObject[column] = `INPUT:${viewObj["columns"][column]["type"]}:${column}_id_${i}`
+        }
+      }
+
+      HybridDataObjects[viewObj.name].push(newRowObject)
+    }
+  }
 
   if(viewObj.type == "textInputField")
   {
