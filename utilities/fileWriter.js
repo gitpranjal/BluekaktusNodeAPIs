@@ -151,17 +151,20 @@ var ObjectFromAPI = {
           title: "Check List 1",
           columns: {
             "columnA": {type: "textField", title: "Column A"},
-            "columnB": {type: "textInputField", title: "Enter B"}
+            "columnB": {type: "textInputField", title: "Column B"},
+            "columnC": {type: "textInputField", title: "Column C"}
           },
 
           rows: [
             {
               "columnA": "Value 1",
-              "columnB": ""
+              "columnB": "",
+              "columnC": "",
             },
             {
               "columnA": "Value 2",
-              "columnB": ""
+              "columnB": "",
+              "columnC": ""
             }
           ]
           
@@ -361,6 +364,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           var i = 0
           for(var key of Object.keys(item))
           {
+            if(key == "id")
+              continue
+
             currentRowArray.push({"id": i.toString(), "value": item[key], "type": key})
             i += 1
           }
@@ -385,7 +391,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     return (
                       <TextInput
                       // style= {{marginLeft: 4, color: "blue"}}
-                      style={{...styles.input}}
+                      style={{borderBottomColor:'black', paddingHorizontal: 15, fontSize: 10, borderBottomWidth: 1, paddingVertical: 3, marginHorizontal: 15, width: 90}}
                       placeholder={""}
                       placeholderTextColor={"grey"}
                       maxLength={50}
@@ -402,27 +408,6 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   }
 
                 }
-
-                if(item.type == "id")
-                  return (
-                    <View style={{flexDirection: "row",}}>
-                      <TouchableOpacity
-                          id="rowDeletion"
-                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 5, justifyContent: "center", marginHorizontal: 10}}
-                          onPress={() => {
-                              console.log("deletion will take place")
-                              var newHybridDataObjects = {...HybridDataObjects}
-                              newHybridDataObjects["${ViewObject.name}"] = newHybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != item.value )
-                              SetHybridDataObjects(newHybridDataObjects)
-                          }}
-                  
-                      >
-                          <Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>X</Text>
-                      </TouchableOpacity> 
-                      
-                     
-                    </View>  
-                  )
 
                 return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
               }}
