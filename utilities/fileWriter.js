@@ -152,7 +152,8 @@ var ObjectFromAPI = {
           columns: {
             "columnA": {type: "textField", title: "Column A"},
             "columnB": {type: "textInputField", title: "Column B"},
-            "columnC": {type: "textInputField", title: "Column C"}
+            "columnC": {type: "textInputField", title: "Column C"},
+            "columnD": {type: "radioButton", title: "columnD"}
           },
 
           rows: [
@@ -160,11 +161,13 @@ var ObjectFromAPI = {
               "columnA": "Value 1",
               "columnB": "",
               "columnC": "",
+              "columnD": "",
             },
             {
               "columnA": "Value 2",
               "columnB": "",
-              "columnC": ""
+              "columnC": "",
+              "columnD": ""
             }
           ]
           
@@ -386,6 +389,34 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   const InputKey = (item["value"].toString()).split(":")[2].toString()
                   const InputType = (item["value"].toString()).split(":")[1].toString()
 
+                  if(InputType == "radioButton")
+                  {
+                    return (
+                      <SwitchSelector
+                                    options={ [
+                                        { label: "PASS", value: "passed" },
+                                        { label: "FAIL", value: "failed" },
+                                      ]}
+                                    initial={-1}
+                                    onPress={(value) => {
+                                      var newRadioButtonList = {...RadioButtonList}
+                                      newRadioButtonList[InputKey] = value
+                                      SetRadioButtonList(newRadioButtonList)
+                                    }}
+                                    textColor={"black"} //'#7a44cf'
+
+                                    selectedColor={"green"}
+                                    buttonColor={"red"}
+                                    borderColor={"blue"}
+                                    hasPadding
+                                    style={{width: 100, marginHorizontal: 10}}
+                                    height={25}
+                                    textStyle={{fontSize:10, fontWeight: "bold"}}
+                                    selectedTextStyle={{fontSize:10, fontWeight: "bold"}}
+                                    borderRadius={8}
+                           />
+                    )
+                  }
                   if(InputType == "textInputField")
                   {  
                     return (
@@ -1116,6 +1147,11 @@ for(var viewObj of ObjectFromAPI.viewObjects)
           TextInputObjectList[`${column}_id_${i}`] = ""
           newRowObject[column] = `INPUT:${viewObj["columns"][column]["type"]}:${column}_id_${i}`
         }
+        if(viewObj["columns"][column]["type"] == "radioButton") 
+        {
+          RadioButtonSelectionObjectList[`${column}_id_${i}`] = ""
+          newRowObject[column] = `INPUT:${viewObj["columns"][column]["type"]}:${column}_id_${i}`
+        }
       }
 
       HybridDataObjects[viewObj.name].push(newRowObject)
@@ -1152,6 +1188,7 @@ import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView} 
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
+import SwitchSelector from "react-native-switch-selector"
 
 const screenFunctions = ${ObjectFromAPI.functions}
 const GeneratedCode = () => {
