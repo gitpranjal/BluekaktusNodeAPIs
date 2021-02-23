@@ -152,6 +152,7 @@ var ObjectFromAPI = {
           columns: {
             "columnA": {type: "textField", title: "Column A"},
             "columnB": {type: "textInputField", title: "Column B"},
+            "columnZ": {type: "textField", title: "Column Z"},
             "columnC": {type: "textInputField", title: "Column C"},
             "columnD": {type: "radioButton", title: "columnD"}
           },
@@ -160,6 +161,7 @@ var ObjectFromAPI = {
             {
               "columnA": "Value 1",
               "columnB": "",
+              "columnZ": "Value Z1",
               "columnC": "",
               "columnD": "",
             },
@@ -167,7 +169,8 @@ var ObjectFromAPI = {
               "columnA": "Value 2",
               "columnB": "",
               "columnC": "",
-              "columnD": ""
+              "columnD": "",
+              "columnZ": "ValueZ2"
             }
           ]
           
@@ -1134,14 +1137,15 @@ for(var viewObj of ObjectFromAPI.viewObjects)
 
     for(var i = 0; i< viewObj.rows.length; i++)
     {
-      var newRowObject = viewObj.rows[i]
-      newRowObject["id"] = i
+      var newRowObject = {"id": i.toString()}
       
 
-      for( var column of Object.keys(newRowObject))
+      for( var column of Object.keys(viewObj.columns))
       { 
-        if(column == "id")
-          continue
+        if(viewObj["columns"][column]["type"] == "textField")
+        {
+          newRowObject[column] = viewObj["rows"][i][column]
+        }
         if(viewObj["columns"][column]["type"] == "textInputField") 
         {
           TextInputObjectList[`${column}_id_${i}`] = ""
@@ -1153,7 +1157,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
           newRowObject[column] = `INPUT:${viewObj["columns"][column]["type"]}:${column}_id_${i}`
         }
       }
-
+      
       HybridDataObjects[viewObj.name].push(newRowObject)
     }
   }
