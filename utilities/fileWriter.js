@@ -166,7 +166,7 @@ var ObjectFromAPI = {
               "columnD": "",
             },
             {
-              "columnA": "Value 2",
+              "columnA": "Value 2", 
               "columnB": "",
               "columnC": "",
               "columnD": "",
@@ -961,21 +961,24 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(ViewObject.type == "textInputField")
           {
             newComponentCode = `
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "${widthPerCompenent}"}}
-             placeholder={"${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["${ViewObject.fields[componentNumber].name}"]}
-             editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true}}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["${fieldName}"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <FloatingLabelInput
+              label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
+              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+          
+              inputStyles={{color: "grey", fontWeight: "bold"}}
+              containerStyles={{...styles.input,  width: "${widthPerCompenent}", height: 45}}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              maxLength={50}
+              value={FieldList["${ViewObject.fields[componentNumber].name}"]}
+              editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true}}
+              onChangeText = {(newValue) => {
+                  var newFieldsObject = {...FieldList}
+                  newFieldsObject["${fieldName}"] = newValue
+                  SetFieldList(newFieldsObject)
+              }}
+          />
+
             `
           }
 //################################################## RADIO BUTTON ##########################################
@@ -1193,6 +1196,7 @@ import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
+import { FloatingLabelInput } from "react-native-floating-label-input"
 
 const screenFunctions = ${ObjectFromAPI.functions}
 const GeneratedCode = () => {
@@ -1295,7 +1299,7 @@ export default GeneratedCode;
 `;
 
 // write to a new file named 2pac.txt
-fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', lyrics, (err) => {
+fs.writeFile('/Users/geuser/Desktop/HomeCenterForm/Screens/InspectionForm.js', lyrics, (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 

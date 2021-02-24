@@ -6,7 +6,7 @@ const Placeholders = {
         "DefectsSummary": {
             "totalCritical": "0",
             "totalMajor": "0",
-            "totalM,inor": "0"
+            "totalMinor": "0"
         },
     },
     "CodeSnippets": {
@@ -24,9 +24,9 @@ const Placeholders = {
         "AddMainDefect": `
                 //From Placeholder AddMainDefect key
                 var newPlaceholderStates = {...PlaceholderStates}
-                var newTotalCritical = 0
-                var newTotalMajor = 0
-                var newTotalMinor = 0
+                var newTotalCritical = newPlaceholderStates.DefectsSummary.totalCritical != null  ? parseInt(newPlaceholderStates.DefectsSummary.totalCritical) : 0
+                var newTotalMajor = newPlaceholderStates.DefectsSummary.totalMajor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMajor) : 0
+                var newTotalMinor = newPlaceholderStates.DefectsSummary.totalMinor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMinor) : 0
                 for (var MainDefectObject of HybridDataObjects["Main Defect"])
                 {
                     if(MainDefectObject.id != "-1")
@@ -43,11 +43,11 @@ const Placeholders = {
         `,
 
         "AddMissDefect": `
-                //From Placeholder AddMainDefect key
+                //From Placeholder AddMissDefect key
                 var newPlaceholderStates = {...PlaceholderStates}
-                var newTotalCritical = 0
-                var newTotalMajor = 0
-                var newTotalMinor = 0
+                var newTotalCritical = newPlaceholderStates.DefectsSummary.totalCritical != null  ? parseInt(newPlaceholderStates.DefectsSummary.totalCritical) : 0
+                var newTotalMajor = newPlaceholderStates.DefectsSummary.totalMajor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMajor) : 0
+                var newTotalMinor = newPlaceholderStates.DefectsSummary.totalMinor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMinor) : 0
                 for (var MissDefectObject of HybridDataObjects["Miss Defect"])
                 {
                     if(MissDefectObject.id != "-1")
