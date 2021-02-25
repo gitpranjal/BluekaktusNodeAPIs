@@ -961,13 +961,12 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(ViewObject.type == "textInputField")
           {
             newComponentCode = `
-            
+         <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 5}}>  
          <FloatingLabelInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
               labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
           
-              inputStyles={{color: "grey", fontWeight: "bold"}}
-              containerStyles={{...styles.input,  width: "${widthPerCompenent}", height: 45}}
+              //containerStyles={{...styles.input,  width: "${widthPerCompenent}", height: 45}}
               inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
               maxLength={50}
               value={FieldList["${ViewObject.fields[componentNumber].name}"]}
@@ -978,7 +977,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   SetFieldList(newFieldsObject)
               }}
           />
-
+          </View>
             `
           }
 //################################################## RADIO BUTTON ##########################################
@@ -1299,7 +1298,7 @@ export default GeneratedCode;
 `;
 
 // write to a new file named 2pac.txt
-fs.writeFile('/Users/geuser/Desktop/HomeCenterForm/Screens/InspectionForm.js', lyrics, (err) => {
+fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', lyrics, (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 

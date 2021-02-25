@@ -1,6 +1,7 @@
 const Placeholders = {
     "ApiUrls": {
         "ApiUrl1": "",
+        "checkList1": ""
     },
     "StateVariables": {
         "DefectsSummary": {
