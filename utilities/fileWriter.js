@@ -1,7 +1,8 @@
 const fs = require('fs');
+const fetch = require("node-fetch")
 const { Placeholders } = require("./placeholders")
 console.log(Placeholders)
-var objectFromAPI = {
+var ObjectFromAPI = {
   "viewObjects": [
       {
           "type": "textInputField",
@@ -515,7 +516,7 @@ var objectFromAPI = {
   ]
 }
 
-var ObjectFromAPI = {                                       //Sample
+var objectFromAPI = {                                       //Sample
       
       viewObjects: [
        
@@ -761,11 +762,9 @@ var ObjectFromAPI = {                                       //Sample
 
 }
 
+const codeGenerator = async (ObjectFromAPI) => {
 
-
-
-
-var mainCode = `
+  var mainCode = `
 <View id="mainSection" style={{borderWidth: 2, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
 `
 var ViewNumber = 1
@@ -1588,6 +1587,31 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     if(viewObj.rows != null)
       rowList = [].concat(viewObj.rows)
 
+      const config = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        //body: JSON.stringify(data)
+    }
+    if(Placeholders.ApiUrls[viewObj.name] != null && Placeholders.ApiUrls[viewObj.name] != "")
+    {
+      const response = await fetch(Placeholders.ApiUrls[viewObj.name], config);
+
+      if (!response.ok) {
+        const message = `An error has occured: ${response.status}`;
+        throw new Error(message);
+        }
+      
+      const newRowlist = await response.json();
+      console.log("############# new rowlist for checklist from api ##############")
+      console.log(newRowlist)
+
+      rowList = rowList.concat(newRowlist)
+    }
+    
+    console.log("######### pushing checklist objects in hybrid list ##############")
     for(var i = 0; i< rowList.length; i++)
     {
       var newRowObject = {"id": i.toString()}
@@ -1746,13 +1770,25 @@ const styles = StyleSheet.create({
 
 export default GeneratedCode;
 
-`;
+` 
 
-// write to a new file named 2pac.txt
-fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', lyrics, (err) => {
+return lyrics
+
+}
+
+codeGenerator(ObjectFromAPI)
+.then(lyrics => {
+  // write to a new file named 2pac.txt
+  fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', lyrics, (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 
     // success case, the file was saved
     console.log('Code saved!');
-});
+  });
+})
+.catch(error => {
+  console.log("####### Error in writing file  ##########")
+  console.log(error)
+})
+
