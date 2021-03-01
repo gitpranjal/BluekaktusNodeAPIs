@@ -1,78 +1,521 @@
 const fs = require('fs');
 const { Placeholders } = require("./placeholders")
 console.log(Placeholders)
-var objectFromAPI = {                                        //Object from Divyang
+var objectFromAPI = {
   "viewObjects": [
       {
           "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "AQL Level"
+                  "name": "buyername",
+                  "title": "Buyer"
               }
           ],
-          "groups": []
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "dropdown",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "aqllevel",
+                  "title": "AQL Level",
+                  "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "pono",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "pono",
+                          "title": "PO No"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 2,
+                  "fields": [
+                      {
+                          "name": "orderqty",
+                          "title": "Order Qty"
+                      },
+                      {
+                          "name": "offeredqty",
+                          "title": "Offered Qty"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "excessshortqty",
+                          "title": "Excess/Short Qty"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "powiseqty_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "powiseqty_add",
+                          "title": "Add",
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
+          "columns": [],
+          "rows": []
       },
       {
           "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "Factory Representative"
+                  "name": "factoryrepresentative",
+                  "title": "Factory Representative"
               }
           ],
-          "groups": []
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 3,
+          "fields": [
+              {
+                  "name": "prqty",
+                  "title": "PR Quantity"
+              },
+              {
+                  "name": "doneqty",
+                  "title": "Done Quantity"
+              },
+              {
+                  "name": "cutqty",
+                  "title": "Cut Quantity"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
       },
       {
           "type": "textInputField",
           "componentPerRow": 2,
           "fields": [
               {
-                  "name": "Packed Qty"
+                  "name": "packedqty",
+                  "title": "Packed Qty"
               },
               {
-                  "name": "Sample Size"
+                  "name": "samplesize",
+                  "title": "Sample Size"
               }
           ],
-          "groups": []
+          "groups": [],
+          "columns": [],
+          "rows": []
       },
       {
           "type": "textInputField",
           "componentPerRow": 2,
           "fields": [
               {
-                  "name": "Carton Sample Size"
+                  "name": "fg1qty",
+                  "title": "FG1 Qty"
               },
               {
-                  "name": "Carton Selected"
+                  "name": "fg2qty",
+                  "title": "FG2 Qty"
               }
           ],
-          "groups": []
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 2,
+          "fields": [
+              {
+                  "name": "cartonsamplesize",
+                  "title": "Carton Sample Size"
+              },
+              {
+                  "name": "cartonselected",
+                  "title": "Carton Selected"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
       },
       {
           "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "Remarks"
+                  "name": "inserttotalnoofcarton",
+                  "title": "Insert Total No Of Carton"
               }
           ],
-          "groups": []
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "radioButton",
+          "name": "partinspection",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Option1"
+              },
+              {
+                  "name": "Option2"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "radioButton",
+          "name": "reaudit",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Option1"
+              },
+              {
+                  "name": "Option2"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "checklist",
+          "name": "auditchecklist",
+          "componentPerRow": 1,
+          "fields": [
+              {}
+          ],
+          "groups": [],
+          "columns": [
+              {
+                  "name": "name",
+                  "type": "textField",
+                  "title": "Name"
+              },
+              {
+                  "name": "ok",
+                  "type": "radioButton",
+                  "title": "OK"
+              },
+              {
+                  "name": "notok",
+                  "type": "radioButton",
+                  "title": "NOT OK"
+              },
+              {
+                  "name": "na",
+                  "type": "radioButton",
+                  "title": "NA"
+              },
+              {
+                  "name": "remarks",
+                  "type": "textInputField",
+                  "title": "Remarks"
+              }
+          ],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "maindefect",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "dropdown",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "maindefect",
+                          "title": "Select Defect",
+                          "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 3,
+                  "fields": [
+                      {
+                          "name": "maindefect_crit",
+                          "title": "Critical"
+                      },
+                      {
+                          "name": "maindefect_maj",
+                          "title": "Major"
+                      },
+                      {
+                          "name": "maindefect_min",
+                          "title": "Minor"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "maindefect_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "maindefect_add",
+                          "title": "Add",
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "measurementdefect",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "measurementdefect",
+                          "title": "Write Defect Description"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 3,
+                  "fields": [
+                      {
+                          "name": "measurementdefect_crit",
+                          "title": "Critical"
+                      },
+                      {
+                          "name": "measurementdefect_maj",
+                          "title": "Major"
+                      },
+                      {
+                          "name": "measurementdefect_min",
+                          "title": "Minor"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "measurementdefect_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "measurementdefect_add",
+                          "title": "Add",
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "miscdefect",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "miscdefect",
+                          "title": "Write Defect Description"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 3,
+                  "fields": [
+                      {
+                          "name": "miscdefect_crit",
+                          "title": "Critical"
+                      },
+                      {
+                          "name": "miscdefect_maj",
+                          "title": "Major"
+                      },
+                      {
+                          "name": "miscdefect_min",
+                          "title": "Minor"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "miscdefect_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "miscdefect_add",
+                          "title": "Add",
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
+          "columns": [],
+          "rows": []
       },
       {
           "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "Result"
+                  "name": "totalcritdefect",
+                  "title": "Total Critical Defect"
               }
           ],
-          "groups": []
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "totalmajordefect",
+                  "title": "Total Major Defect"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "totalminordefect",
+                  "title": "Total Minor Defect"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "totaldefect",
+                  "title": "Total Defect"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "defectrate",
+                  "title": "Defect Rate"
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
       }
   ]
 }
 
-var ObjectFromAPI = {
+var ObjectFromAPI = {                                       //Sample
       
       viewObjects: [
        
@@ -149,13 +592,13 @@ var ObjectFromAPI = {
           type: "checklist",
           name: "checkList1",
           title: "Check List 1",
-          columns: {
-            "columnA": {type: "textField", title: "Column A"},
-            "columnB": {type: "textInputField", title: "Column B"},
-            "columnZ": {type: "textField", title: "Column Z"},
-            "columnC": {type: "textInputField", title: "Column C"},
-            "columnD": {type: "radioButton", title: "columnD"}
-          },
+          columns: [
+            {name: "columnA", type: "textField", title: "Column A"},
+            {name: "columnB", type: "textInputField", title: "Column B"},
+            {name: "columnZ", type: "textField", title: "Column Z"},
+            {name: "columnC", type: "textInputField", title: "Column C"},
+            {name: "columnD", type: "radioButton", title: "columnD"}
+          ],
 
           rows: [
             {
@@ -1129,34 +1572,42 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   {
     HybridDataObjects[viewObj.name.toString()] = []
     var newFieldCollectionForHybridObject = {"id": "-1"}
-
-    for(var column of Object.keys(viewObj.columns))
+ 
+    var columnsInfoObject = {}
+    for (var columnObject of viewObj.columns)
+      columnsInfoObject[columnObject.name] =  {"type": columnObject.type, "title": columnObject.title}
+    
+    for(var column of Object.keys(columnsInfoObject))
     {
-      newFieldCollectionForHybridObject[column] = (viewObj.columns[column]).title
+      newFieldCollectionForHybridObject[column] = (columnsInfoObject[column]).title
 
     }
     HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
+    
+    var rowList = []
+    if(viewObj.rows != null)
+      rowList = [].concat(viewObj.rows)
 
-    for(var i = 0; i< viewObj.rows.length; i++)
+    for(var i = 0; i< rowList.length; i++)
     {
       var newRowObject = {"id": i.toString()}
       
 
-      for( var column of Object.keys(viewObj.columns))
+      for( var column of Object.keys(columnsInfoObject))
       { 
-        if(viewObj["columns"][column]["type"] == "textField")
+        if(columnsInfoObject[column]["type"] == "textField")
         {
-          newRowObject[column] = viewObj["rows"][i][column]
+          newRowObject[column] = rowList[i][column]
         }
-        if(viewObj["columns"][column]["type"] == "textInputField") 
+        if(columnsInfoObject[column]["type"] == "textInputField") 
         {
           TextInputObjectList[`${column}_id_${i}`] = ""
-          newRowObject[column] = `INPUT:${viewObj["columns"][column]["type"]}:${column}_id_${i}`
+          newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
         }
-        if(viewObj["columns"][column]["type"] == "radioButton") 
+        if(columnsInfoObject[column]["type"] == "radioButton") 
         {
           RadioButtonSelectionObjectList[`${column}_id_${i}`] = ""
-          newRowObject[column] = `INPUT:${viewObj["columns"][column]["type"]}:${column}_id_${i}`
+          newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
         }
       }
       
