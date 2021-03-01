@@ -1143,21 +1143,25 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(subViewObject.type == "textInputField")
           {
             newComponentCode = `
-            <TextInput
-             // style= {{marginLeft: 4, color: "blue"}}
-             style={{...styles.input, width: "${widthPerCompenent}"}}
-             placeholder={"${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"}
-             placeholderTextColor={"grey"}
-             maxLength={50}
-             // onBlur={Keyboard.dismiss}
-             value={FieldList["${subViewObject.fields[componentNumber].name}"]}
-             editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
-             onChangeText = {(newValue) => {
-                 var newFieldsObject = {...FieldList}
-                 newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
-                 SetFieldList(newFieldsObject)
-             }}
-         /> 
+            
+         <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 5}}>  
+         <FloatingLabelInput
+              label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
+              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+          
+              //containerStyles={{...styles.input,  width: "${widthPerCompenent}", height: 45}}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              maxLength={50}
+              value={FieldList["${subViewObject.fields[componentNumber].name}"]}
+              editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
+              onChangeText = {(newValue) => {
+                var newFieldsObject = {...FieldList}
+                newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
+                SetFieldList(newFieldsObject)
+            }}
+          />
+          </View>
+
             `
           }
 
