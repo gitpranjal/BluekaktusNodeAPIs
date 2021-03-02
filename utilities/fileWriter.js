@@ -765,7 +765,7 @@ var ObjectFromAPI = {                                       //Sample
 const codeGenerator = async (ObjectFromAPI) => {
 
   var mainCode = `
-<View id="mainSection" style={{borderWidth: 2, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
+<View id="mainSection" style={{borderWidth: 0, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
 `
 var ViewNumber = 1
 for(var ViewObject of ObjectFromAPI.viewObjects)
@@ -774,7 +774,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   
   var newViewCode = 
   `
-   <View id="view${ViewNumber}" style={{marginVertical: 10, borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+   <View id="view${ViewNumber}" style={{marginVertical: 5, borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, borderColor: "grey", justifyContent: "center", alignItems: "center", borderRadius: 7}}>
   `
   //########################################### CHECKLIST ###################################################
   if(ViewObject.type == "checklist")
@@ -863,8 +863,18 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     const InputKey = item["valueObject"].variableName
                     return (
                       <ModalDropdown 
-                        options={['option 1', 'option 2']}
-                        style={{marginHorizontal: 5, padding: 7, borderWidth: 2, borderColor: "black", borderRadius: 4, marginVertical: 5, width: 110}}
+                        options={(() => {
+                          var Options = []
+                          for (var obj of DropdownList[InputKey].ValuesList)
+                          {
+                            if(obj.name != null)
+                              Options.push(obj.name)
+                            else
+                              Options.push(obj)
+                          }
+                          return Options
+                        })() }
+                        style={{marginHorizontal: 5, padding: 7, borderWidth: 2, borderColor: "grey", borderRadius: 4, marginVertical: 5, width: 110}}
                         textStyle={{color: "grey", fontWeight: "bold", fontSize: 12}}
                         dropdownTextStyle={{color: "black"}}
                         defaultValue="Select a value"
@@ -1020,7 +1030,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
     var newSubViewCode = 
     `
-     <View id="subview${SubViewNumber}" style={{marginVertical: 10, borderWidth: 0, borderColor: "green", justifyContent: "center", alignItems: "center"}}>
+     <View id="subview${SubViewNumber}" style={{marginVertical: 5, borderWidth: 0, borderColor: "grey", justifyContent: "center", alignItems: "center"}}>
     `
 
     for(var subViewObject of ViewObject.groups)
@@ -1105,10 +1115,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  }}
                  selectedItems={DropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
-                 containerStyle={{ padding: 8 ,width: "${widthPerCompenent}" ,
+                 containerStyle={{ padding: 10 ,width: "${widthPerCompenent}" ,
                  borderWidth:2,
-                 borderRadius:10,
-                 borderColor:"black",
+                 borderRadius:5,
+                 borderColor:"grey",
                  marginHorizontal: 5,
                  marginVertical:5,
                  }}
@@ -1160,12 +1170,17 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           {
             newComponentCode = `
             
-         <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
-          
-              //containerStyles={{...styles.input,  width: "${widthPerCompenent}", height: 45}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
               inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
               maxLength={50}
               value={FieldList["${subViewObject.fields[componentNumber].name}"]}
@@ -1369,12 +1384,12 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  }}
                  selectedItems={DropdownList.${fieldName}["SelectedValue"]}
                  //onItemSelect called after the selection from the dropdown
-                 containerStyle={{ padding: 8 ,width: "${widthPerCompenent}" ,
+                 containerStyle={{ padding: 10 ,width: "${widthPerCompenent}" ,
                  borderWidth:2,
-                 borderRadius:10,
-                 borderColor:"black",
+                 borderRadius:5,
+                 borderColor:"grey",
                  marginHorizontal: 5,
-                 marginVertical:5,
+                 marginVertical:2,
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -1423,12 +1438,18 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(ViewObject.type == "textInputField")
           {
             newComponentCode = `
-         <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 5}}>  
+         <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-              labelStyles={{color: "grey", fontSize: 12, fontWeight: "bold"}}
+              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
           
-              //containerStyles={{...styles.input,  width: "${widthPerCompenent}", height: 45}}
+              containerStyles={{
+                borderWidth: 2,
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: 'grey',
+                borderRadius: 5,
+              }}
               inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
               maxLength={50}
               value={FieldList["${ViewObject.fields[componentNumber].name}"]}
@@ -1576,7 +1597,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
           DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                                   "ValuesListFunction": field.valueListFunction, 
                                                   "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : "",
-                                                  "ValuesList": [{"id": "-1", "name": "no values found"}]
+                                                  "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                                 }
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
           //HybridDataObjects[viewObj.name][field.name] = []
@@ -1660,7 +1681,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
           DropdownInputObjectList[`${column}_id_${i}`] = {"SelectedValue": "", 
                                                           "ValuesListFunction": "", 
                                                           "ValuesListUrl": Placeholders.ApiUrls[`${column}_id_${i}`] != null ? Placeholders.ApiUrls[`${column}_id_${i}`] : "",
-                                                          "ValuesList": [{"id": "-1", "name": "no values found"}]
+                                                          "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                                         }
           //newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
           newRowObject[column] = {"type": `${columnsInfoObject[column]["type"]}`, "variableName": `${column}_id_${i}`}
@@ -1682,7 +1703,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                               "ValuesListFunction": field.valueListFunction != null ? field.valueListFunction : "", 
                                               "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : "",
-                                              "ValuesList": [{"id": "-1", "name": "no values found"}]
+                                              "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                             }
   }
   if(viewObj.type == "radioButton")
@@ -1775,14 +1796,14 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 2,
         paddingHorizontal: 15,
-        borderColor: "black",
-        padding: 3,
-        marginVertical: 5,
+        borderColor: "grey",
+        padding: 10,
+        marginVertical: 2,
         marginHorizontal: 5,
         color: "blue",
         fontSize: 15,
         fontWeight: "bold",
-        borderRadius: 10,
+        borderRadius: 5,
         width: "100%"
        
        
@@ -1794,7 +1815,7 @@ const styles = StyleSheet.create({
       },
       openButton: {
         backgroundColor: "blue",
-        borderRadius: 10,
+        borderRadius: 5,
         padding: 10,
         elevation: 10,
 
