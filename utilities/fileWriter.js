@@ -2,7 +2,7 @@ const fs = require('fs');
 const fetch = require("node-fetch")
 const { Placeholders } = require("./placeholders")
 console.log(Placeholders)
-var ObjectFromAPI = {
+var objectFromAPI = {
   "viewObjects": [
       {
           "type": "textInputField",
@@ -516,7 +516,7 @@ var ObjectFromAPI = {
   ]
 }
 
-var objectFromAPI = {                                       //Sample
+var ObjectFromAPI = {                                       //Sample
       
       viewObjects: [
        
@@ -595,8 +595,8 @@ var objectFromAPI = {                                       //Sample
           title: "Check List 1",
           columns: [
             {name: "columnA", type: "textField", title: "Column A"},
-            {name: "columnB", type: "textInputField", title: "Column B"},
-            {name: "columnZ", type: "textField", title: "Column Z"},
+            {name: "columnB", type: "dropdown", title: "Column B"},
+            {name: "columnZ", type: "textInputField", title: "Column Z"},
             {name: "columnC", type: "textInputField", title: "Column C"},
             {name: "columnD", type: "radioButton", title: "columnD"}
           ],
@@ -605,7 +605,7 @@ var objectFromAPI = {                                       //Sample
             {
               "columnA": "Value 1",
               "columnB": "",
-              "columnZ": "Value Z1",
+              "columnZ": "",
               "columnC": "",
               "columnD": "",
             },
@@ -614,7 +614,7 @@ var objectFromAPI = {                                       //Sample
               "columnB": "",
               "columnC": "",
               "columnD": "",
-              "columnZ": "ValueZ2"
+              "columnZ": ""
             }
           ]
           
@@ -815,7 +815,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             if(key == "id")
               continue
 
-            currentRowArray.push({"id": i.toString(), "value": item[key], "type": key})
+            currentRowArray.push({"id": i.toString(), "valueObject": item[key], "type": key})
             i += 1
           }
           return (
@@ -827,20 +827,16 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
                 
-                if((item["value"].toString()).split(":")[0]  == "INPUT")
-                {
-                  
-                  
-                  const InputKey = (item["value"].toString()).split(":")[2].toString()
-                  const InputType = (item["value"].toString()).split(":")[1].toString()
+               
 
-                  if(InputType == "radioButton")
+                  if(item["valueObject"].type == "radioButton")
                   {
+                    const InputKey = item["valueObject"].variableName
                     return (
                       <SwitchSelector
                                     options={ [
-                                        { label: "PASS", value: "passed" },
-                                        { label: "FAIL", value: "failed" },
+                                        { label: "Yes", value: "yes" },
+                                        { label: "No", value: "no" },
                                       ]}
                                     initial={-1}
                                     onPress={(value) => {
@@ -862,8 +858,29 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                            />
                     )
                   }
-                  if(InputType == "textInputField")
+                  if(item["valueObject"].type == "dropdown")
+                  {
+                    const InputKey = item["valueObject"].variableName
+                    return (
+                      <ModalDropdown 
+                        options={['option 1', 'option 2']}
+                        style={{marginHorizontal: 5, padding: 7, borderWidth: 2, borderColor: "black", borderRadius: 4, marginVertical: 5, width: 110}}
+                        textStyle={{color: "grey", fontWeight: "bold", fontSize: 12}}
+                        dropdownTextStyle={{color: "black"}}
+                        defaultValue="Select a value"
+                        onSelect={(value) => {
+                          
+                          var newDropdownList = {...DropdownList}
+                          newDropdownList[InputKey]["SelectedValue"] = value
+                          SetDropdownList(newDropdownList)
+
+                        }}
+                      />
+                    )
+                  }
+                  if(item["valueObject"].type == "textInputField")
                   {  
+                    const InputKey = item["valueObject"].variableName
                     return (
                       <TextInput
                       // style= {{marginLeft: 4, color: "blue"}}
@@ -883,9 +900,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     )
                   }
 
-                }
-
-                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
+                
+                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.valueObject.value}</Text>
               }}
               
             />
@@ -1625,17 +1641,29 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       { 
         if(columnsInfoObject[column]["type"] == "textField")
         {
-          newRowObject[column] = rowList[i][column]
+          newRowObject[column] = {"type": "textField", "value": rowList[i][column]}
         }
         if(columnsInfoObject[column]["type"] == "textInputField") 
         {
           TextInputObjectList[`${column}_id_${i}`] = ""
-          newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
+          //newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
+          newRowObject[column] = {"type": `${columnsInfoObject[column]["type"]}`, "variableName": `${column}_id_${i}`}
         }
         if(columnsInfoObject[column]["type"] == "radioButton") 
         {
           RadioButtonSelectionObjectList[`${column}_id_${i}`] = ""
-          newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
+          //newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
+          newRowObject[column] = {"type": `${columnsInfoObject[column]["type"]}`, "variableName": `${column}_id_${i}`}
+        }
+        if(columnsInfoObject[column]["type"] == "dropdown") 
+        {
+          DropdownInputObjectList[`${column}_id_${i}`] = {"SelectedValue": "", 
+                                                          "ValuesListFunction": "", 
+                                                          "ValuesListUrl": Placeholders.ApiUrls[`${column}_id_${i}`] != null ? Placeholders.ApiUrls[`${column}_id_${i}`] : "",
+                                                          "ValuesList": [{"id": "-1", "name": "no values found"}]
+                                                        }
+          //newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
+          newRowObject[column] = {"type": `${columnsInfoObject[column]["type"]}`, "variableName": `${column}_id_${i}`}
         }
       }
       
@@ -1675,6 +1703,7 @@ import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
 import { FloatingLabelInput } from "react-native-floating-label-input"
+import ModalDropdown from 'react-native-modal-dropdown'
 
 const screenFunctions = ${ObjectFromAPI.functions}
 const GeneratedCode = () => {
