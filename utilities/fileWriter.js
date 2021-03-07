@@ -1,6 +1,28 @@
 const fs = require('fs');
 const fetch = require("node-fetch")
 const { Placeholders } = require("./placeholders")
+
+
+const ColorSchemeLibrary = {
+  "blue": {
+    "primaryColor": `#4682b4`,           //darkest
+    "secondaryColor": `#b0c4de`,         //darker
+    "tertiaryColor": `#e6e6fa`           // light
+  },
+
+  "green": {
+    "primaryColor": `#008b8b`,
+    "secondaryColor": `#8fbc8f`,
+    "tertiaryColor": `#fffacd`
+  },
+
+  "grey": {
+    "primaryColor": `#696969`,
+    "secondaryColor": `#708090`,
+    "tertiaryColor": `#b0c4de`
+  }
+}
+
 console.log(Placeholders)
 var objectFromAPI = {
   "viewObjects": [
@@ -10,7 +32,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "buyername",
-                  "title": "Buyer"
+                  "title": "Buyer",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -24,6 +51,10 @@ var objectFromAPI = {
               {
                   "name": "aqllevel",
                   "title": "AQL Level",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false,
                   "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
               }
           ],
@@ -43,7 +74,12 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "pono",
-                          "title": "PO No"
+                          "title": "PO No",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -56,11 +92,21 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "orderqty",
-                          "title": "Order Qty"
+                          "title": "Order Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "offeredqty",
-                          "title": "Offered Qty"
+                          "title": "Offered Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -73,7 +119,12 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "excessshortqty",
-                          "title": "Excess/Short Qty"
+                          "title": "Excess/Short Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -88,6 +139,10 @@ var objectFromAPI = {
                       {
                           "name": "powiseqty_add",
                           "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
                           "onClick": "",
                           "args": ""
                       }
@@ -106,7 +161,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "factoryrepresentative",
-                  "title": "Factory Representative"
+                  "title": "Factory Representative",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -119,15 +179,30 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "prqty",
-                  "title": "PR Quantity"
+                  "title": "PR Quantity",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               },
               {
                   "name": "doneqty",
-                  "title": "Done Quantity"
+                  "title": "Done Quantity",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               },
               {
                   "name": "cutqty",
-                  "title": "Cut Quantity"
+                  "title": "Cut Quantity",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -140,11 +215,21 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "packedqty",
-                  "title": "Packed Qty"
+                  "title": "Packed Qty",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               },
               {
                   "name": "samplesize",
-                  "title": "Sample Size"
+                  "title": "Sample Size",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -157,11 +242,21 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "fg1qty",
-                  "title": "FG1 Qty"
+                  "title": "FG1 Qty",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               },
               {
                   "name": "fg2qty",
-                  "title": "FG2 Qty"
+                  "title": "FG2 Qty",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -174,11 +269,21 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "cartonsamplesize",
-                  "title": "Carton Sample Size"
+                  "title": "Carton Sample Size",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               },
               {
                   "name": "cartonselected",
-                  "title": "Carton Selected"
+                  "title": "Carton Selected",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -191,7 +296,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "inserttotalnoofcarton",
-                  "title": "Insert Total No Of Carton"
+                  "title": "Insert Total No Of Carton",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -204,10 +314,16 @@ var objectFromAPI = {
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "Option1"
+                  "name": "Option1",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
               },
               {
-                  "name": "Option2"
+                  "name": "Option2",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
               }
           ],
           "groups": [],
@@ -220,10 +336,16 @@ var objectFromAPI = {
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "Option1"
+                  "name": "Option1",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
               },
               {
-                  "name": "Option2"
+                  "name": "Option2",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
               }
           ],
           "groups": [],
@@ -235,34 +357,44 @@ var objectFromAPI = {
           "name": "auditchecklist",
           "componentPerRow": 1,
           "fields": [
-              {}
+              {
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
+              }
           ],
           "groups": [],
           "columns": [
               {
                   "name": "name",
                   "type": "textField",
-                  "title": "Name"
+                  "title": "Name",
+                  "dropdownValues": []
               },
               {
-                  "name": "ok",
+                  "name": "result",
                   "type": "radioButton",
-                  "title": "OK"
-              },
-              {
-                  "name": "notok",
-                  "type": "radioButton",
-                  "title": "NOT OK"
-              },
-              {
-                  "name": "na",
-                  "type": "radioButton",
-                  "title": "NA"
+                  "title": "Result",
+                  "options": [
+                      {
+                          "id": 1,
+                          "name": "Ok"
+                      },
+                      {
+                          "id": 2,
+                          "name": "Not Ok"
+                      },
+                      {
+                          "id": 3,
+                          "name": "NA"
+                      }
+                  ]
               },
               {
                   "name": "remarks",
                   "type": "textInputField",
-                  "title": "Remarks"
+                  "title": "Remarks",
+                  "dropdownValues": []
               }
           ],
           "rows": []
@@ -280,6 +412,10 @@ var objectFromAPI = {
                       {
                           "name": "maindefect",
                           "title": "Select Defect",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
                           "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
                       }
                   ],
@@ -293,15 +429,30 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "maindefect_crit",
-                          "title": "Critical"
+                          "title": "Critical",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "maindefect_maj",
-                          "title": "Major"
+                          "title": "Major",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "maindefect_min",
-                          "title": "Minor"
+                          "title": "Minor",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -316,6 +467,10 @@ var objectFromAPI = {
                       {
                           "name": "maindefect_add",
                           "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
                           "onClick": "",
                           "args": ""
                       }
@@ -340,7 +495,12 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "measurementdefect",
-                          "title": "Write Defect Description"
+                          "title": "Write Defect Description",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -353,15 +513,30 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "measurementdefect_crit",
-                          "title": "Critical"
+                          "title": "Critical",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "measurementdefect_maj",
-                          "title": "Major"
+                          "title": "Major",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "measurementdefect_min",
-                          "title": "Minor"
+                          "title": "Minor",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -376,6 +551,10 @@ var objectFromAPI = {
                       {
                           "name": "measurementdefect_add",
                           "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
                           "onClick": "",
                           "args": ""
                       }
@@ -400,7 +579,12 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "miscdefect",
-                          "title": "Write Defect Description"
+                          "title": "Write Defect Description",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -413,15 +597,30 @@ var objectFromAPI = {
                   "fields": [
                       {
                           "name": "miscdefect_crit",
-                          "title": "Critical"
+                          "title": "Critical",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "miscdefect_maj",
-                          "title": "Major"
+                          "title": "Major",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       },
                       {
                           "name": "miscdefect_min",
-                          "title": "Minor"
+                          "title": "Minor",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
                       }
                   ],
                   "groups": [],
@@ -436,6 +635,10 @@ var objectFromAPI = {
                       {
                           "name": "miscdefect_add",
                           "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
                           "onClick": "",
                           "args": ""
                       }
@@ -454,7 +657,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "totalcritdefect",
-                  "title": "Total Critical Defect"
+                  "title": "Total Critical Defect",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -467,7 +675,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "totalmajordefect",
-                  "title": "Total Major Defect"
+                  "title": "Total Major Defect",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -480,7 +693,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "totalminordefect",
-                  "title": "Total Minor Defect"
+                  "title": "Total Minor Defect",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -493,7 +711,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "totaldefect",
-                  "title": "Total Defect"
+                  "title": "Total Defect",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -506,7 +729,12 @@ var objectFromAPI = {
           "fields": [
               {
                   "name": "defectrate",
-                  "title": "Defect Rate"
+                  "title": "Defect Rate",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
@@ -517,7 +745,7 @@ var objectFromAPI = {
 }
 
 var ObjectFromAPI = {                                       //Sample
-      
+      colorScheme: "blue",
       viewObjects: [
        
         {
@@ -554,7 +782,7 @@ var ObjectFromAPI = {                                       //Sample
 
         {
           type: "textInputField",
-          componentPerRow: 2,
+          componentPerRow: 3,
           fields: [
             {"name": "orderQuantity", "title": "Order Qty",}, 
             {"name": "offeredQuantity", "title": "Offered Qty"},
@@ -571,7 +799,7 @@ var ObjectFromAPI = {                                       //Sample
         {
           type: "radioButton",
           name: "Inspection Type",
-          componentPerRow: 1,
+          componentPerRow: 3,
           fields: [
             {"name": "Part Inspection"},
             {"name": "Normal Inspection"}, 
@@ -598,7 +826,25 @@ var ObjectFromAPI = {                                       //Sample
             {name: "columnB", type: "dropdown", title: "Column B"},
             {name: "columnZ", type: "textInputField", title: "Column Z"},
             {name: "columnC", type: "textInputField", title: "Column C"},
-            {name: "columnD", type: "radioButton", title: "columnD"}
+            {
+              name: "columnD", 
+              type: "radioButton", 
+              title: "columnD",
+              "options": [
+                {
+                    "id": 1,
+                    "name": "Ok"
+                },
+                {
+                    "id": 2,
+                    "name": "Not Ok"
+                },
+                {
+                    "id": 3,
+                    "name": "NA"
+                }
+                    ]
+            }
           ],
 
           rows: [
@@ -764,6 +1010,10 @@ var ObjectFromAPI = {                                       //Sample
 
 const codeGenerator = async (ObjectFromAPI) => {
 
+  const primaryColor = ColorSchemeLibrary[ObjectFromAPI.colorScheme].primaryColor
+const secondaryColor = ColorSchemeLibrary[ObjectFromAPI.colorScheme].secondaryColor
+const tertiaryColor = ColorSchemeLibrary[ObjectFromAPI.colorScheme].tertiaryColor
+
   var mainCode = `
 <View id="mainSection" style={{borderWidth: 0, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
 `
@@ -774,16 +1024,25 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   
   var newViewCode = 
   `
-   <View id="view${ViewNumber}" style={{marginVertical: 5, borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, borderColor: "grey", justifyContent: "center", alignItems: "center", borderRadius: 7}}>
+   <View id="view${ViewNumber}" 
+    style={{marginVertical: 5, 
+            borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, 
+            borderColor: "grey", justifyContent: "center", 
+            alignItems: "center", borderRadius: 7,
+            backgroundColor: ${ViewObject.type == "radioButton" || ViewObject.type == "textInputField" || ViewObject.type == "dropdown"? `'${secondaryColor}'` : `'${tertiaryColor}'`},
+            paddingVertical: 5,
+            elevation: 50,
+
+          }}>
   `
   //########################################### CHECKLIST ###################################################
   if(ViewObject.type == "checklist")
   {
     var newTableCode = `
-    <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%", }}>
+    <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%",}}>
     <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
     
-      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+      <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "${primaryColor}",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -834,10 +1093,13 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     const InputKey = item["valueObject"].variableName
                     return (
                       <SwitchSelector
-                                    options={ [
-                                        { label: "Yes", value: "yes" },
-                                        { label: "No", value: "no" },
-                                      ]}
+                                    options={(() => {
+                                      var Options = []
+                                      for(var optionObject of item["valueObject"]["options"])
+                                        Options.push({"label": optionObject.name, "value": optionObject.name})
+                                      
+                                      return Options
+                                    })()}
                                     initial={-1}
                                     onPress={(value) => {
                                       var newRadioButtonList = {...RadioButtonList}
@@ -850,11 +1112,11 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                     buttonColor={"red"}
                                     borderColor={"blue"}
                                     hasPadding
-                                    style={{width: 100, marginHorizontal: 10}}
+                                    style={{width: 110, marginHorizontal: 10}}
                                     height={25}
                                     textStyle={{fontSize:10, fontWeight: "bold"}}
                                     selectedTextStyle={{fontSize:10, fontWeight: "bold"}}
-                                    borderRadius={8}
+                                    borderRadius={5}
                            />
                     )
                   }
@@ -938,7 +1200,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%", }}>
     <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
     
-      <View style={{flexDirection: "row", paddingVertical: 5, backgroundColor: "blue",  borderRadius: 5, justifyContent: "flex-start", alignItems: "center",}}>
+      <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "${primaryColor}",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
         <FlatList
           id="Headings"
           data={(() => {
@@ -1121,6 +1383,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  borderColor:"grey",
                  marginHorizontal: 5,
                  marginVertical:5,
+                 backgroundColor: "white"
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -1181,7 +1444,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 borderColor: 'grey',
                 borderRadius: 5,
               }}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["${subViewObject.fields[componentNumber].name}"]}
               editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
@@ -1200,7 +1463,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(subViewObject.type == "button")
           {
             newComponentCode = `
-            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
@@ -1390,6 +1653,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  borderColor:"grey",
                  marginHorizontal: 5,
                  marginVertical:2,
+                 backgroundColor: "white"
                  }}
                  //suggestion container style
                  textInputStyle={{
@@ -1450,7 +1714,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 borderColor: 'grey',
                 borderRadius: 5,
               }}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "blue"}}
+              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["${ViewObject.fields[componentNumber].name}"]}
               editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true}}
@@ -1467,8 +1731,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(ViewObject.type == "radioButton")
           {
             newComponentCode = `
-            <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
-                <Text style={{color: "blue", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.name}</Text>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
+                <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.name}</Text>
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15}}
                     textStyle={{marginHorizontal: 10, fontSize: 12, fontWeight: "bold", color: "grey"}}
@@ -1490,7 +1754,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     
                     }}
                     circleSize={10}
-                    boxStyle={{height: 45}}
+                    boxStyle={{height: 45, backgroundColor: "white"}}
                     deactiveColor="grey"
                     activeColor="green"
                     
@@ -1615,7 +1879,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
  
     var columnsInfoObject = {}
     for (var columnObject of viewObj.columns)
-      columnsInfoObject[columnObject.name] =  {"type": columnObject.type, "title": columnObject.title}
+      columnsInfoObject[columnObject.name] =  {"type": columnObject.type, "title": columnObject.title, "options": columnObject.options != null ?columnObject.options  : [{"id": "1", "name": "Yes"}, {"id": "2", "name": "No"}] }
     
     for(var column of Object.keys(columnsInfoObject))
     {
@@ -1674,7 +1938,10 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         {
           RadioButtonSelectionObjectList[`${column}_id_${i}`] = ""
           //newRowObject[column] = `INPUT:${columnsInfoObject[column]["type"]}:${column}_id_${i}`
-          newRowObject[column] = {"type": `${columnsInfoObject[column]["type"]}`, "variableName": `${column}_id_${i}`}
+          newRowObject[column] = {"type": `${columnsInfoObject[column]["type"]}`, 
+                                  "variableName": `${column}_id_${i}`, 
+                                  "options": columnsInfoObject[column]["options"]
+                                }
         }
         if(columnsInfoObject[column]["type"] == "dropdown") 
         {
@@ -1715,7 +1982,11 @@ for(var viewObj of ObjectFromAPI.viewObjects)
 console.log("############## Hybrid Objects ##########")
 console.log(HybridDataObjects)
 
-let lyrics = 
+var code = {
+  "structure": "",
+  "style": ""
+}
+code["structure"] = 
 `
 import React, { useState, useEffect} from "react";
 import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView} from "react-native";
@@ -1725,6 +1996,7 @@ import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
 import { FloatingLabelInput } from "react-native-floating-label-input"
 import ModalDropdown from 'react-native-modal-dropdown'
+import styles from "../../assets/styles"
 
 const screenFunctions = ${ObjectFromAPI.functions}
 const GeneratedCode = () => {
@@ -1792,7 +2064,8 @@ const GeneratedCode = () => {
   );
 };
 
-const styles = StyleSheet.create({
+{/*
+  const styles = StyleSheet.create({
     input: {
         borderWidth: 2,
         paddingHorizontal: 15,
@@ -1800,7 +2073,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginVertical: 2,
         marginHorizontal: 5,
-        color: "blue",
+        color: "gray",
         fontSize: 15,
         fontWeight: "bold",
         borderRadius: 5,
@@ -1814,31 +2087,74 @@ const styles = StyleSheet.create({
         textAlign: "center"
       },
       openButton: {
-        backgroundColor: "blue",
+        backgroundColor: "${secondaryColor}",
         borderRadius: 5,
         padding: 10,
         elevation: 10,
 
       }
 });
+*/}
 
 export default GeneratedCode;
 
 ` 
+code["style"] = `
 
-return lyrics
+import { StyleSheet } from "react-native"
+
+export default StyleSheet.create({
+  input: {
+    borderWidth: 2,
+    paddingHorizontal: 15,
+    borderColor: "grey",
+    padding: 10,
+    marginVertical: 2,
+    marginHorizontal: 5,
+    color: "gray",
+    fontSize: 15,
+    fontWeight: "bold",
+    borderRadius: 5,
+    width: "100%"
+   
+   
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  openButton: {
+    backgroundColor: "${secondaryColor}",
+    borderRadius: 5,
+    padding: 10,
+    elevation: 10,
+
+  }
+})
+
+`
+return code
 
 }
 
 codeGenerator(ObjectFromAPI)
-.then(lyrics => {
+.then(code => {
   // write to a new file named 2pac.txt
-  fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', lyrics, (err) => {
+  fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', code["structure"], (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 
     // success case, the file was saved
-    console.log('Code saved!');
+    console.log('Screen structure code saved!');
+  });
+
+  fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/assets/styles.js', code["style"], (err) => {
+    // throws an error, you could also catch it here
+    if (err) throw err;
+
+    // success case, the file was saved
+    console.log('Screen style code saved!');
   });
 })
 .catch(error => {
