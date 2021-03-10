@@ -1722,6 +1722,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["${fieldName}"] = newValue
                   SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
@@ -1998,7 +1999,34 @@ import { FloatingLabelInput } from "react-native-floating-label-input"
 import ModalDropdown from 'react-native-modal-dropdown'
 import styles from "../../assets/styles"
 
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 const screenFunctions = ${ObjectFromAPI.functions}
+
+const storeData = async (key, value) => {
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem(key, jsonValue)
+    console.log("######## stored key "+key+" with value #######")
+  } catch (e) {
+    // saving error
+    console.log("################ Error saving value to asysync storage ###############")
+    console.log(e)
+  }
+}
+
+const getData = async (key) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key)
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    console.log("########### Got data from async storage ############")
+    console.log(jsonValue)
+  } catch(e) {
+    console.log("################ Error getting value from asysync storage ###############")
+    console.log(e)
+  }
+}
+
 const GeneratedCode = () => {
   const [Sentence, SetSentence] = useState("")
   const [FieldList, SetFieldList] = useState(${JSON.stringify(TextInputObjectList)})
@@ -2006,6 +2034,24 @@ const GeneratedCode = () => {
   const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(RadioButtonSelectionObjectList)})
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
+
+  
+  useEffect(() => {
+
+    getData("FieldList")
+    .then((textInputFieldsObject) => {
+      console.log("############## text inputs from async storage #######")
+      console.log(textInputFieldsObject)
+      if(textInputFieldsObject != null)
+        SetFieldList(textInputFieldsObject)
+    })
+    .catch( e => {
+      console.log(e)
+    })
+    
+  }, [])
+  
+  
 
   var dropdownObject = {...DropdownList}
   useEffect(() => {
