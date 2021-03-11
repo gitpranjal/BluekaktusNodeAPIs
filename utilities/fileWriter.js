@@ -757,7 +757,7 @@ var ObjectFromAPI = {                                       //Sample
             "title": "AQL Value"
              },
              {"name": "Factory",
-             //"valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
+             "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList",
              },
           ]
         },
@@ -927,7 +927,7 @@ var ObjectFromAPI = {                                       //Sample
               componentPerRow: 1,
               fields: [
                 {"name": "randomDropDown",
-                //"valueListUrl": "http://b4a0ae7a9487.ngrok.io/api/reactScreenTool/controls/getDropdownValues",
+                "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList",
                 "title": "A random value"
                  },
               ]
@@ -1861,7 +1861,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         {
           DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                                   "ValuesListFunction": field.valueListFunction, 
-                                                  "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : "",
+                                                  "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
                                                   "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                                 }
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
@@ -1970,7 +1970,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     for(var field of viewObj.fields)
       DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                               "ValuesListFunction": field.valueListFunction != null ? field.valueListFunction : "", 
-                                              "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : "",
+                                              "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
                                               "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                             }
   }
@@ -2035,7 +2035,8 @@ const GeneratedCode = () => {
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
 
-  
+  var type = Function.prototype.call.bind( Object.prototype.toString )
+
   useEffect(() => {
 
     getData("FieldList")
@@ -2047,18 +2048,22 @@ const GeneratedCode = () => {
     })
     .catch( e => {
       console.log(e)
-    })
+    }) 
     
   }, [])
   
   
 
-  var dropdownObject = {...DropdownList}
+  
   useEffect(() => {
-    Object.keys(dropdownObject).forEach((field) => {
+    
+    
+    Object.keys(DropdownList).forEach((field) => {
+      var dropdownObject = {...DropdownList}
       if(dropdownObject[field].ValuesListUrl != "")
       {
-        
+        console.log("################# "+field+" object before calling its api ##############")
+        console.log(dropdownObject[field])
         //useEffect(() => {
           console.log("########### Requesting url ############")
           console.log(dropdownObject[field].ValuesListUrl)
@@ -2066,9 +2071,12 @@ const GeneratedCode = () => {
             dropdownObject[field].ValuesListUrl,
             {
               method: "POST",
-              //body: JSON.stringify({
-                
-              //}),
+              body: JSON.stringify({
+                "basicparams": {
+                    "companyID": 84,
+                    "userID": 13
+                }
+            }),
               headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
@@ -2077,11 +2085,49 @@ const GeneratedCode = () => {
           )
           .then(res => res.json())
           .then(body => {
+            console.log("############ Body recieved after fetching from URL "+ dropdownObject[field].ValuesListUrl)
+            console.log(body)
+
             
-            dropdownObject[field]["ValuesList"] = body
-            console.log("########### Drop down object structure #########")
-            console.log(dropdownObject)
-            //SetDropdownList(dropdownObject)
+            body = body.result
+            var modifiedList = []
+            if(body.length != 0)
+            {
+              var idKey = ""
+              var valueKey = ""
+              for(var key of Object.keys(body[0]))
+              { 
+              
+                if(key.toString().toLowerCase().includes("id"))
+                {
+                  idKey = key
+                  continue
+                }
+                if(key.toString().toLowerCase().includes("name") || key.toString().toLowerCase().includes("value"))
+                {
+                  valueKey = key
+                  continue
+                }
+              }
+              if(body[0][idKey] != null && body[0][valueKey] != null)
+              {
+                for( var obj of body)
+                {
+                  var modifiedObject = {...obj}
+                  modifiedObject["id"] = obj[idKey].toString()
+                  modifiedObject["value"] = obj[valueKey].toString()
+                  modifiedObject["name"] = obj[valueKey].toString()
+
+                  modifiedList.push(modifiedObject)
+                }
+              }
+            }
+
+            
+            dropdownObject[field]["ValuesList"] = modifiedList
+            console.log("########### "+ field.toString() +"Dropdown object after calling its API #########")
+            console.log(dropdownObject[field])
+            SetDropdownList(dropdownObject)
           })
           .catch((error) => {
             console.log("############### Error fetching from url #############")
@@ -2091,8 +2137,11 @@ const GeneratedCode = () => {
         
       }
     })
-    SetDropdownList(dropdownObject)
+    //SetDropdownList(dropdownObject)
+
+    
   }, [])
+  
   
   
   
