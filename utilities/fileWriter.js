@@ -24,727 +24,83 @@ const ColorSchemeLibrary = {
 }
 
 console.log(Placeholders)
-var objectFromAPI = {
-  "viewObjects": [
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "buyername",
-                  "title": "Buyer",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "dropdown",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "aqllevel",
-                  "title": "AQL Level",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false,
-                  "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "hybrid",
-          "name": "pono",
-          "componentPerRow": 1,
-          "fields": [],
-          "groups": [
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "pono",
-                          "title": "PO No",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 2,
-                  "fields": [
-                      {
-                          "name": "orderqty",
-                          "title": "Order Qty",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "offeredqty",
-                          "title": "Offered Qty",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "excessshortqty",
-                          "title": "Excess/Short Qty",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "button",
-                  "name": "powiseqty_add",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "powiseqty_add",
-                          "title": "Add",
-                          "size": "regular",
-                          "minLength": 0,
-                          "maxLength": 0,
-                          "required": false,
-                          "onClick": "",
-                          "args": ""
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              }
-          ],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "factoryrepresentative",
-                  "title": "Factory Representative",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 3,
-          "fields": [
-              {
-                  "name": "prqty",
-                  "title": "PR Quantity",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "name": "doneqty",
-                  "title": "Done Quantity",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "name": "cutqty",
-                  "title": "Cut Quantity",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 2,
-          "fields": [
-              {
-                  "name": "packedqty",
-                  "title": "Packed Qty",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "name": "samplesize",
-                  "title": "Sample Size",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 2,
-          "fields": [
-              {
-                  "name": "fg1qty",
-                  "title": "FG1 Qty",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "name": "fg2qty",
-                  "title": "FG2 Qty",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 2,
-          "fields": [
-              {
-                  "name": "cartonsamplesize",
-                  "title": "Carton Sample Size",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "name": "cartonselected",
-                  "title": "Carton Selected",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "inserttotalnoofcarton",
-                  "title": "Insert Total No Of Carton",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "radioButton",
-          "name": "partinspection",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "Option1",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "name": "Option2",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "radioButton",
-          "name": "reaudit",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "Option1",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "name": "Option2",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "checklist",
-          "name": "auditchecklist",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [
-              {
-                  "name": "name",
-                  "type": "textField",
-                  "title": "Name",
-                  "dropdownValues": []
-              },
-              {
-                  "name": "result",
-                  "type": "radioButton",
-                  "title": "Result",
-                  "options": [
-                      {
-                          "id": 1,
-                          "name": "Ok"
-                      },
-                      {
-                          "id": 2,
-                          "name": "Not Ok"
-                      },
-                      {
-                          "id": 3,
-                          "name": "NA"
-                      }
-                  ]
-              },
-              {
-                  "name": "remarks",
-                  "type": "textInputField",
-                  "title": "Remarks",
-                  "dropdownValues": []
-              }
-          ],
-          "rows": []
-      },
-      {
-          "type": "hybrid",
-          "name": "maindefect",
-          "componentPerRow": 1,
-          "fields": [],
-          "groups": [
-              {
-                  "type": "dropdown",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "maindefect",
-                          "title": "Select Defect",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 0,
-                          "required": false,
-                          "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 3,
-                  "fields": [
-                      {
-                          "name": "maindefect_crit",
-                          "title": "Critical",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "maindefect_maj",
-                          "title": "Major",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "maindefect_min",
-                          "title": "Minor",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "button",
-                  "name": "maindefect_add",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "maindefect_add",
-                          "title": "Add",
-                          "size": "regular",
-                          "minLength": 0,
-                          "maxLength": 0,
-                          "required": false,
-                          "onClick": "",
-                          "args": ""
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              }
-          ],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "hybrid",
-          "name": "measurementdefect",
-          "componentPerRow": 1,
-          "fields": [],
-          "groups": [
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "measurementdefect",
-                          "title": "Write Defect Description",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 3,
-                  "fields": [
-                      {
-                          "name": "measurementdefect_crit",
-                          "title": "Critical",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "measurementdefect_maj",
-                          "title": "Major",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "measurementdefect_min",
-                          "title": "Minor",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "button",
-                  "name": "measurementdefect_add",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "measurementdefect_add",
-                          "title": "Add",
-                          "size": "regular",
-                          "minLength": 0,
-                          "maxLength": 0,
-                          "required": false,
-                          "onClick": "",
-                          "args": ""
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              }
-          ],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "hybrid",
-          "name": "miscdefect",
-          "componentPerRow": 1,
-          "fields": [],
-          "groups": [
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "miscdefect",
-                          "title": "Write Defect Description",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "textInputField",
-                  "componentPerRow": 3,
-                  "fields": [
-                      {
-                          "name": "miscdefect_crit",
-                          "title": "Critical",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "miscdefect_maj",
-                          "title": "Major",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      },
-                      {
-                          "name": "miscdefect_min",
-                          "title": "Minor",
-                          "size": "small",
-                          "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              },
-              {
-                  "type": "button",
-                  "name": "miscdefect_add",
-                  "componentPerRow": 1,
-                  "fields": [
-                      {
-                          "name": "miscdefect_add",
-                          "title": "Add",
-                          "size": "regular",
-                          "minLength": 0,
-                          "maxLength": 0,
-                          "required": false,
-                          "onClick": "",
-                          "args": ""
-                      }
-                  ],
-                  "groups": [],
-                  "columns": [],
-                  "rows": []
-              }
-          ],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "totalcritdefect",
-                  "title": "Total Critical Defect",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "totalmajordefect",
-                  "title": "Total Major Defect",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "totalminordefect",
-                  "title": "Total Minor Defect",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "totaldefect",
-                  "title": "Total Defect",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "defectrate",
-                  "title": "Defect Rate",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      }
-  ]
+var ObjectFromAPI = {
+  colorScheme: "blue",
+      viewObjects: [
+       
+        {
+          type: "dropdown",
+          componentPerRow: 1,
+          fields: [
+            {"name": "AqlIndex",
+            "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList",
+            "title": "AQL Value"
+             },
+             {"name": "Factory",
+             "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList",
+             },
+          ]
+        },
+        {
+          type: "textInputField",
+          componentPerRow: 1,
+          fields: [
+            {"name": "brand", "title": "Brand"}, 
+
+            {"name": "orderNo", "title": "Order Number"}
+          ]
+        },
+        {
+          type: "textField",
+          componentPerRow: 2,
+          textHeading: "",
+          fields: [
+            {"name": "date", "title":"Date", "type":"fromApi" , "value": "21-01-2021"},
+            {"name": "brand", "title": "Brand", "type":"fromScreen"}
+          ]
+        },
+
+        {
+          type: "textInputField",
+          componentPerRow: 3,
+          fields: [
+            {"name": "orderQuantity", "title": "Order Qty",}, 
+            {"name": "offeredQuantity", "title": "Offered Qty"},
+            {"name": "excessQuantity", "title": "Excess Qty"},
+          ]
+        },
+        {
+          type: "textInputField",
+          componentPerRow: 1,
+          fields: [
+            {"name": "factoryRepresentative", "title": "Factory Representative",}
+          ]
+        },
+        {
+          type: "radioButton",
+          name: "Inspection Type",
+          componentPerRow: 3,
+          fields: [
+            {"name": "Part Inspection"},
+            {"name": "Normal Inspection"}, 
+            {"name": "Sub Inspection"}
+          ]
+        },
+        
+        {
+          type: "textInputField",
+          componentPerRow: 2,
+          fields: [
+            {"name": "packedQty", "title": "Packed Quantity"}, 
+            {"name": "sampleSize"}, 
+            {"name": "cartonSampleSize"}, 
+            {"name": "CartonSelected"}, 
+            {"name": "TotalCartons"}]
+        },
+      ]
 }
 
-var ObjectFromAPI = {                                       //Sample
+var objectFromAPI = {                                       //Sample
       colorScheme: "blue",
       viewObjects: [
        
@@ -1436,7 +792,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
          <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
-              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              labelStyles={{color: "red", fontSize: 10, fontWeight: "bold"}}
               containerStyles={{
                 borderWidth: 2,
                 padding: 10,
@@ -1643,9 +999,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    console.log("#### New dropdown list ######")
                    console.log(newDropdownList)
                    SetDropdownList(newDropdownList)
-                   
+                   storeData("DropdownList", newDropdownList)
                  }}
                  selectedItems={DropdownList.${fieldName}["SelectedValue"]}
+
                  //onItemSelect called after the selection from the dropdown
                  containerStyle={{ padding: 10 ,width: "${widthPerCompenent}" ,
                  borderWidth:2,
@@ -1687,7 +1044,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  items={DropdownList["${ViewObject.fields[componentNumber].name}"].ValuesList}
                  //mapping of item array
                  //default selected item index
-                 placeholder={"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"}
+                 //"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
+                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].name}: " + DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue.name }
                  placeholderTextColor="#00334e80"
                  //place holder for the search input
                  resetValue={false}
@@ -1705,7 +1063,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
          <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-              labelStyles={{color: "grey", fontSize: 10, fontWeight: "bold"}}
+              labelStyles={{color: "red", fontSize: 10, fontWeight: "bold"}}
           
               containerStyles={{
                 borderWidth: 2,
@@ -1752,8 +1110,23 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     var newRadioButtonList = {...RadioButtonList}
                     newRadioButtonList["${ViewObject.name}"] = SelectedOutcome.label
                     SetRadioButtonList(newRadioButtonList)
+                    storeData("RadioButtonList", newRadioButtonList)
                     
                     }}
+                    initial={(() => {
+                      
+                      var index = 1
+                      for (var labelObject of ${JSON.stringify(ViewObject.fields)})
+                      {
+                          if(RadioButtonList["${ViewObject.name}"] == labelObject.name)
+                            return index
+
+                          index = index + 1
+                      }
+                      
+                      return -1
+
+                  })()}
                     circleSize={10}
                     boxStyle={{height: 45, backgroundColor: "white"}}
                     deactiveColor="grey"
@@ -2007,7 +1380,7 @@ const storeData = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem(key, jsonValue)
-    console.log("######## stored key "+key+" with value #######")
+    //console.log("######## stored key "+key+" with value #######")
   } catch (e) {
     // saving error
     console.log("################ Error saving value to asysync storage ###############")
@@ -2019,8 +1392,8 @@ const getData = async (key) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key)
     return jsonValue != null ? JSON.parse(jsonValue) : null;
-    console.log("########### Got data from async storage ############")
-    console.log(jsonValue)
+    //console.log("########### Got data from async storage ############")
+    //console.log(jsonValue)
   } catch(e) {
     console.log("################ Error getting value from asysync storage ###############")
     console.log(e)
@@ -2049,98 +1422,130 @@ const GeneratedCode = () => {
     .catch( e => {
       console.log(e)
     }) 
+
+    getData("DropdownList")
+    .then((DropdownListObject) => {
+      console.log("############## dropdown object from async storage #######")
+      console.log(DropdownListObject)
+      if(DropdownListObject != null)
+      {
+        console.log("########## setting the drop down object to async storage object ############")
+        SetDropdownList(DropdownListObject)
+      }
+      else
+      {
+        Object.keys(DropdownList).forEach((field) => {
+          var dropdownObject = {...DropdownList}
+          if(dropdownObject[field].ValuesListUrl != "")
+          {
+            console.log("################# "+field+" object before calling its api ##############")
+            console.log(dropdownObject[field])
+    
+              console.log("########### Requesting url ############")
+              console.log(dropdownObject[field].ValuesListUrl)
+              fetch(
+                dropdownObject[field].ValuesListUrl,
+                {
+                  method: "POST",
+                  body: JSON.stringify({
+                    "basicparams": {
+                        "companyID": 84,
+                        "userID": 13
+                    }
+                }),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                  },
+                }
+              )
+              .then(res => res.json())
+              .then(body => {
+                console.log("############ Body recieved after fetching from URL "+ dropdownObject[field].ValuesListUrl)
+                console.log(body)
+    
+                
+                body = body.result
+                var modifiedList = []
+                if(body.length != 0)
+                {
+                  var idKey = ""
+                  var valueKey = ""
+                  for(var key of Object.keys(body[0]))
+                  { 
+                  
+                    if(key.toString().toLowerCase().includes("id"))
+                    {
+                      idKey = key
+                      continue
+                    }
+                    if(key.toString().toLowerCase().includes("name") || key.toString().toLowerCase().includes("value"))
+                    {
+                      valueKey = key
+                      continue
+                    }
+                  }
+                  if(body[0][idKey] != null && body[0][valueKey] != null)
+                  {
+                    for( var obj of body)
+                    {
+                      var modifiedObject = {...obj}
+                      modifiedObject["id"] = obj[idKey].toString()
+                      modifiedObject["value"] = obj[valueKey].toString()
+                      modifiedObject["name"] = obj[valueKey].toString()
+    
+                      modifiedList.push(modifiedObject)
+                    }
+                  }
+                }
+    
+                
+                
+                dropdownObject[field]["ValuesList"] = modifiedList
+                console.log("########### "+ field.toString() +"Dropdown object after calling its API #########")
+                //console.log(dropdownObject[field])
+                console.log(DropdownList[field])
+                //SetDropdownList(dropdownObject)
+                //storeData("DropdownList", dropdownObject)
+              })
+              .catch((error) => {
+                console.log("############### Error fetching from url #############")
+                console.log(error)
+              })
+           
+            
+          }
+        })
+      }
+    })
+    .catch( e => {
+      console.log(e)
+    }) 
+
+    getData("RadioButtonList")
+    .then((RadioButtonListObject) => {
+      console.log("############## RadioButtonListObject from async storage #######")
+      console.log(RadioButtonListObject)
+      if(RadioButtonListObject != null)
+        SetRadioButtonList(RadioButtonListObject)
+    })
+    .catch( e => {
+      console.log(e)
+    }) 
     
   }, [])
   
   
 
   
-  useEffect(() => {
+  //useEffect(() => {
     
     
-    Object.keys(DropdownList).forEach((field) => {
-      var dropdownObject = {...DropdownList}
-      if(dropdownObject[field].ValuesListUrl != "")
-      {
-        console.log("################# "+field+" object before calling its api ##############")
-        console.log(dropdownObject[field])
-        //useEffect(() => {
-          console.log("########### Requesting url ############")
-          console.log(dropdownObject[field].ValuesListUrl)
-          fetch(
-            dropdownObject[field].ValuesListUrl,
-            {
-              method: "POST",
-              body: JSON.stringify({
-                "basicparams": {
-                    "companyID": 84,
-                    "userID": 13
-                }
-            }),
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-            }
-          )
-          .then(res => res.json())
-          .then(body => {
-            console.log("############ Body recieved after fetching from URL "+ dropdownObject[field].ValuesListUrl)
-            console.log(body)
-
-            
-            body = body.result
-            var modifiedList = []
-            if(body.length != 0)
-            {
-              var idKey = ""
-              var valueKey = ""
-              for(var key of Object.keys(body[0]))
-              { 
-              
-                if(key.toString().toLowerCase().includes("id"))
-                {
-                  idKey = key
-                  continue
-                }
-                if(key.toString().toLowerCase().includes("name") || key.toString().toLowerCase().includes("value"))
-                {
-                  valueKey = key
-                  continue
-                }
-              }
-              if(body[0][idKey] != null && body[0][valueKey] != null)
-              {
-                for( var obj of body)
-                {
-                  var modifiedObject = {...obj}
-                  modifiedObject["id"] = obj[idKey].toString()
-                  modifiedObject["value"] = obj[valueKey].toString()
-                  modifiedObject["name"] = obj[valueKey].toString()
-
-                  modifiedList.push(modifiedObject)
-                }
-              }
-            }
-
-            
-            dropdownObject[field]["ValuesList"] = modifiedList
-            console.log("########### "+ field.toString() +"Dropdown object after calling its API #########")
-            console.log(dropdownObject[field])
-            SetDropdownList(dropdownObject)
-          })
-          .catch((error) => {
-            console.log("############### Error fetching from url #############")
-            console.log(error)
-          })
-        //}, [])
-        
-      }
-    })
+    
     //SetDropdownList(dropdownObject)
 
     
-  }, [])
+  //}, [])
   
   
   
