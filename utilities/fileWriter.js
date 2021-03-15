@@ -366,6 +366,7 @@ var objectFromAPI = {                                       //Sample
 
 const codeGenerator = async (ObjectFromAPI) => {
 
+  var ColorScheme = ObjectFromAPI.colorScheme != null ? ObjectFromAPI.colorScheme : "blue"
   const primaryColor = ColorSchemeLibrary[ObjectFromAPI.colorScheme].primaryColor
 const secondaryColor = ColorSchemeLibrary[ObjectFromAPI.colorScheme].secondaryColor
 const tertiaryColor = ColorSchemeLibrary[ObjectFromAPI.colorScheme].tertiaryColor
@@ -1505,7 +1506,7 @@ const GeneratedCode = () => {
                 console.log("########### "+ field.toString() +"Dropdown object after calling its API #########")
                 //console.log(dropdownObject[field])
                 console.log(DropdownList[field])
-                //SetDropdownList(dropdownObject)
+                SetDropdownList(dropdownObject)
                 //storeData("DropdownList", dropdownObject)
               })
               .catch((error) => {
