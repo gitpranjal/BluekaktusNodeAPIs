@@ -1041,6 +1041,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   if(ViewObject.type == "checklist")
   {
     var newTableCode = `
+    {/* ############################################## CHECKLIST ${ViewObject.name} START ######################################################################## */}
+
     <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%",}}>
     <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
     
@@ -1186,6 +1188,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     
     </ScrollView>
     </View>
+      {/* #################################################### CHECKLIST END ######################################################### */}
     `
 
     newViewCode = `
@@ -1199,6 +1202,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     var SubViewNumber = 1
     
     var newTableCode = `
+  {/* ######################################## HYBRID ${ViewObject.name} ################################################################### */}
+
     <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%", }}>
     <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
     
@@ -1374,6 +1379,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  onItemSelect={selectedObject => { 
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"] = selectedObject
+                   ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                    console.log("#### New dropdown list ######")
                    console.log(newDropdownList)
                    SetDropdownList(newDropdownList)
@@ -1455,6 +1461,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               onChangeText = {(newValue) => {
                 var newFieldsObject = {...FieldList}
                 newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
+                ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                 SetFieldList(newFieldsObject)
             }}
           />
@@ -1570,6 +1577,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
       ${newViewCode}
       ${newSubViewCode}
       ${newTableCode}
+
+  {/* ######################################## HYBRID block for ${ViewObject.name} ends ##################################################################### */}
       `
       
       SubViewNumber += 1
@@ -1604,6 +1613,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             var currentTextFieldObject = ViewObject.fields[componentNumber]
             if(currentTextFieldObject.type == "fromApi")
               newComponentCode = `
+                {/* ######################################### TEXT FIELD ${fieldName} ########################################################## */}
                 <Text
                 style={{...styles.input, width: "${widthPerCompenent}"}}
                 >
@@ -1631,6 +1641,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               >
               ${currentTextFieldObject.title} : {FieldList["${currentTextFieldObject.name}"]}
               </Text> 
+
+            {/* ######################################### TEXT FIELD BLOC OF ${fieldName} ends ############################################## */}
                   `
 
           }
@@ -1638,13 +1650,15 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(ViewObject.type == "dropdown")
           {
             newComponentCode = `
-  
+          {/* ################################################ DROPDOWN ${fieldName} #################################################### */}
             <SearchableDropdown
                //On text change listner on the searchable input
                  onTextChange={(text) => console.log(text)}
                  onItemSelect={selectedObject => { 
+                   
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${fieldName}["SelectedValue"] = selectedObject
+                   ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                    console.log("#### New dropdown list ######")
                    console.log(newDropdownList)
                    SetDropdownList(newDropdownList)
@@ -1702,13 +1716,15 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  underlineColorAndroid="transparent"
                  //To remove the underline from the android input
              />
-            
+                {/* ################################################ DROPDOWN ${fieldName} ends #################################################### */}
             `
           }
 //############################################### TEXTINPUT FIELD ###########################################
           if(ViewObject.type == "textInputField")
           {
             newComponentCode = `
+
+          {/* ############################################ TEXTINPUT FIELD ${ViewObject.fields[componentNumber].name} ###################################################### */}
          <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
@@ -1726,19 +1742,23 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               value={FieldList["${ViewObject.fields[componentNumber].name}"]}
               editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true}}
               onChangeText = {(newValue) => {
+                  
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["${fieldName}"] = newValue
+                  ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                   SetFieldList(newFieldsObject)
                   storeData("FieldList", newFieldsObject)
               }}
           />
           </View>
+            {/* ############################################ TEXTINPUT FIELD ${ViewObject.fields[componentNumber].name} ends ###################################################### */}
             `
           }
 //################################################## RADIO BUTTON ##########################################
           if(ViewObject.type == "radioButton")
           {
             newComponentCode = `
+          {/* ################################################## RADIO BUTTON ${ViewObject.name} ########################################## */}
             <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
                 <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.name}</Text>
                 <RadioButtonRN
@@ -1758,6 +1778,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     
                     var newRadioButtonList = {...RadioButtonList}
                     newRadioButtonList["${ViewObject.name}"] = SelectedOutcome.label
+                    ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                     SetRadioButtonList(newRadioButtonList)
                     storeData("RadioButtonList", newRadioButtonList)
                     
@@ -1785,6 +1806,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
                 />   
             </View>
+                {/* ################################################## RADIO BUTTON ${ViewObject.name} ends ########################################## */}
             `
             
           }
@@ -1792,6 +1814,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(ViewObject.type == "button")
           {
             newComponentCode = `
+          {/* ################################################## BUTTON ${ViewObject.fields[componentNumber].name} ################################################ */}
             <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
@@ -1804,6 +1827,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
       
               </TouchableOpacity>
             </View>
+            {/* ################################################## BUTTON ${ViewObject.fields[componentNumber].name} ends ################################################ */}
             `
             
           }
