@@ -25,6 +25,7 @@ const ColorSchemeLibrary = {
 
 console.log(Placeholders)
 var ObjectFromAPI = {
+  colorScheme: "blue",
   "viewObjects": [
       {
           "type": "textInputField",
@@ -59,6 +60,99 @@ var ObjectFromAPI = {
               }
           ],
           "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "pono",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "pono",
+                          "title": "PO No",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 2,
+                  "fields": [
+                      {
+                          "name": "orderqty",
+                          "title": "Order Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      },
+                      {
+                          "name": "offeredqty",
+                          "title": "Offered Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "excessshortqty",
+                          "title": "Excess/Short Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "powiseqty_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "powiseqty_add",
+                          "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
           "columns": [],
           "rows": []
       },
@@ -144,17 +238,115 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "dropdown",
+          "type": "textInputField",
+          "componentPerRow": 2,
+          "fields": [
+              {
+                  "name": "fg1qty",
+                  "title": "FG1 Qty",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              },
+              {
+                  "name": "fg2qty",
+                  "title": "FG2 Qty",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 2,
+          "fields": [
+              {
+                  "name": "cartonsamplesize",
+                  "title": "Carton Sample Size",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              },
+              {
+                  "name": "cartonselected",
+                  "title": "Carton Selected",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "productionstatus",
-                  "title": "Production Status",
+                  "name": "inserttotalnoofcarton",
+                  "title": "Insert Total No Of Carton",
                   "size": "small",
                   "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "radioButton",
+          "name": "partinspection",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Option1",
+                  "minLength": 0,
                   "maxLength": 0,
-                  "required": false,
-                  "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList"
+                  "required": false
+              },
+              {
+                  "name": "Option2",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "radioButton",
+          "name": "reaudit",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "Option1",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
+              },
+              {
+                  "name": "Option2",
+                  "minLength": 0,
+                  "maxLength": 0,
+                  "required": false
               }
           ],
           "groups": [],
@@ -163,7 +355,7 @@ var ObjectFromAPI = {
       },
       {
           "type": "checklist",
-          "name": "millfabricchecklist",
+          "name": "auditchecklist",
           "componentPerRow": 1,
           "fields": [
               {
@@ -201,7 +393,7 @@ var ObjectFromAPI = {
               },
               {
                   "name": "remarks",
-                  "type": "dropdown",
+                  "type": "textInputField",
                   "title": "Remarks",
                   "options": []
               }
@@ -215,17 +407,17 @@ var ObjectFromAPI = {
           "fields": [],
           "groups": [
               {
-                  "type": "textInputField",
+                  "type": "dropdown",
                   "componentPerRow": 1,
                   "fields": [
                       {
                           "name": "maindefect",
-                          "title": "Main Defect",
+                          "title": "Select Defect",
                           "size": "small",
                           "minLength": 0,
-                          "maxLength": 100,
-                          "defaultValue": "",
-                          "required": false
+                          "maxLength": 0,
+                          "required": false,
+                          "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList"
                       }
                   ],
                   "groups": [],
@@ -304,7 +496,7 @@ var ObjectFromAPI = {
                   "fields": [
                       {
                           "name": "measurementdefect",
-                          "title": "Measurements",
+                          "title": "Write Defect Description",
                           "size": "small",
                           "minLength": 0,
                           "maxLength": 100,
@@ -388,7 +580,7 @@ var ObjectFromAPI = {
                   "fields": [
                       {
                           "name": "miscdefect",
-                          "title": "Miscellaneous",
+                          "title": "Write Defect Description",
                           "size": "small",
                           "minLength": 0,
                           "maxLength": 100,
@@ -502,7 +694,7 @@ var ObjectFromAPI = {
           "fields": [
               {
                   "name": "totalminordefect",
-                  "title": "Minor",
+                  "title": "Total Minor Defect",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
@@ -552,7 +744,6 @@ var ObjectFromAPI = {
       }
   ]
 }
-
 
 var objectFromAPI = {                                       //Sample
       colorScheme: "blue",
@@ -1605,9 +1796,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
-                  var FieldsObjectList = [${ViewObject.fields[componentNumber].args}]
-                  var newSentence = screenFunctions.${ViewObject.fields[componentNumber].onClick}(FieldsObjectList)
-                  SetSentence(newSentence)
+                  
                   ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
               }}
               >
