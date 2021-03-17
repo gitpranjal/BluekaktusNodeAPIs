@@ -849,20 +849,7 @@ var objectFromAPI = {                                       //Sample
           ],
 
           rows: [
-            {
-              "columnA": "Value 1",
-              "columnB": "",
-              "columnZ": "",
-              "columnC": "",
-              "columnD": "",
-            },
-            {
-              "columnA": "Value 2", 
-              "columnB": "",
-              "columnC": "",
-              "columnD": "",
-              "columnZ": ""
-            }
+            
           ]
           
         },
@@ -1051,7 +1038,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           id="Headings"
           data={(() => {
             var sampleObjectWithIdNegative1 = {}
-            for(var obj of HybridDataObjects["${ViewObject.name}"])
+            for(var obj of ChecklistDataObjects["${ViewObject.name}"])
             {
               if(obj["id"] == "-1")
                 sampleObjectWithIdNegative1 = obj
@@ -1067,7 +1054,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
       </View>
       <FlatList
         id="Table content"
-        data={HybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
+        data={ChecklistDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
         keyExtractor={(dataObject) => dataObject.id.toString()}
         contentContainerStyle = {{borderColor: "black",}}
         renderItem = {({item}) => {
@@ -1877,6 +1864,7 @@ var TextInputObjectList = {}
 var DropdownInputObjectList = {}
 var RadioButtonSelectionObjectList = {}
 var HybridDataObjects = {}
+var ChecklistDataObjects = {}
 
 
 
@@ -1919,8 +1907,8 @@ for(var viewObj of ObjectFromAPI.viewObjects)
 
   if(viewObj.type == "checklist")
   {
-    HybridDataObjects[viewObj.name.toString()] = []
-    var newFieldCollectionForHybridObject = {"id": "-1"}
+    ChecklistDataObjects[viewObj.name.toString()] = []
+    var newFieldCollectionForChecklistObject = {"id": "-1"}
  
     var columnsInfoObject = {}
     for (var columnObject of viewObj.columns)
@@ -1928,10 +1916,10 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     
     for(var column of Object.keys(columnsInfoObject))
     {
-      newFieldCollectionForHybridObject[column] = (columnsInfoObject[column]).title
+      newFieldCollectionForChecklistObject[column] = (columnsInfoObject[column]).title
 
     }
-    HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
+    ChecklistDataObjects[viewObj.name].push(newFieldCollectionForChecklistObject)
     
     var rowList = []
     if(viewObj.rows != null)
@@ -1961,7 +1949,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       rowList = rowList.concat(newRowlist)
     }
     
-    console.log("######### pushing checklist objects in hybrid list ##############")
+    console.log("######### pushing checklist objects in checklist list ##############")
     for(var i = 0; i< rowList.length; i++)
     {
       var newRowObject = {"id": i.toString()}
@@ -2000,7 +1988,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         }
       }
       
-      HybridDataObjects[viewObj.name].push(newRowObject)
+      ChecklistDataObjects[viewObj.name].push(newRowObject)
     }
   }
 
@@ -2077,6 +2065,7 @@ const GeneratedCode = () => {
   const [DropdownList, SetDropdownList] = useState(${JSON.stringify(DropdownInputObjectList)})
   const [RadioButtonList, SetRadioButtonList] = useState(${JSON.stringify(RadioButtonSelectionObjectList)})
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
+  const [ChecklistDataObjects, SetChecklistDataObjects] = useState(${JSON.stringify(ChecklistDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
 
   var type = Function.prototype.call.bind( Object.prototype.toString )

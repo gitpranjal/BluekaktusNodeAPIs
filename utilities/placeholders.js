@@ -1,7 +1,7 @@
 const Placeholders = {
     "ApiUrls": {
         //"ApiUrl1": "",
-        //"auditchecklist": "http://5d4b522213c4.ngrok.io/api/reactScreenTool/controls/getAuditChecklistValues"
+        "auditchecklist": "http://ca63d96353b2.ngrok.io/api/reactScreenTool/controls/getAuditChecklistValues"
     },
     "StateVariables": {
         "DefectsSummary": {
