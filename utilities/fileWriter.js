@@ -1045,10 +1045,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             }
             return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
           })() }
-          keyExtractor={(columnName) => columnName}
+          keyExtractor={(columnNameObject) => columnNameObject.title}
           contentContainerStyle = {{flexDirection: "row"}}
           renderItem = {({item}) => {
-            return <Text numberOfLines={10} style={{color: "white", width: 120, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item}</Text>
+            return <Text numberOfLines={10} style={{color: "white", width: 120, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item.title}</Text>
           }}
         />
       </View>
@@ -1916,12 +1916,14 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     
     for(var column of Object.keys(columnsInfoObject))
     {
-      newFieldCollectionForChecklistObject[column] = (columnsInfoObject[column]).title
+      newFieldCollectionForChecklistObject[column] = columnsInfoObject[column]
 
     }
     ChecklistDataObjects[viewObj.name].push(newFieldCollectionForChecklistObject)
     
-    var rowList = []
+    {/*
+      
+      var rowList = []
     if(viewObj.rows != null)
       rowList = [].concat(viewObj.rows)
 
@@ -1990,7 +1992,11 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       
       ChecklistDataObjects[viewObj.name].push(newRowObject)
     }
+
+    */}
   }
+  
+
 
   if(viewObj.type == "textInputField")
   {
@@ -2209,14 +2215,15 @@ const GeneratedCode = () => {
   
 
   
-  //useEffect(() => {
+  useEffect(() => {
     
     
     
-    //SetDropdownList(dropdownObject)
+    console.log("########### Checklist Object reaching screen ############")
+    console.log(ChecklistDataObjects)
 
     
-  //}, [])
+  }, [])
   
   
   
