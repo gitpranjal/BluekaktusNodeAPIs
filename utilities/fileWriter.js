@@ -1072,7 +1072,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             if(key == "id")
               continue
 
-            currentRowArray.push({"id": i.toString(), "valueObject": item[key], "type": key})      ;{/* type ~ columnName */}
+            currentRowArray.push({"id": i.toString(), "valueObject": item[key], "type": key, "rowId": item.id})      ;{/* type ~ columnName */}
             i += 1
           }
           return (
@@ -1099,8 +1099,19 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                       return Options
                                     })()}
                                     initial={-1}
-                                    onPress={(value) => {
+                                    onPress={(newValue) => {
                                       
+                                      var newChecklistDataObjects = {...ChecklistDataObjects}
+                                      for(var i = 0; i<newChecklistDataObjects["${ViewObject.name}"].length; i++ )
+                                      {
+                                        if(newChecklistDataObjects["${ViewObject.name}"][i].id == item.rowId)
+                                        {
+                                          newChecklistDataObjects["${ViewObject.name}"][i][item.type]["value"] = newValue
+                                          break
+                                        }
+                                      }
+                                      
+                                      SetChecklistDataObjects(newChecklistDataObjects)
                                     }}
                                     textColor={"black"} //'#7a44cf'
 
@@ -1136,9 +1147,22 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                         textStyle={{color: "grey", fontWeight: "bold", fontSize: 12}}
                         dropdownTextStyle={{color: "black"}}
                         defaultValue="Select a value"
-                        onSelect={(value) => {
+                        onSelect={(selectedIndex) => {
                           
-                          
+                          var newChecklistDataObjects = {...ChecklistDataObjects}
+                          for(var i = 0; i<newChecklistDataObjects["${ViewObject.name}"].length; i++ )
+                          {
+                            if(newChecklistDataObjects["${ViewObject.name}"][i].id == item.rowId)
+                            {
+                              newChecklistDataObjects["${ViewObject.name}"][i][item.type]["SelectedValue"] = newChecklistDataObjects["${ViewObject.name}"][i][item.type]["ValuesList"][selectedIndex].name
+                              break
+                            }
+                          }
+                         
+                        SetChecklistDataObjects(newChecklistDataObjects)
+
+                        console.log("#################### current checklist object modified to ####################")
+                        console.log(newChecklistDataObjects["${ViewObject.name}"])
 
                         }}
                       />
@@ -1155,10 +1179,21 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       placeholderTextColor={"grey"}
                       maxLength={50}
                       // onBlur={Keyboard.dismiss}
-                      value={FieldList[InputKey]}
+                      value={ChecklistDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id == item.rowId)[0][item.type]["value"]}    //item.type means the column(name)
                       editable={${true}}
                       onChangeText = {(newValue) => {
-                          
+                        
+                        var newChecklistDataObjects = {...ChecklistDataObjects}
+                        for(var i = 0; i<newChecklistDataObjects["${ViewObject.name}"].length; i++ )
+                        {
+                          if(newChecklistDataObjects["${ViewObject.name}"][i].id == item.rowId)
+                          {
+                            newChecklistDataObjects["${ViewObject.name}"][i][item.type]["value"] = newValue
+                            break
+                          }
+                        }
+                         
+                        SetChecklistDataObjects(newChecklistDataObjects)
                       }}
                   /> 
                     )
@@ -2288,6 +2323,7 @@ const GeneratedCode = () => {
                 newRowObject[column] = {
                   type: ChecklistStructureInfoObject[column]["type"],
                   variableName: column + "_" + i,
+                  value: ""
                 };
               }
               if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
@@ -2295,6 +2331,7 @@ const GeneratedCode = () => {
                   type: ChecklistStructureInfoObject[column]["type"],
                   variableName: column + "_" + i,
                   options: ChecklistStructureInfoObject[column]["options"],
+                  value: ""
                 };
               }
               if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
@@ -2325,6 +2362,8 @@ const GeneratedCode = () => {
     
     Promise.all(tasks).then(() => {
         SetChecklistDataObjects(newChecklistDataObjects)
+        console.log("##################### newChecklistDataObjects ################")
+        console.log(newChecklistDataObjects)
       }).catch(e => {
         console.log("############## Error in fetching from APIs and adding rows to checklist #############")
         console.log(e)
