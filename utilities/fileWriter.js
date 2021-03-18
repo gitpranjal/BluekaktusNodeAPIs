@@ -1100,9 +1100,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                     })()}
                                     initial={-1}
                                     onPress={(value) => {
-                                      var newRadioButtonList = {...RadioButtonList}
-                                      newRadioButtonList[InputKey] = value
-                                      SetRadioButtonList(newRadioButtonList)
+                                      
                                     }}
                                     textColor={"black"} //'#7a44cf'
 
@@ -1125,7 +1123,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       <ModalDropdown 
                         options={(() => {
                           var Options = []
-                          for (var obj of DropdownList[InputKey].ValuesList)
+                          for (var obj of item["valueObject"].ValuesList)
                           {
                             if(obj.name != null)
                               Options.push(obj.name)
@@ -1140,9 +1138,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                         defaultValue="Select a value"
                         onSelect={(value) => {
                           
-                          var newDropdownList = {...DropdownList}
-                          newDropdownList[InputKey]["SelectedValue"] = value
-                          SetDropdownList(newDropdownList)
+                          
 
                         }}
                       />
@@ -1162,9 +1158,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       value={FieldList[InputKey]}
                       editable={${true}}
                       onChangeText = {(newValue) => {
-                          var newFieldsObject = {...FieldList}
-                          newFieldsObject[InputKey] = newValue
-                          SetFieldList(newFieldsObject)
+                          
                       }}
                   /> 
                     )
@@ -2229,8 +2223,11 @@ const GeneratedCode = () => {
     //console.log("########### Checklist Object reaching screen ############")
     //console.log(ChecklistDataObjects)
 
-    
+    var newChecklistDataObjects = {...ChecklistDataObjects}
+
     Object.keys(ChecklistDataObjects).forEach(checklistEntity => {
+      
+      
       var ChecklistStructureInfoObject = ChecklistDataObjects[checklistEntity].filter(obj => obj.id == "-1")[0]
       console.log("############ Checklist structure info object for "+ checklistEntity+" ########")
       console.log(ChecklistStructureInfoObject)
@@ -2241,32 +2238,76 @@ const GeneratedCode = () => {
         console.log("########### Requesting url for checklist "+checklistEntity+ "############")
         console.log(ChecklistStructureInfoObject.ApiUrl)
              
-            fetch(
-              ChecklistStructureInfoObject.ApiUrl ,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                },
-              }
-            )
-          .then(response => response.json())
-          .then(body => {
+        fetch(
+          ChecklistStructureInfoObject.ApiUrl ,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        )
+        .then(response => response.json())
+        .then(body => {
             const newRowlist = body;
             console.log("############# new rowlist for checklist named "+checklistEntity+" from api ##############")
             console.log(newRowlist)
       
             rowList = rowList.concat(newRowlist)
+
+            console.log("######### pushing checklist objects in checklist list ##############")
+            for(var i = 0; i< rowList.length; i++)
+            {
+              var newRowObject = {"id": i.toString()}
+      
+
+             for( var column of Object.keys(ChecklistStructureInfoObject))
+             { 
+                if(column == "id" || column == "ApiUrl")
+                    continue
+
+                  if(ChecklistStructureInfoObject[column]["type"] == "textField")
+                  {
+                    newRowObject[column] = {"type": "textField", "value": rowList[i][column]}
+                  }
+                  if(ChecklistStructureInfoObject[column]["type"] == "textInputField") 
+                  {
+                    newRowObject[column] = {"type": ChecklistStructureInfoObject[column]["type"], "variableName": column+"_"+i}
+                  }
+                  if(ChecklistStructureInfoObject[column]["type"] == "radioButton") 
+                  {
+                    
+                    newRowObject[column] = {"type": ChecklistStructureInfoObject[column]["type"], 
+                                            "variableName": column+"_"+i, 
+                                            "options": ChecklistStructureInfoObject[column]["options"]
+                                          }
+                  }
+                  if(ChecklistStructureInfoObject[column]["type"] == "dropdown") 
+                  {
+                    newRowObject[column] = {"type": ChecklistStructureInfoObject[column]["type"], "variableName": column+"_"+i, "SelectedValue": "", "ValueListUrl": "", "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]}
+                  }
+                  
+              }
+    
+              newChecklistDataObjects[checklistEntity].push(newRowObject)
+              SetChecklistDataObjects(newChecklistDataObjects)
+              //ChecklistDataObjects[checklistEntity].push(newRowObject)
+
+           }
+
           })
           .catch(e => {
             console.log("################ Error in fetching from API for "+ checklistEntity)
             console.log(e)
           })
     
-      
+          
+          
     })
     
+    //SetChecklistDataObjects(newChecklistDataObjects)
+
   }, [])
   
   
