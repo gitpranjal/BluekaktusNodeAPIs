@@ -2226,30 +2226,31 @@ const GeneratedCode = () => {
     
     
     
-    console.log("########### Checklist Object reaching screen ############")
-    console.log(ChecklistDataObjects)
+    //console.log("########### Checklist Object reaching screen ############")
+    //console.log(ChecklistDataObjects)
 
     
     Object.keys(ChecklistDataObjects).forEach(checklistEntity => {
-      var ChecklistStructureInfoObject = ChecklistDataObjects[checklistEntity].filter(obj => obj.id == "-1")
+      var ChecklistStructureInfoObject = ChecklistDataObjects[checklistEntity].filter(obj => obj.id == "-1")[0]
       console.log("############ Checklist structure info object for "+ checklistEntity+" ########")
       console.log(ChecklistStructureInfoObject)
-      if(1 == 1)
+      if(ChecklistStructureInfoObject.ApiUrl == null || ChecklistStructureInfoObject.ApiUrl == "")
         return
 
         var rowList = []
-        
-    
-          const config = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            //body: JSON.stringify(data)
-            }
-        
-          fetch(Placeholders.ApiUrls[viewObj.name], config)
+        console.log("########### Requesting url for checklist "+checklistEntity+ "############")
+        console.log(ChecklistStructureInfoObject.ApiUrl)
+             
+            fetch(
+              ChecklistStructureInfoObject.ApiUrl ,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+              }
+            )
           .then(response => response.json())
           .then(body => {
             const newRowlist = body;
@@ -2263,8 +2264,6 @@ const GeneratedCode = () => {
             console.log(e)
           })
     
-          
-      
       
     })
     
