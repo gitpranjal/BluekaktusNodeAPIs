@@ -1043,7 +1043,14 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               if(obj["id"] == "-1")
                 sampleObjectWithIdNegative1 = obj
             }
-            return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
+            var ColumnHeadings = []
+            for(var key of Object.keys(sampleObjectWithIdNegative1))
+            {
+              if(key == "id" || key == "ApiUrl")
+               continue
+              ColumnHeadings.push(sampleObjectWithIdNegative1[key])
+            }
+            return ColumnHeadings
           })() }
           keyExtractor={(columnNameObject) => columnNameObject.title}
           contentContainerStyle = {{flexDirection: "row"}}
@@ -1065,7 +1072,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             if(key == "id")
               continue
 
-            currentRowArray.push({"id": i.toString(), "valueObject": item[key], "type": key})
+            currentRowArray.push({"id": i.toString(), "valueObject": item[key], "type": key})      ;{/* type ~ columnName */}
             i += 1
           }
           return (
@@ -1908,11 +1915,11 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "checklist")
   {
     ChecklistDataObjects[viewObj.name.toString()] = []
-    var newFieldCollectionForChecklistObject = {"id": "-1"}
+    var newFieldCollectionForChecklistObject = {"id": "-1", "ApiUrl": Placeholders.ApiUrls[viewObj.name],}
  
     var columnsInfoObject = {}
     for (var columnObject of viewObj.columns)
-      columnsInfoObject[columnObject.name] =  {"type": columnObject.type, "title": columnObject.title, "options": columnObject.options != null ?columnObject.options  : [{"id": "1", "name": "Yes"}, {"id": "2", "name": "No"}] }
+      columnsInfoObject[columnObject.name] =  { "type": columnObject.type, "title": columnObject.title, "options": columnObject.options != null ?columnObject.options  : [{"id": "1", "name": "Yes"}, {"id": "2", "name": "No"}] }
     
     for(var column of Object.keys(columnsInfoObject))
     {
@@ -2222,6 +2229,44 @@ const GeneratedCode = () => {
     console.log("########### Checklist Object reaching screen ############")
     console.log(ChecklistDataObjects)
 
+    
+    Object.keys(ChecklistDataObjects).forEach(checklistEntity => {
+      var ChecklistStructureInfoObject = ChecklistDataObjects[checklistEntity].filter(obj => obj.id == "-1")
+      console.log("############ Checklist structure info object for "+ checklistEntity+" ########")
+      console.log(ChecklistStructureInfoObject)
+      if(1 == 1)
+        return
+
+        var rowList = []
+        
+    
+          const config = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            //body: JSON.stringify(data)
+            }
+        
+          fetch(Placeholders.ApiUrls[viewObj.name], config)
+          .then(response => response.json())
+          .then(body => {
+            const newRowlist = body;
+            console.log("############# new rowlist for checklist named "+checklistEntity+" from api ##############")
+            console.log(newRowlist)
+      
+            rowList = rowList.concat(newRowlist)
+          })
+          .catch(e => {
+            console.log("################ Error in fetching from API for "+ checklistEntity)
+            console.log(e)
+          })
+    
+          
+      
+      
+    })
     
   }, [])
   
