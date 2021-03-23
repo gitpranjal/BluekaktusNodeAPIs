@@ -25,7 +25,6 @@ const ColorSchemeLibrary = {
 
 console.log(Placeholders)
 var ObjectFromAPI = {
-  colorScheme: "blue",
   "viewObjects": [
       {
           "type": "textInputField",
@@ -56,7 +55,7 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 0,
                   "required": false,
-                  "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList"
+                  
               }
           ],
           "groups": [],
@@ -175,7 +174,7 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "textInputField",
+          "type": "textField",
           "componentPerRow": 3,
           "fields": [
               {
@@ -199,6 +198,42 @@ var ObjectFromAPI = {
               {
                   "name": "cutqty",
                   "title": "Cut Quantity",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 3,
+          "fields": [
+              {
+                  "name": "pqqty_val",
+                  "title": "prQty_Val",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              },
+              {
+                  "name": "doneqty_val",
+                  "title": "doneQty_val",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              },
+              {
+                  "name": "cutqty_val",
+                  "title": "cutQty_val",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
@@ -309,50 +344,8 @@ var ObjectFromAPI = {
           "columns": [],
           "rows": []
       },
-      {
-          "type": "radioButton",
-          "name": "partinspection",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "Option1",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "name": "Option2",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "radioButton",
-          "name": "reaudit",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "Option1",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "name": "Option2",
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
+      
+      
       {
           "type": "checklist",
           "name": "auditchecklist",
@@ -417,7 +410,7 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 0,
                           "required": false,
-                          "valueListUrl": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getFactoryList"
+                          "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
                       }
                   ],
                   "groups": [],
@@ -741,7 +734,50 @@ var ObjectFromAPI = {
           "groups": [],
           "columns": [],
           "rows": []
-      }
+      },
+      {
+        "type": "radioButton",
+        "name": "result",
+        "componentPerRow": 1,
+        "fields": [
+            {
+                "name": "passed",
+            },
+            {
+                "name": "failed",
+            },
+            {
+              "name": "onhold",
+          }
+        ],
+        "groups": [],
+        "columns": [],
+        "rows": []
+    },
+    {
+      "type": "textInputField",
+      "componentPerRow": 1,
+      "fields": [
+          {
+              "name": "measurementDeviation",
+              "title": "Measurement Deviation",
+          },
+          {
+            "name": "finalRemarks",
+            "title": "Comments",
+        }
+      ],
+      "groups": [],
+      "columns": [],
+      "rows": []
+  },
+  {
+    type: "button",
+    componentPerRow: 1,
+    fields: [
+      {"name": "finalSubmission", title: "Submit",}
+      ]
+  },
   ]
 }
 
@@ -1110,7 +1146,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                           break
                                         }
                                       }
-                                      
+                                      storeData("ChecklistDataObjects", newChecklistDataObjects)
                                       SetChecklistDataObjects(newChecklistDataObjects)
                                     }}
                                     textColor={"black"} //'#7a44cf'
@@ -1146,7 +1182,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                         style={{marginHorizontal: 5, padding: 7, borderWidth: 2, borderColor: "grey", borderRadius: 4, marginVertical: 5, width: 110}}
                         textStyle={{color: "grey", fontWeight: "bold", fontSize: 12}}
                         dropdownTextStyle={{color: "black"}}
-                        defaultValue="Select a value"
+                        defaultValue= {item["valueObject"].SelectedValue != "" ? item["valueObject"].SelectedValue :"Select a value"}
+                        
                         onSelect={(selectedIndex) => {
                           
                           var newChecklistDataObjects = {...ChecklistDataObjects}
@@ -1158,7 +1195,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                               break
                             }
                           }
-                         
+
+                        storeData("ChecklistDataObjects", newChecklistDataObjects)
                         SetChecklistDataObjects(newChecklistDataObjects)
 
                         console.log("#################### current checklist object modified to ####################")
@@ -1192,7 +1230,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                             break
                           }
                         }
-                         
+                        storeData("ChecklistDataObjects", newChecklistDataObjects) 
                         SetChecklistDataObjects(newChecklistDataObjects)
                       }}
                   /> 
@@ -1482,10 +1520,13 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               value={FieldList["${subViewObject.fields[componentNumber].name}"]}
               editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
               onChangeText = {(newValue) => {
-                var newFieldsObject = {...FieldList}
-                newFieldsObject["${subViewObject.fields[componentNumber].name}"] = newValue
+                var newFieldList = {...FieldList}
+                newFieldList["${subViewObject.fields[componentNumber].name}"] = newValue
                 ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
-                SetFieldList(newFieldsObject)
+                
+                
+                
+                SetFieldList(newFieldList)
             }}
           />
           </View>
@@ -1769,6 +1810,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["${fieldName}"] = newValue
                   ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                  
+
                   SetFieldList(newFieldsObject)
                   storeData("FieldList", newFieldsObject)
               }}
@@ -2064,7 +2107,7 @@ var code = {
 code["structure"] = 
 `
 import React, { useState, useEffect} from "react";
-import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView} from "react-native";
+import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView, Alert} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
@@ -2125,6 +2168,139 @@ const GeneratedCode = () => {
       console.log(e)
     }) 
 
+    getData("ChecklistDataObjects")
+    .then((ChecklistDataObjects) => {
+      console.log("############## checklist from async storage #######")
+      console.log(ChecklistDataObjects)
+      if(ChecklistDataObjects != null)
+        SetChecklistDataObjects(ChecklistDataObjects)
+      else
+      {
+
+        var newChecklistDataObjects = {...ChecklistDataObjects}
+    const tasks = [];
+    Object.keys(ChecklistDataObjects).forEach((checklistEntity) => {
+      tasks.push(
+        (async (checklistEntity) => {
+          var ChecklistStructureInfoObject = ChecklistDataObjects[
+            checklistEntity
+          ].filter((obj) => obj.id == "-1")[0];
+          console.log(
+            "############ Checklist structure info object for " +
+              checklistEntity +
+              " ########"
+          );
+          console.log(ChecklistStructureInfoObject);
+          if (
+            ChecklistStructureInfoObject.ApiUrl == null ||
+            ChecklistStructureInfoObject.ApiUrl == ""
+          )
+            return;
+    
+          var rowList = [];
+          console.log(
+            "########### Requesting url for checklist " +
+              checklistEntity +
+              "############"
+          );
+          console.log(ChecklistStructureInfoObject.ApiUrl);
+    
+          const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
+            method: "POST",
+            ${Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `return "Value to come from Placeholder"`}
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+          // .then(response => response.json())
+    
+          const body = await response.json();
+    
+          const newRowlist = body.result != null ? body.result : body;
+          console.log(
+            "############# new rowlist for checklist named " +
+              checklistEntity +
+              " from api ##############"
+          );
+          console.log(newRowlist);
+    
+          rowList = rowList.concat(newRowlist);
+    
+          console.log(
+            "######### pushing checklist objects in checklist list ##############"
+          );
+          //newChecklistDataObjects[checklistEntity]= []
+
+          for (var i = 0; i < rowList.length; i++) {
+            var newRowObject = { id: i.toString() };
+    
+            for (var column of Object.keys(ChecklistStructureInfoObject)) {
+              if (column == "id" || column == "ApiUrl") continue;
+              console.log("################ row list object ##############")
+              console.log(rowList[i])
+              if (ChecklistStructureInfoObject[column]["type"] == "textField") {
+                newRowObject[column] = {
+                  type: "textField",
+                  value: rowList[i][column],
+                };
+              }
+              if (
+                ChecklistStructureInfoObject[column]["type"] == "textInputField"
+              ) {
+                newRowObject[column] = {
+                  type: ChecklistStructureInfoObject[column]["type"],
+                  variableName: column + "_" + i,
+                  value: ""
+                };
+              }
+              if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
+                newRowObject[column] = {
+                  type: ChecklistStructureInfoObject[column]["type"],
+                  variableName: column + "_" + i,
+                  options: ChecklistStructureInfoObject[column]["options"],
+                  value: ""
+                };
+              }
+              if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
+                newRowObject[column] = {
+                  type: ChecklistStructureInfoObject[column]["type"],
+                  variableName: column + "_" + i,
+                  SelectedValue: "",
+                  ValueListUrl: "",
+                  ValuesList: ChecklistStructureInfoObject[column]["options"] ,
+                };
+              }
+            }
+    
+            newChecklistDataObjects[checklistEntity].push(newRowObject);
+            // SetChecklistDataObjects(newChecklistDataObjects)
+            //ChecklistDataObjects[checklistEntity].push(newRowObject)
+          }
+        })(checklistEntity)
+      );
+    
+    
+    
+    
+    });
+    
+    Promise.all(tasks).then(() => {
+        SetChecklistDataObjects(newChecklistDataObjects)
+        console.log("##################### newChecklistDataObjects ################")
+        console.log(newChecklistDataObjects)
+      }).catch(e => {
+        console.log("############## Error in fetching from APIs and adding rows to checklist #############")
+        console.log(e)
+      })
+   
+        
+      }
+    })
+    .catch( e => {
+      console.log(e)
+    }) 
+
     getData("HybridDataObjects")
     .then((hybridDataObjects) => {
       console.log("############## combined hybrid object from async storage #######")
@@ -2178,7 +2354,7 @@ const GeneratedCode = () => {
                 console.log(body)
     
                 
-                body = body.result
+                body = body.result != null ? body.result : body
                 var modifiedList = []
                 if(body.length != 0)
                 {
@@ -2186,7 +2362,7 @@ const GeneratedCode = () => {
                   var valueKey = ""
                   for(var key of Object.keys(body[0]))
                   { 
-                  
+                    ${Placeholders.CodeSnippets["AQLObjectModifier"] != null ? Placeholders.CodeSnippets["AQLObjectModifier"] : `//Could be Some Code from placeholder`}
                     if(key.toString().toLowerCase().includes("id"))
                     {
                       idKey = key
@@ -2202,6 +2378,7 @@ const GeneratedCode = () => {
                   {
                     for( var obj of body)
                     {
+
                       var modifiedObject = {...obj}
                       modifiedObject["id"] = obj[idKey].toString()
                       modifiedObject["value"] = obj[valueKey].toString()
@@ -2248,129 +2425,6 @@ const GeneratedCode = () => {
     
   }, [])
   
-  
-
-  
-  useEffect(() => {
-    
-    var newChecklistDataObjects = {...ChecklistDataObjects}
-    const tasks = [];
-    Object.keys(ChecklistDataObjects).forEach((checklistEntity) => {
-      tasks.push(
-        (async (checklistEntity) => {
-          var ChecklistStructureInfoObject = ChecklistDataObjects[
-            checklistEntity
-          ].filter((obj) => obj.id == "-1")[0];
-          console.log(
-            "############ Checklist structure info object for " +
-              checklistEntity +
-              " ########"
-          );
-          console.log(ChecklistStructureInfoObject);
-          if (
-            ChecklistStructureInfoObject.ApiUrl == null ||
-            ChecklistStructureInfoObject.ApiUrl == ""
-          )
-            return;
-    
-          var rowList = [];
-          console.log(
-            "########### Requesting url for checklist " +
-              checklistEntity +
-              "############"
-          );
-          console.log(ChecklistStructureInfoObject.ApiUrl);
-    
-          const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          });
-          // .then(response => response.json())
-    
-          const body = await response.json();
-    
-          const newRowlist = body;
-          console.log(
-            "############# new rowlist for checklist named " +
-              checklistEntity +
-              " from api ##############"
-          );
-          console.log(newRowlist);
-    
-          rowList = rowList.concat(newRowlist);
-    
-          console.log(
-            "######### pushing checklist objects in checklist list ##############"
-          );
-          for (var i = 0; i < rowList.length; i++) {
-            var newRowObject = { id: i.toString() };
-    
-            for (var column of Object.keys(ChecklistStructureInfoObject)) {
-              if (column == "id" || column == "ApiUrl") continue;
-    
-              if (ChecklistStructureInfoObject[column]["type"] == "textField") {
-                newRowObject[column] = {
-                  type: "textField",
-                  value: rowList[i][column],
-                };
-              }
-              if (
-                ChecklistStructureInfoObject[column]["type"] == "textInputField"
-              ) {
-                newRowObject[column] = {
-                  type: ChecklistStructureInfoObject[column]["type"],
-                  variableName: column + "_" + i,
-                  value: ""
-                };
-              }
-              if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
-                newRowObject[column] = {
-                  type: ChecklistStructureInfoObject[column]["type"],
-                  variableName: column + "_" + i,
-                  options: ChecklistStructureInfoObject[column]["options"],
-                  value: ""
-                };
-              }
-              if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
-                newRowObject[column] = {
-                  type: ChecklistStructureInfoObject[column]["type"],
-                  variableName: column + "_" + i,
-                  SelectedValue: "",
-                  ValueListUrl: "",
-                  ValuesList: [
-                    { id: "1", name: "option1" },
-                    { id: "2", name: "option2" },
-                  ],
-                };
-              }
-            }
-    
-            newChecklistDataObjects[checklistEntity].push(newRowObject);
-            // SetChecklistDataObjects(newChecklistDataObjects)
-            //ChecklistDataObjects[checklistEntity].push(newRowObject)
-          }
-        })(checklistEntity)
-      );
-    
-    
-    
-    
-    });
-    
-    Promise.all(tasks).then(() => {
-        SetChecklistDataObjects(newChecklistDataObjects)
-        console.log("##################### newChecklistDataObjects ################")
-        console.log(newChecklistDataObjects)
-      }).catch(e => {
-        console.log("############## Error in fetching from APIs and adding rows to checklist #############")
-        console.log(e)
-      })
-   
-
-  }, [])
   
   
   
