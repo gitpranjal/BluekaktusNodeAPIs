@@ -2127,32 +2127,129 @@ const GeneratedCode = (props) => {
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
   const [ChecklistDataObjects, SetChecklistDataObjects] = useState(${JSON.stringify(ChecklistDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
-  const [CurrentScreenBackgroundInfo, SetCurrentScreenBackgroundInfo] = useState({})
-  const [CurrentScreenId, SetCurrentScreenId] = useState("-1")
-
   
 
+  var CurrentScreenId = -1
+  var CurrentScreenBackgroundInfo = {}
+
+  ${Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `return "Value to come from Placeholder"`}
   
 
   useEffect(() => {
 
-    ${Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `return "Value to come from Placeholder"`}
+    
     
     getData(CurrentScreenId)
-    .then()
+    .then(data => {
+      console.log("################ Data for screen code "+ CurrentScreenId + " ###################")
+      console.log(data)
+
+      // ################# Extracting Text input fields from async storage into the states ##############
+      if(data["FieldList"] != null)
+        SetFieldList(data["FieldList"])
+
+      // ################## Extracting dropdowns information from async storage into the states ##########
+      if(data["DropdownList"] != null)
+        SetDropdownList(data["DropdownList"])
+      else
+      {
+        var tasks = []
+        var dropdownsListObject = {...DropdownList}
+        Object.keys(dropdownsListObject).forEach((dropdownObjectName) => {
+
+          task.push((async (dropdownObject) => {
+          dropdownObject = dropdownsListObject[dropdownObjectName]
+
+          if(dropdownObject.ValuesListUrl == "" || dropdownObject.ValuesListUrl == null)
+          {
+            console.log("############### Couldn't find working or valid url for dropdown: "+dropdownObjectName)
+            return
+          }
+          // fetching configurations should come from placeholder, following is the default configuration
+          const fetchConfig = {
+              method: "POST",
+                    body: JSON.stringify({
+                      "basicparams": {
+                          "companyID": 84,
+                          "userID": 13
+                      }
+                  }),
+                    headers: {
+                      "Content-Type": "application/json",
+                      Accept: "application/json",
+                    },
+          }
+          const response = await fetch(dropdownObject.ValuesListUrl, fetchConfig)
+          const body = await response.json()
+
+          body = body.result != null ? body.result : body
+                var modifiedList = []
+                if(body.length != 0)
+                {
+                  var idKey = ""
+                  var valueKey = ""
+                  for(var key of Object.keys(body[0]))
+                  { 
+                    ${Placeholders.CodeSnippets["AQLObjectModifier"] != null ? Placeholders.CodeSnippets["AQLObjectModifier"] : `//Could be Some Code from placeholder`}
+                    if(key.toString().toLowerCase().includes("id"))
+                    {
+                      idKey = key
+                      continue
+                    }
+                    if(key.toString().toLowerCase().includes("name") || key.toString().toLowerCase().includes("value"))
+                    {
+                      valueKey = key
+                      continue
+                    }
+                  }
+                  if(body[0][idKey] != null && body[0][valueKey] != null)
+                  {
+                    for( var obj of body)
+                    {
+
+                      var modifiedObject = {...obj}
+                      modifiedObject["id"] = obj[idKey].toString()
+                      modifiedObject["value"] = obj[valueKey].toString()
+                      modifiedObject["name"] = obj[valueKey].toString()
+    
+                      modifiedList.push(modifiedObject)
+                    }
+                  }
+                }
+    
+                
+                
+                dropdownsListObject[dropdownObjectName]["ValuesList"] = modifiedList
+                console.log("########### "+ dropdownObjectName +"Dropdown object after calling its API #########")
+                console.log(dropdownsListObject[dropdownObjectName])
+
+          })(dropdownObjectName))
+
+        })     // Loop ends here
+
+        Promise.all(tasks)
+        .then(() => {
+          SetDropdownList(dropdownsListObject)
+          //storeData("DropdownList", dropdownObject)
+          console.log("################## Setting dropdown list object to ###################")
+          console.log(dropdownsListObject)
+        })
+        .catch(e => {
+          console.log("############### Error in fetching dropdown list information ##########")
+          console.log(e)
+        })
+
+      }     // dropdown fetching ends here
+
+
+
+
+    })
     .catch( e => {
       console.log("################ Error in fetching data object for Screen Id: "+ CurrentScreenId)
     })
-    getData("FieldList")
-    .then((textInputFieldsObject) => {
-      console.log("############## text inputs from async storage #######")
-      console.log(textInputFieldsObject)
-      if(textInputFieldsObject != null)
-        SetFieldList(textInputFieldsObject)
-    })
-    .catch( e => {
-      console.log(e)
-    }) 
+
+    
 
     getData("ChecklistDataObjects")
     .then((checklistDataObjects) => {

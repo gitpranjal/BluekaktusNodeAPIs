@@ -233,16 +233,22 @@ const Placeholders = {
             `,
 
             "currentScreenBackgroundInfo": `
-                const currentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
-                console.log("############# Current screen background information ##############")
-                console.log(currentScreenBackgroundInfo)
+                
 
-                var newFieldList = {...FieldList}
-                newFieldList["pqqty_val"] = currentScreenBackgroundInfo["PR_QTY"]
-                newFieldList["doneqty_val"] = "0"
-                SetFieldList(newFieldList)
-                SetCurrentScreenBackgroundInfo(currentScreenBackgroundInfo)
-                SetCurrentScreenId(currentScreenBackgroundInfo["FG_CODE"])
+                useEffect(() => {
+                    CurrentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
+                    CurrentScreenId = CurrentScreenBackgroundInfo["FG_CODE"]
+                    
+                    console.log("############# Current screen background information ##############")
+                    console.log(CurrentScreenBackgroundInfo)
+
+                    var newFieldList = {...FieldList}
+                    newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR_QTY"]
+                    newFieldList["doneqty_val"] = "0"
+                    SetFieldList(newFieldList)
+                    
+
+                }, [])
 
   
             `,
