@@ -1,8 +1,9 @@
 const Placeholders = {
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://4a39a4160cc8.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
-        "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails" 
+        "auditchecklist": "http://316386850371.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
+        "maindefect": "http://316386850371.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
     },
     "StateVariables": {
         "DefectsSummary": {
@@ -49,7 +50,7 @@ const Placeholders = {
         "packedqty": `
 
             var NestedAqlObject = DropdownList["aqllevel"].SelectedValue
-            var currentPackedQty = FieldList["packedqty"] != "" ? parseInt(FieldList["packedqty"]) : 0
+            var currentPackedQty = parseInt(newValue)
             var sampleSize = ""
             var smallestMinValue = Number.MAX_VALUE
             var greatestMaxValue = Number.MIN_VALUE
@@ -88,7 +89,7 @@ const Placeholders = {
 
         "fg1qty": `
             var currentPackedQty = newFieldsObject["packedqty"]
-            var currentFg1Qty = newFieldsObject["fg1qty"]
+            var currentFg1Qty = newValue
 
             console.log("############## current packed quantity #############")
             console.log(currentPackedQty)
@@ -127,58 +128,132 @@ const Placeholders = {
         
         `,
 
-        "TotalCriticalDefect": `
-           
-            return PlaceholderStates.DefectsSummary.totalCritical
-        `,
-        "TotalMajorDefect": `
-            return PlaceholderStates.DefectsSummary.totalMajor
-        `,
-        "TotalMinorDefect": `
-            return PlaceholderStates.DefectsSummary.totalMinor
-        `,
-        
-        "AddMainDefect": `
-                //From Placeholder AddMainDefect key
-                var newPlaceholderStates = {...PlaceholderStates}
-                var newTotalCritical = newPlaceholderStates.DefectsSummary.totalCritical != null  ? parseInt(newPlaceholderStates.DefectsSummary.totalCritical) : 0
-                var newTotalMajor = newPlaceholderStates.DefectsSummary.totalMajor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMajor) : 0
-                var newTotalMinor = newPlaceholderStates.DefectsSummary.totalMinor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMinor) : 0
-                for (var MainDefectObject of HybridDataObjects["Main Defect"])
-                {
-                    if(MainDefectObject.id != "-1")
-                    {
-                        newTotalCritical += (parseInt(MainDefectObject.mainCritical))
-                        newTotalMajor += (parseInt(MainDefectObject.mainMajor))
-                        newTotalMinor += (parseInt(MainDefectObject.mainMinor))
-                    }
-                }
-                newPlaceholderStates.DefectsSummary.totalCritical = newTotalCritical.toString()
-                newPlaceholderStates.DefectsSummary.totalMajor = newTotalMajor.toString()
-                newPlaceholderStates.DefectsSummary.totalMinor = newTotalMinor.toString()
-                SetPlaceholderStates(newPlaceholderStates)
-        `,
-
-        "AddMissDefect": `
-                //From Placeholder AddMissDefect key
-                var newPlaceholderStates = {...PlaceholderStates}
-                var newTotalCritical = newPlaceholderStates.DefectsSummary.totalCritical != null  ? parseInt(newPlaceholderStates.DefectsSummary.totalCritical) : 0
-                var newTotalMajor = newPlaceholderStates.DefectsSummary.totalMajor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMajor) : 0
-                var newTotalMinor = newPlaceholderStates.DefectsSummary.totalMinor != null ? parseInt(newPlaceholderStates.DefectsSummary.totalMinor) : 0
-                for (var MissDefectObject of HybridDataObjects["Miss Defect"])
-                {
-                    if(MissDefectObject.id != "-1")
-                    {
-                        newTotalCritical += (parseInt(MissDefectObject.missCritical))
-                        newTotalMajor += (parseInt(MissDefectObject.missMajor))
-                        newTotalMinor += (parseInt(MissDefectObject.missMinor))
-                    }
-                }
-                newPlaceholderStates.DefectsSummary.totalCritical = newTotalCritical.toString()
-                newPlaceholderStates.DefectsSummary.totalMajor = newTotalMajor.toString()
-                newPlaceholderStates.DefectsSummary.totalMinor = newTotalMinor.toString()
-                SetPlaceholderStates(newPlaceholderStates)
+        "maindefect_add": 
         `
+            
+            var newFieldList = {...FieldList}
+
+            newFieldList["totalcritdefect"] = newFieldList["totalcritdefect"] != "" ? (parseInt(newFieldList["totalcritdefect"]) + parseInt(newRowObject.maindefect_crit)).toString() :  newRowObject.maindefect_crit.toString()
+            newFieldList["totalmajordefect"] = newFieldList["totalmajordefect"] != "" ? (parseInt(newFieldList["totalmajordefect"]) + parseInt(newRowObject.maindefect_maj)).toString() : newRowObject.maindefect_maj.toString()
+            newFieldList["totalminordefect"] = newFieldList["totalminordefect"] != "" ? (parseInt(newFieldList["totalminordefect"]) + parseInt(newRowObject.maindefect_min)).toString() :  newRowObject.maindefect_min.toString()
+            newFieldList["totaldefect"] = (parseInt(newFieldList["totalcritdefect"]) + parseInt(newFieldList["totalmajordefect"]) + parseInt(newFieldList["totalminordefect"])).toString()
+            
+            var SampleSize = newFieldList["samplesize"]
+            var defectRate = SampleSize != "" && newFieldList["totaldefect"] != "" ? ((parseInt(newFieldList["totaldefect"])/parseInt(SampleSize))*100).toString() : ""
+            newFieldList["defectrate"] = defectRate + "%"
+            storeData("FieldList", newFieldList)
+            SetFieldList(newFieldList)
+        
+            `,
+
+            "measurementdefect_add": 
+            `
+                
+                var totalCriticals = 0
+                var totalMajors = 0
+                var totalMinors  = 0
+    
+    
+                for(var defectObj of HybridDataObjects["measurementdefect"])
+                {
+                    if(defectObj.id == "-1")
+                        continue
+    
+                    totalCriticals += parseInt(defectObj.measurementdefect_crit)
+                    totalMajors += parseInt(defectObj.measurementdefect_maj)
+                    totalMinors += parseInt(defectObj.measurementdefect_min)
+                }
+    
+                var newFieldList = {...FieldList}
+    
+                newFieldList["totalcritdefect"] = newFieldList["totalcritdefect"] != "" ? (parseInt(newFieldList["totalcritdefect"]) + parseInt(newRowObject.measurementdefect_crit)).toString() :  newRowObject.measurementdefect_crit.toString()
+                newFieldList["totalmajordefect"] = newFieldList["totalmajordefect"] != "" ? (parseInt(newFieldList["totalmajordefect"]) + parseInt(newRowObject.measurementdefect_maj)).toString() : newRowObject.measurementdefect_maj.toString()
+                newFieldList["totalminordefect"] = newFieldList["totalminordefect"] != "" ? (parseInt(newFieldList["totalminordefect"]) + parseInt(newRowObject.measurementdefect_min)).toString() :  newRowObject.measurementdefect_min.toString()
+                newFieldList["totaldefect"] = (parseInt(newFieldList["totalcritdefect"]) + parseInt(newFieldList["totalmajordefect"]) + parseInt(newFieldList["totalminordefect"])).toString()
+                
+                var SampleSize = newFieldList["samplesize"]
+                var defectRate = SampleSize != "" && newFieldList["totaldefect"] != "" ? ((parseInt(newFieldList["totaldefect"])/parseInt(SampleSize))*100).toString() : ""
+                newFieldList["defectrate"] = defectRate + "%"
+
+                storeData("FieldList", newFieldList)
+                SetFieldList(newFieldList)
+            
+                `,
+
+                "miscdefect_add": 
+                `
+                    
+                    var totalCriticals = 0
+                    var totalMajors = 0
+                    var totalMinors  = 0
+        
+        
+                    for(var defectObj of HybridDataObjects["miscdefect"])
+                    {
+                        if(defectObj.id == "-1")
+                            continue
+        
+                        totalCriticals += parseInt(defectObj.miscdefect_crit)
+                        totalMajors += parseInt(defectObj.miscdefect_maj)
+                        totalMinors += parseInt(defectObj.miscdefect_min)
+                    }
+        
+                    var newFieldList = {...FieldList}
+        
+                    newFieldList["totalcritdefect"] = newFieldList["totalcritdefect"] != "" ? (parseInt(newFieldList["totalcritdefect"]) + parseInt(newRowObject.miscdefect_crit)).toString() :  newRowObject.miscdefect_crit.toString()
+                    newFieldList["totalmajordefect"] = newFieldList["totalmajordefect"] != "" ? (parseInt(newFieldList["totalmajordefect"]) + parseInt(newRowObject.miscdefect_maj)).toString() : newRowObject.miscdefect_maj.toString()
+                    newFieldList["totalminordefect"] = newFieldList["totalminordefect"] != "" ? (parseInt(newFieldList["totalminordefect"]) + parseInt(newRowObject.miscdefect_min)).toString() :  newRowObject.miscdefect_min.toString()
+                    newFieldList["totaldefect"] = (parseInt(newFieldList["totalcritdefect"]) + parseInt(newFieldList["totalmajordefect"]) + parseInt(newFieldList["totalminordefect"])).toString()
+                    
+                    var SampleSize = newFieldList["samplesize"]
+                    var defectRate = SampleSize != "" && newFieldList["totaldefect"] != "" ? ((parseInt(newFieldList["totaldefect"])/parseInt(SampleSize))*100).toString() : ""
+                    newFieldList["defectrate"] = defectRate + "%"
+                    
+                    storeData("FieldList", newFieldList)
+                    SetFieldList(newFieldList)
+                
+                    `,
+
+            "cartonsamplesize": `
+                    var totalCartons = parseInt(newFieldsObject["inserttotalnoofcarton"])
+                    var currentSampleSize = parseInt(newFieldsObject["cartonsamplesize"])
+
+                    if(Number.isNaN(totalCartons))
+                    {
+                        Alert.alert("Enter valid number of total cartons")
+                        return
+                    }
+
+                    if(currentSampleSize > totalCartons)
+                    {
+                        Alert.alert("Carton sample size cannot be greater than total cartons")
+                        return
+                    }
+                    
+            `,
+
+            "currentScreenBackgroundInfo": `
+                const currentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
+                console.log("############# Current screen background information ##############")
+                console.log(currentScreenBackgroundInfo)
+
+                var newFieldList = {...FieldList}
+                newFieldList["pqqty_val"] = currentScreenBackgroundInfo["PR_QTY"]
+                newFieldList["doneqty_val"] = "0"
+                SetFieldList(newFieldList)
+                SetCurrentScreenBackgroundInfo(currentScreenBackgroundInfo)
+                SetCurrentScreenId(currentScreenBackgroundInfo["FG_CODE"])
+
+  
+            `,
+
+            "finalSubmission": `
+                clearAll()
+            
+            `,
+    
+
+       
     }
 }
 

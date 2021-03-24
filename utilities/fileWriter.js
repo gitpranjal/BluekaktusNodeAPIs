@@ -173,12 +173,13 @@ var ObjectFromAPI = {
           "columns": [],
           "rows": []
       },
+      
       {
-          "type": "textField",
+          "type": "textInputField",
           "componentPerRow": 3,
           "fields": [
               {
-                  "name": "prqty",
+                  "name": "pqqty_val",
                   "title": "PR Quantity",
                   "size": "small",
                   "minLength": 0,
@@ -187,7 +188,7 @@ var ObjectFromAPI = {
                   "required": false
               },
               {
-                  "name": "doneqty",
+                  "name": "doneqty_val",
                   "title": "Done Quantity",
                   "size": "small",
                   "minLength": 0,
@@ -196,44 +197,8 @@ var ObjectFromAPI = {
                   "required": false
               },
               {
-                  "name": "cutqty",
-                  "title": "Cut Quantity",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textInputField",
-          "componentPerRow": 3,
-          "fields": [
-              {
-                  "name": "pqqty_val",
-                  "title": "prQty_Val",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "name": "doneqty_val",
-                  "title": "doneQty_val",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
                   "name": "cutqty_val",
-                  "title": "cutQty_val",
+                  "title": "Cut Quantity",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
@@ -300,6 +265,24 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
+        "type": "textInputField",
+        "componentPerRow": 1,
+        "fields": [
+            {
+                "name": "inserttotalnoofcarton",
+                "title": "Insert Total No Of Carton",
+                "size": "small",
+                "minLength": 0,
+                "maxLength": 100,
+                "defaultValue": "",
+                "required": false
+            }
+        ],
+        "groups": [],
+        "columns": [],
+        "rows": []
+    },
+      {
           "type": "textInputField",
           "componentPerRow": 2,
           "fields": [
@@ -326,25 +309,6 @@ var ObjectFromAPI = {
           "columns": [],
           "rows": []
       },
-      {
-          "type": "textInputField",
-          "componentPerRow": 1,
-          "fields": [
-              {
-                  "name": "inserttotalnoofcarton",
-                  "title": "Insert Total No Of Carton",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      
       
       {
           "type": "checklist",
@@ -2144,7 +2108,18 @@ const getData = async (key) => {
   }
 }
 
-const GeneratedCode = () => {
+const clearAll = async () => {
+  try {
+    await AsyncStorage.clear()
+  } catch(e) {
+    // clear error
+  }
+
+  console.log(' Clearing storage Done.')
+}
+
+
+const GeneratedCode = (props) => {
   const [Sentence, SetSentence] = useState("")
   const [FieldList, SetFieldList] = useState(${JSON.stringify(TextInputObjectList)})
   const [DropdownList, SetDropdownList] = useState(${JSON.stringify(DropdownInputObjectList)})
@@ -2152,11 +2127,22 @@ const GeneratedCode = () => {
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
   const [ChecklistDataObjects, SetChecklistDataObjects] = useState(${JSON.stringify(ChecklistDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
+  const [CurrentScreenBackgroundInfo, SetCurrentScreenBackgroundInfo] = useState({})
+  const [CurrentScreenId, SetCurrentScreenId] = useState("-1")
 
-  var type = Function.prototype.call.bind( Object.prototype.toString )
+  
+
+  
 
   useEffect(() => {
 
+    ${Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `return "Value to come from Placeholder"`}
+    
+    getData(CurrentScreenId)
+    .then()
+    .catch( e => {
+      console.log("################ Error in fetching data object for Screen Id: "+ CurrentScreenId)
+    })
     getData("FieldList")
     .then((textInputFieldsObject) => {
       console.log("############## text inputs from async storage #######")
@@ -2169,14 +2155,16 @@ const GeneratedCode = () => {
     }) 
 
     getData("ChecklistDataObjects")
-    .then((ChecklistDataObjects) => {
+    .then((checklistDataObjects) => {
       console.log("############## checklist from async storage #######")
-      console.log(ChecklistDataObjects)
-      if(ChecklistDataObjects != null)
-        SetChecklistDataObjects(ChecklistDataObjects)
+      console.log(checklistDataObjects)
+      if(checklistDataObjects != null)
+        SetChecklistDataObjects(checklistDataObjects)
       else
       {
 
+        console.log("######## actual checklist object ##############")
+        console.log(ChecklistDataObjects)
         var newChecklistDataObjects = {...ChecklistDataObjects}
     const tasks = [];
     Object.keys(ChecklistDataObjects).forEach((checklistEntity) => {
