@@ -21,7 +21,7 @@ const Placeholders = {
             }),
         `,
         "AQLObjectModifier": `
-            if(field == "aqllevel")
+            if(dropdownObjectName == "aqllevel")
             {
             idKey = "aqlLevel"
             valueKey = "aqlLevel"
@@ -238,7 +238,7 @@ const Placeholders = {
                 useEffect(() => {
                     CurrentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
                     CurrentScreenId = CurrentScreenBackgroundInfo["FG_CODE"]
-                    
+
                     console.log("############# Current screen background information ##############")
                     console.log(CurrentScreenBackgroundInfo)
 

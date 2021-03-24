@@ -2144,20 +2144,24 @@ const GeneratedCode = (props) => {
       console.log("################ Data for screen code "+ CurrentScreenId + " ###################")
       console.log(data)
 
-      // ################# Extracting Text input fields from async storage into the states ##############
-      if(data["FieldList"] != null)
+      
+
+// ################# Extracting Text input fields from async storage into the states ##############
+      if(data != null && data["FieldList"] != null)
         SetFieldList(data["FieldList"])
 
-      // ################## Extracting dropdowns information from async storage into the states ##########
-      if(data["DropdownList"] != null)
+// ################## Extracting dropdowns information from async storage into the states #######################
+
+      if(data != null && data["DropdownList"] != null)
         SetDropdownList(data["DropdownList"])
       else
+      // ######################## fetching the dropdown information from api since nothing present in async stotage #########
       {
         var tasks = []
         var dropdownsListObject = {...DropdownList}
         Object.keys(dropdownsListObject).forEach((dropdownObjectName) => {
 
-          task.push((async (dropdownObject) => {
+          tasks.push((async (dropdownObject) => {
           dropdownObject = dropdownsListObject[dropdownObjectName]
 
           if(dropdownObject.ValuesListUrl == "" || dropdownObject.ValuesListUrl == null)
@@ -2180,7 +2184,7 @@ const GeneratedCode = (props) => {
                     },
           }
           const response = await fetch(dropdownObject.ValuesListUrl, fetchConfig)
-          const body = await response.json()
+          var body = await response.json()
 
           body = body.result != null ? body.result : body
                 var modifiedList = []
@@ -2241,278 +2245,163 @@ const GeneratedCode = (props) => {
 
       }     // dropdown fetching ends here
 
+// ######################################## dropdown fetching ends ###############################################
 
+// ################## Extracting checklist information from async storage into the states ###########################
+      if(data != null && data["ChecklistDataObjects"] != null)
+      {
+        console.log("######################### Checklist object from async storage ###################")
+        console.log(data["ChecklistDataObjects"])
+        SetChecklistDataObjects(data["ChecklistDataObjects"])
+      }
+      else
+      {
+        var newChecklistDataObjects = {...ChecklistDataObjects}
+        const tasks = [];
+        Object.keys(ChecklistDataObjects).forEach((checklistEntity) => {
+          tasks.push(
+            (async (checklistEntity) => {
+              var ChecklistStructureInfoObject = ChecklistDataObjects[
+                checklistEntity
+              ].filter((obj) => obj.id == "-1")[0];
+              console.log(
+                "############ Checklist structure info object for " +
+                  checklistEntity +
+                  " ########"
+              );
+              console.log(ChecklistStructureInfoObject);
+              if (
+                ChecklistStructureInfoObject.ApiUrl == null ||
+                ChecklistStructureInfoObject.ApiUrl == ""
+              )
+                return;
+        
+              var rowList = [];
+              console.log(
+                "########### Requesting url for checklist " +
+                  checklistEntity +
+                  "############"
+              );
+              console.log(ChecklistStructureInfoObject.ApiUrl);
+        
+              const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
+                method: "POST",
+                ${Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `return "Value to come from Placeholder"`}
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+              });
+              // .then(response => response.json())
+        
+              const body = await response.json();
+        
+              const newRowlist = body.result != null ? body.result : body;
+              console.log(
+                "############# new rowlist for checklist named " +
+                  checklistEntity +
+                  " from api ##############"
+              );
+              console.log(newRowlist);
+        
+              rowList = rowList.concat(newRowlist);
+        
+              console.log(
+                "######### pushing checklist objects in checklist list ##############"
+              );
+              //newChecklistDataObjects[checklistEntity]= []
+    
+              for (var i = 0; i < rowList.length; i++) {
+                var newRowObject = { id: i.toString() };
+        
+                for (var column of Object.keys(ChecklistStructureInfoObject)) {
+                  if (column == "id" || column == "ApiUrl") continue;
+                  console.log("################ row list object ##############")
+                  console.log(rowList[i])
+                  if (ChecklistStructureInfoObject[column]["type"] == "textField") {
+                    newRowObject[column] = {
+                      type: "textField",
+                      value: rowList[i][column],
+                    };
+                  }
+                  if (
+                    ChecklistStructureInfoObject[column]["type"] == "textInputField"
+                  ) {
+                    newRowObject[column] = {
+                      type: ChecklistStructureInfoObject[column]["type"],
+                      variableName: column + "_" + i,
+                      value: ""
+                    };
+                  }
+                  if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
+                    newRowObject[column] = {
+                      type: ChecklistStructureInfoObject[column]["type"],
+                      variableName: column + "_" + i,
+                      options: ChecklistStructureInfoObject[column]["options"],
+                      value: ""
+                    };
+                  }
+                  if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
+                    newRowObject[column] = {
+                      type: ChecklistStructureInfoObject[column]["type"],
+                      variableName: column + "_" + i,
+                      SelectedValue: "",
+                      ValueListUrl: "",
+                      ValuesList: ChecklistStructureInfoObject[column]["options"] ,
+                    };
+                  }
+                }
+        
+                newChecklistDataObjects[checklistEntity].push(newRowObject);
+                // SetChecklistDataObjects(newChecklistDataObjects)
+                //ChecklistDataObjects[checklistEntity].push(newRowObject)
+              }
+            })(checklistEntity)
+          );
+        
+        
+        
+        
+        });
+        
+        Promise.all(tasks).then(() => {
+            SetChecklistDataObjects(newChecklistDataObjects)
+            console.log("##################### newChecklistDataObjects ################")
+            console.log(newChecklistDataObjects)
+          }).catch(e => {
+            console.log("############## Error in fetching from APIs and adding rows to checklist #############")
+            console.log(e)
+          })
+       
+      }
+
+// ########################################### fetching info from api for checklist ends ############################
+
+// ################## Extracting hybrid information from async storage into the states ###########################
+      if(data != null && data["HybridDataObjects"] != null)
+      {
+        console.log("######################### Combined Hybrid object from async storage ###################")
+        console.log(data["HybridDataObjects"])
+        SetHybridDataObjects(data["ChecklistDataObjects"])
+      }
+
+// ################## Extracting hybrid information from async storage into the states ###########################
+      if(data != null && data["RadioButtonList"] != null)
+      {
+        console.log("######################### Combined radio object from async storage ###################")
+        console.log(data["RadioButtonList"])
+        SetRadioButtonList(data["RadioButtonList"])
+      }
 
 
     })
     .catch( e => {
       console.log("################ Error in fetching data object for Screen Id: "+ CurrentScreenId)
-    })
-
-    
-
-    getData("ChecklistDataObjects")
-    .then((checklistDataObjects) => {
-      console.log("############## checklist from async storage #######")
-      console.log(checklistDataObjects)
-      if(checklistDataObjects != null)
-        SetChecklistDataObjects(checklistDataObjects)
-      else
-      {
-
-        console.log("######## actual checklist object ##############")
-        console.log(ChecklistDataObjects)
-        var newChecklistDataObjects = {...ChecklistDataObjects}
-    const tasks = [];
-    Object.keys(ChecklistDataObjects).forEach((checklistEntity) => {
-      tasks.push(
-        (async (checklistEntity) => {
-          var ChecklistStructureInfoObject = ChecklistDataObjects[
-            checklistEntity
-          ].filter((obj) => obj.id == "-1")[0];
-          console.log(
-            "############ Checklist structure info object for " +
-              checklistEntity +
-              " ########"
-          );
-          console.log(ChecklistStructureInfoObject);
-          if (
-            ChecklistStructureInfoObject.ApiUrl == null ||
-            ChecklistStructureInfoObject.ApiUrl == ""
-          )
-            return;
-    
-          var rowList = [];
-          console.log(
-            "########### Requesting url for checklist " +
-              checklistEntity +
-              "############"
-          );
-          console.log(ChecklistStructureInfoObject.ApiUrl);
-    
-          const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
-            method: "POST",
-            ${Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `return "Value to come from Placeholder"`}
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          });
-          // .then(response => response.json())
-    
-          const body = await response.json();
-    
-          const newRowlist = body.result != null ? body.result : body;
-          console.log(
-            "############# new rowlist for checklist named " +
-              checklistEntity +
-              " from api ##############"
-          );
-          console.log(newRowlist);
-    
-          rowList = rowList.concat(newRowlist);
-    
-          console.log(
-            "######### pushing checklist objects in checklist list ##############"
-          );
-          //newChecklistDataObjects[checklistEntity]= []
-
-          for (var i = 0; i < rowList.length; i++) {
-            var newRowObject = { id: i.toString() };
-    
-            for (var column of Object.keys(ChecklistStructureInfoObject)) {
-              if (column == "id" || column == "ApiUrl") continue;
-              console.log("################ row list object ##############")
-              console.log(rowList[i])
-              if (ChecklistStructureInfoObject[column]["type"] == "textField") {
-                newRowObject[column] = {
-                  type: "textField",
-                  value: rowList[i][column],
-                };
-              }
-              if (
-                ChecklistStructureInfoObject[column]["type"] == "textInputField"
-              ) {
-                newRowObject[column] = {
-                  type: ChecklistStructureInfoObject[column]["type"],
-                  variableName: column + "_" + i,
-                  value: ""
-                };
-              }
-              if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
-                newRowObject[column] = {
-                  type: ChecklistStructureInfoObject[column]["type"],
-                  variableName: column + "_" + i,
-                  options: ChecklistStructureInfoObject[column]["options"],
-                  value: ""
-                };
-              }
-              if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
-                newRowObject[column] = {
-                  type: ChecklistStructureInfoObject[column]["type"],
-                  variableName: column + "_" + i,
-                  SelectedValue: "",
-                  ValueListUrl: "",
-                  ValuesList: ChecklistStructureInfoObject[column]["options"] ,
-                };
-              }
-            }
-    
-            newChecklistDataObjects[checklistEntity].push(newRowObject);
-            // SetChecklistDataObjects(newChecklistDataObjects)
-            //ChecklistDataObjects[checklistEntity].push(newRowObject)
-          }
-        })(checklistEntity)
-      );
-    
-    
-    
-    
-    });
-    
-    Promise.all(tasks).then(() => {
-        SetChecklistDataObjects(newChecklistDataObjects)
-        console.log("##################### newChecklistDataObjects ################")
-        console.log(newChecklistDataObjects)
-      }).catch(e => {
-        console.log("############## Error in fetching from APIs and adding rows to checklist #############")
-        console.log(e)
-      })
-   
-        
-      }
-    })
-    .catch( e => {
       console.log(e)
-    }) 
-
-    getData("HybridDataObjects")
-    .then((hybridDataObjects) => {
-      console.log("############## combined hybrid object from async storage #######")
-      console.log(hybridDataObjects)
-      if(hybridDataObjects != null)
-        SetHybridDataObjects(hybridDataObjects)
     })
-    .catch( e => {
-      console.log(e)
-    }) 
 
-    getData("DropdownList")
-    .then((DropdownListObject) => {
-      console.log("############## dropdown object from async storage #######")
-      console.log(DropdownListObject)
-      if(DropdownListObject != null)
-      {
-        console.log("########## setting the drop down object to async storage object ############")
-        SetDropdownList(DropdownListObject)
-      }
-      else
-      {
-        Object.keys(DropdownList).forEach((field) => {
-          var dropdownObject = {...DropdownList}
-          if(dropdownObject[field].ValuesListUrl != "")
-          {
-            console.log("################# "+field+" object before calling its api ##############")
-            console.log(dropdownObject[field])
-    
-              console.log("########### Requesting url ############")
-              console.log(dropdownObject[field].ValuesListUrl)
-              fetch(
-                dropdownObject[field].ValuesListUrl,
-                {
-                  method: "POST",
-                  body: JSON.stringify({
-                    "basicparams": {
-                        "companyID": 84,
-                        "userID": 13
-                    }
-                }),
-                  headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                  },
-                }
-              )
-              .then(res => res.json())
-              .then(body => {
-                console.log("############ Body recieved after fetching from URL "+ dropdownObject[field].ValuesListUrl)
-                console.log(body)
-    
-                
-                body = body.result != null ? body.result : body
-                var modifiedList = []
-                if(body.length != 0)
-                {
-                  var idKey = ""
-                  var valueKey = ""
-                  for(var key of Object.keys(body[0]))
-                  { 
-                    ${Placeholders.CodeSnippets["AQLObjectModifier"] != null ? Placeholders.CodeSnippets["AQLObjectModifier"] : `//Could be Some Code from placeholder`}
-                    if(key.toString().toLowerCase().includes("id"))
-                    {
-                      idKey = key
-                      continue
-                    }
-                    if(key.toString().toLowerCase().includes("name") || key.toString().toLowerCase().includes("value"))
-                    {
-                      valueKey = key
-                      continue
-                    }
-                  }
-                  if(body[0][idKey] != null && body[0][valueKey] != null)
-                  {
-                    for( var obj of body)
-                    {
-
-                      var modifiedObject = {...obj}
-                      modifiedObject["id"] = obj[idKey].toString()
-                      modifiedObject["value"] = obj[valueKey].toString()
-                      modifiedObject["name"] = obj[valueKey].toString()
-    
-                      modifiedList.push(modifiedObject)
-                    }
-                  }
-                }
-    
-                
-                
-                dropdownObject[field]["ValuesList"] = modifiedList
-                console.log("########### "+ field.toString() +"Dropdown object after calling its API #########")
-                //console.log(dropdownObject[field])
-                console.log(DropdownList[field])
-                SetDropdownList(dropdownObject)
-                //storeData("DropdownList", dropdownObject)
-              })
-              .catch((error) => {
-                console.log("############### Error fetching from url #############")
-                console.log(error)
-              })
-           
-            
-          }
-        })
-      }
-    })
-    .catch( e => {
-      console.log(e)
-    }) 
-
-    getData("RadioButtonList")
-    .then((RadioButtonListObject) => {
-      console.log("############## RadioButtonListObject from async storage #######")
-      console.log(RadioButtonListObject)
-      if(RadioButtonListObject != null)
-        SetRadioButtonList(RadioButtonListObject)
-    })
-    .catch( e => {
-      console.log(e)
-    }) 
     
   }, [])
-  
-  
-  
-  
   
 
   return (
