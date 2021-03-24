@@ -141,8 +141,8 @@ const Placeholders = {
             var SampleSize = newFieldList["samplesize"]
             var defectRate = SampleSize != "" && newFieldList["totaldefect"] != "" ? ((parseInt(newFieldList["totaldefect"])/parseInt(SampleSize))*100).toString() : ""
             newFieldList["defectrate"] = defectRate + "%"
-            storeData("FieldList", newFieldList)
             SetFieldList(newFieldList)
+            storeData("FieldList",newFieldList , CurrentScreenId)
         
             `,
 
@@ -175,9 +175,9 @@ const Placeholders = {
                 var defectRate = SampleSize != "" && newFieldList["totaldefect"] != "" ? ((parseInt(newFieldList["totaldefect"])/parseInt(SampleSize))*100).toString() : ""
                 newFieldList["defectrate"] = defectRate + "%"
 
-                storeData("FieldList", newFieldList)
+                
                 SetFieldList(newFieldList)
-            
+                storeData("FieldList",newFieldList , CurrentScreenId)
                 `,
 
                 "miscdefect_add": 
@@ -209,9 +209,9 @@ const Placeholders = {
                     var defectRate = SampleSize != "" && newFieldList["totaldefect"] != "" ? ((parseInt(newFieldList["totaldefect"])/parseInt(SampleSize))*100).toString() : ""
                     newFieldList["defectrate"] = defectRate + "%"
                     
-                    storeData("FieldList", newFieldList)
+                    
                     SetFieldList(newFieldList)
-                
+                    storeData("FieldList",newFieldList , CurrentScreenId)
                     `,
 
             "cartonsamplesize": `
@@ -233,15 +233,16 @@ const Placeholders = {
             `,
 
             "currentScreenBackgroundInfo": `
-                
+
+                CurrentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
+                CurrentScreenId = CurrentScreenBackgroundInfo["TNA_ACTIVITY_ID"]
+
+                console.log("############# Current screen background information ##############")
+                console.log(CurrentScreenBackgroundInfo)
+
 
                 useEffect(() => {
-                    CurrentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
-                    CurrentScreenId = CurrentScreenBackgroundInfo["FG_CODE"]
-
-                    console.log("############# Current screen background information ##############")
-                    console.log(CurrentScreenBackgroundInfo)
-
+                    
                     var newFieldList = {...FieldList}
                     newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR_QTY"]
                     newFieldList["doneqty_val"] = "0"

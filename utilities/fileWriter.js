@@ -1110,7 +1110,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                           break
                                         }
                                       }
-                                      storeData("ChecklistDataObjects", newChecklistDataObjects)
+                                      storeData("ChecklistDataObjects", newChecklistDataObjects, CurrentScreenId)
                                       SetChecklistDataObjects(newChecklistDataObjects)
                                     }}
                                     textColor={"black"} //'#7a44cf'
@@ -1160,7 +1160,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                             }
                           }
 
-                        storeData("ChecklistDataObjects", newChecklistDataObjects)
+                        storeData("ChecklistDataObjects", newChecklistDataObjects, CurrentScreenId)
                         SetChecklistDataObjects(newChecklistDataObjects)
 
                         console.log("#################### current checklist object modified to ####################")
@@ -1194,7 +1194,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                             break
                           }
                         }
-                        storeData("ChecklistDataObjects", newChecklistDataObjects) 
+                        storeData("ChecklistDataObjects", newChecklistDataObjects, CurrentScreenId) 
                         SetChecklistDataObjects(newChecklistDataObjects)
                       }}
                   /> 
@@ -1282,7 +1282,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                               console.log("deletion will take place")
                               var newHybridDataObjects = {...HybridDataObjects}
                               newHybridDataObjects["${ViewObject.name}"] = newHybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != item.value )
-                              storeData("HybridDataObjects", newHybridDataObjects)
+                              storeData("HybridDataObjects", newHybridDataObjects,CurrentScreenId )
                               SetHybridDataObjects(newHybridDataObjects)
 
                           }}
@@ -1548,23 +1548,24 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       }
                     }
                     
-                    newRowObject["id"] = HybridDataObjects["${ViewObject.name}"].length
+                    newRowObject["id"] = (HybridDataObjects["${ViewObject.name}"].length).toString()
 
                     var newHybridObjectList = {...HybridDataObjects}
                     newHybridObjectList["${ViewObject.name}"].push(newRowObject)
                     console.log("####### Adding new row to table for ${ViewObject.name} ############")
                     console.log(newRowObject)
 
-                    console.log("############# Hybrid data object ##############")
+                    console.log("############# Hybrid data object being stored for screen id "+ CurrentScreenId+" ##############")
                     console.log(newHybridObjectList)
-                    storeData("HybridDataObjects", newHybridObjectList)
+                    
                     SetHybridDataObjects(newHybridObjectList)
 
                     SetFieldList(newFieldList)
                     SetRadioButtonList(newRadioButtonList)
 
                     ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
-                }}
+                    storeData("HybridDataObjects", newHybridObjectList, CurrentScreenId)
+                  }}
               >
                 <Text style={styles.textStyle}>${subViewObject.fields[componentNumber].title}</Text>
       
@@ -1690,7 +1691,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    console.log("#### New dropdown list ######")
                    console.log(newDropdownList)
                    SetDropdownList(newDropdownList)
-                   storeData("DropdownList", newDropdownList)
+                   storeData("DropdownList", newDropdownList, CurrentScreenId)
                  }}
                  selectedItems={DropdownList.${fieldName}["SelectedValue"]}
 
@@ -1777,7 +1778,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   
 
                   SetFieldList(newFieldsObject)
-                  storeData("FieldList", newFieldsObject)
+                  storeData("FieldList", newFieldsObject, CurrentScreenId)
               }}
           />
           </View>
@@ -1810,7 +1811,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     newRadioButtonList["${ViewObject.name}"] = SelectedOutcome.label
                     ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                     SetRadioButtonList(newRadioButtonList)
-                    storeData("RadioButtonList", newRadioButtonList)
+                    storeData("RadioButtonList", newRadioButtonList, CurrentScreenId)
                     
                     }}
                     initial={(() => {
@@ -2084,10 +2085,34 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const screenFunctions = ${ObjectFromAPI.functions}
 
-const storeData = async (key, value) => {
+const storeData = async (key, value, CurrentScreenId) => {
+  console.log("#################### screen id recieved in storeData function #############")
+  console.log(CurrentScreenId)
+  console.log("##################### value recieved in storeData function ##############")
+  console.log(value)
   try {
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem(key, jsonValue)
+    const currentCodeData = await getData(CurrentScreenId) 
+    var newScreenData = currentCodeData != null ? {...currentCodeData} : null
+    //const jsonValue = JSON.stringify(value)
+    if(newScreenData != null)
+      {    
+        //if(newScreenData[key] != null)           // the key doesn't get removed otherwise and another object with same key is added
+          //delete newScreenData[key]
+
+        newScreenData[key] = value
+      }
+      
+    else
+      {
+        newScreenData = {}
+        newScreenData[key] = value
+      }
+
+      console.log("############# Current screen  data with screen code "+ CurrentScreenId +" after updation #####################")
+      console.log(newScreenData)
+    
+    await AsyncStorage.setItem(CurrentScreenId, JSON.stringify(newScreenData))
+    
     //console.log("######## stored key "+key+" with value #######")
   } catch (e) {
     // saving error
@@ -2234,7 +2259,7 @@ const GeneratedCode = (props) => {
         Promise.all(tasks)
         .then(() => {
           SetDropdownList(dropdownsListObject)
-          //storeData("DropdownList", dropdownObject)
+          //storeData("DropdownList", dropdownObject, CurrentScreenId)
           console.log("################## Setting dropdown list object to ###################")
           console.log(dropdownsListObject)
         })
@@ -2382,7 +2407,7 @@ const GeneratedCode = (props) => {
       {
         console.log("######################### Combined Hybrid object from async storage ###################")
         console.log(data["HybridDataObjects"])
-        SetHybridDataObjects(data["ChecklistDataObjects"])
+        SetHybridDataObjects(data["HybridDataObjects"])
       }
 
 // ################## Extracting hybrid information from async storage into the states ###########################
