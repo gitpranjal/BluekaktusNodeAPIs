@@ -1,9 +1,9 @@
 const Placeholders = {
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://316386850371.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "auditchecklist": "http://9e4b4954ef15.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
-        "maindefect": "http://316386850371.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
+        "maindefect": "http://9e4b4954ef15.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
     },
     "StateVariables": {
         "DefectsSummary": {
@@ -235,13 +235,15 @@ const Placeholders = {
             "currentScreenBackgroundInfo": `
 
                 CurrentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
-                CurrentScreenId = CurrentScreenBackgroundInfo["TNA_ACTIVITY_ID"]
+                CurrentScreenId = props.navigation.getParam("orderInfo")["TNA_ACTIVITY_ID"]
 
-                console.log("############# Current screen background information ##############")
-                console.log(CurrentScreenBackgroundInfo)
+                
 
 
                 useEffect(() => {
+
+                    console.log("############# Current screen background information ##############")
+                    console.log(CurrentScreenBackgroundInfo)
                     
                     var newFieldList = {...FieldList}
                     newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR_QTY"]
@@ -255,7 +257,11 @@ const Placeholders = {
             `,
 
             "finalSubmission": `
-                clearAll()
+                //clearAll()
+
+                var cleaneData = getCleanData({...CompleteCurrentScreenData})
+                console.log("############################ Cleaned data for current screen ##########################")
+                console.log(cleaneData)
             
             `,
     

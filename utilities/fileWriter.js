@@ -2086,10 +2086,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const screenFunctions = ${ObjectFromAPI.functions}
 
 const storeData = async (key, value, CurrentScreenId) => {
-  console.log("#################### screen id recieved in storeData function #############")
-  console.log(CurrentScreenId)
-  console.log("##################### value recieved in storeData function ##############")
-  console.log(value)
+  //console.log("#################### screen id recieved in storeData function #############")
+  //console.log(CurrentScreenId)
+  //console.log("##################### value recieved in storeData function ##############")
+  //console.log(value)
   try {
     const currentCodeData = await getData(CurrentScreenId) 
     var newScreenData = currentCodeData != null ? {...currentCodeData} : null
@@ -2108,8 +2108,8 @@ const storeData = async (key, value, CurrentScreenId) => {
         newScreenData[key] = value
       }
 
-      console.log("############# Current screen  data with screen code "+ CurrentScreenId +" after updation #####################")
-      console.log(newScreenData)
+      //console.log("############# Current screen  data with screen code "+ CurrentScreenId +" after updation #####################")
+      //console.log(newScreenData)
     
     await AsyncStorage.setItem(CurrentScreenId, JSON.stringify(newScreenData))
     
@@ -2139,8 +2139,68 @@ const clearAll = async () => {
   } catch(e) {
     // clear error
   }
-
   console.log(' Clearing storage Done.')
+}
+
+const getCleanData = (currentScreenDataObject) => {
+
+  var cleandataObject = {}
+
+  Object.keys(currentScreenDataObject["FieldList"]).forEach(key => {
+    cleandataObject[key] = currentScreenDataObject["FieldList"][key]
+  })
+
+  Object.keys(currentScreenDataObject["DropdownList"]).forEach(key => {
+    cleandataObject[key] = currentScreenDataObject["DropdownList"][key]["SelectedValue"]["name"] != null ? currentScreenDataObject["DropdownList"][key]["SelectedValue"]["name"] : currentScreenDataObject["DropdownList"][key]["SelectedValue"]
+  })
+
+  Object.keys(currentScreenDataObject["HybridDataObjects"]).forEach(key => {
+    cleandataObject[key] = currentScreenDataObject["HybridDataObjects"][key].filter(obj => {return obj.id != "-1"})
+  })
+
+  Object.keys(currentScreenDataObject["ChecklistDataObjects"]).forEach(key => {
+    var currentChecklist = currentScreenDataObject["ChecklistDataObjects"][key].filter(obj => {return obj.id != "-1"})
+
+    var compactList = []
+    for(var checklistObj of currentChecklist)
+    {
+      var compactObject = {"id": checklistObj["id"]}
+        Object.keys(checklistObj).forEach(key => {
+          if(checklistObj[key].type == null)
+            return
+
+            if(checklistObj[key].type == "textField")
+            {
+              compactObject[key] = checklistObj[key]["value"]
+              return
+            }
+            if(checklistObj[key].type == "textInputField")
+            {
+              compactObject[key] = checklistObj[key]["value"]
+              return
+            }
+
+            if(checklistObj[key].type == "dropdown")
+            {
+              compactObject[key] = checklistObj[key]["SelectedValue"].name != null ? checklistObj[key]["SelectedValue"].name : checklistObj[key]["SelectedValue"]
+              return
+            }
+
+            if(checklistObj[key].type == "radioButton")
+            {
+              compactObject[key] = checklistObj[key]["value"]
+              return
+            }
+          
+          })
+      
+      compactList.push(compactObject)
+    }
+
+    cleandataObject[key] = compactList
+  })
+
+  return cleandataObject
 }
 
 
@@ -2152,6 +2212,7 @@ const GeneratedCode = (props) => {
   const [HybridDataObjects, SetHybridDataObjects] = useState(${JSON.stringify(HybridDataObjects)})
   const [ChecklistDataObjects, SetChecklistDataObjects] = useState(${JSON.stringify(ChecklistDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
+  const [CompleteCurrentScreenData, SetCompleteCurrentScreenData] = useState("")
   
 
   var CurrentScreenId = -1
@@ -2166,9 +2227,11 @@ const GeneratedCode = (props) => {
     
     getData(CurrentScreenId)
     .then(data => {
-      console.log("################ Data for screen code "+ CurrentScreenId + " ###################")
-      console.log(data)
+      //console.log("################ Data for screen code "+ CurrentScreenId + " ###################")
+      //console.log(data)
 
+      //console.log(JSON.stringify(data, null, 4))
+      SetCompleteCurrentScreenData(data != null ? data : {})
       
 
 // ################# Extracting Text input fields from async storage into the states ##############
@@ -2249,8 +2312,8 @@ const GeneratedCode = (props) => {
                 
                 
                 dropdownsListObject[dropdownObjectName]["ValuesList"] = modifiedList
-                console.log("########### "+ dropdownObjectName +"Dropdown object after calling its API #########")
-                console.log(dropdownsListObject[dropdownObjectName])
+                //console.log("########### "+ dropdownObjectName +"Dropdown object after calling its API #########")
+                //console.log(dropdownsListObject[dropdownObjectName])
 
           })(dropdownObjectName))
 
@@ -2260,8 +2323,8 @@ const GeneratedCode = (props) => {
         .then(() => {
           SetDropdownList(dropdownsListObject)
           //storeData("DropdownList", dropdownObject, CurrentScreenId)
-          console.log("################## Setting dropdown list object to ###################")
-          console.log(dropdownsListObject)
+          //console.log("################## Setting dropdown list object to ###################")
+          //console.log(dropdownsListObject)
         })
         .catch(e => {
           console.log("############### Error in fetching dropdown list information ##########")
@@ -2275,8 +2338,8 @@ const GeneratedCode = (props) => {
 // ################## Extracting checklist information from async storage into the states ###########################
       if(data != null && data["ChecklistDataObjects"] != null)
       {
-        console.log("######################### Checklist object from async storage ###################")
-        console.log(data["ChecklistDataObjects"])
+        //console.log("######################### Checklist object from async storage ###################")
+        //console.log(data["ChecklistDataObjects"])
         SetChecklistDataObjects(data["ChecklistDataObjects"])
       }
       else
@@ -2289,12 +2352,8 @@ const GeneratedCode = (props) => {
               var ChecklistStructureInfoObject = ChecklistDataObjects[
                 checklistEntity
               ].filter((obj) => obj.id == "-1")[0];
-              console.log(
-                "############ Checklist structure info object for " +
-                  checklistEntity +
-                  " ########"
-              );
-              console.log(ChecklistStructureInfoObject);
+              //console.log("############ Checklist structure info object for " + checklistEntity +" ########");
+              //console.log(ChecklistStructureInfoObject);
               if (
                 ChecklistStructureInfoObject.ApiUrl == null ||
                 ChecklistStructureInfoObject.ApiUrl == ""
@@ -2322,27 +2381,20 @@ const GeneratedCode = (props) => {
               const body = await response.json();
         
               const newRowlist = body.result != null ? body.result : body;
-              console.log(
-                "############# new rowlist for checklist named " +
-                  checklistEntity +
-                  " from api ##############"
-              );
-              console.log(newRowlist);
+              //console.log("############# new rowlist for checklist named " +checklistEntity +" from api ##############");
+              //console.log(newRowlist);
         
               rowList = rowList.concat(newRowlist);
         
-              console.log(
-                "######### pushing checklist objects in checklist list ##############"
-              );
-              //newChecklistDataObjects[checklistEntity]= []
+             
     
               for (var i = 0; i < rowList.length; i++) {
                 var newRowObject = { id: i.toString() };
         
                 for (var column of Object.keys(ChecklistStructureInfoObject)) {
                   if (column == "id" || column == "ApiUrl") continue;
-                  console.log("################ row list object ##############")
-                  console.log(rowList[i])
+                  //console.log("################ row list object ##############")
+                  //console.log(rowList[i])
                   if (ChecklistStructureInfoObject[column]["type"] == "textField") {
                     newRowObject[column] = {
                       type: "textField",
@@ -2391,8 +2443,8 @@ const GeneratedCode = (props) => {
         
         Promise.all(tasks).then(() => {
             SetChecklistDataObjects(newChecklistDataObjects)
-            console.log("##################### newChecklistDataObjects ################")
-            console.log(newChecklistDataObjects)
+            //console.log("##################### newChecklistDataObjects ################")
+            //console.log(newChecklistDataObjects)
           }).catch(e => {
             console.log("############## Error in fetching from APIs and adding rows to checklist #############")
             console.log(e)
@@ -2405,16 +2457,16 @@ const GeneratedCode = (props) => {
 // ################## Extracting hybrid information from async storage into the states ###########################
       if(data != null && data["HybridDataObjects"] != null)
       {
-        console.log("######################### Combined Hybrid object from async storage ###################")
-        console.log(data["HybridDataObjects"])
+        //console.log("######################### Combined Hybrid object from async storage ###################")
+        //console.log(data["HybridDataObjects"])
         SetHybridDataObjects(data["HybridDataObjects"])
       }
 
 // ################## Extracting hybrid information from async storage into the states ###########################
       if(data != null && data["RadioButtonList"] != null)
       {
-        console.log("######################### Combined radio object from async storage ###################")
-        console.log(data["RadioButtonList"])
+        //console.log("######################### Combined radio object from async storage ###################")
+        //console.log(data["RadioButtonList"])
         SetRadioButtonList(data["RadioButtonList"])
       }
 
