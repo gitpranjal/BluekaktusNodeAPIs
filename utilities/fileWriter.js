@@ -2146,6 +2146,11 @@ const getCleanData = (currentScreenDataObject) => {
 
   var cleandataObject = {}
 
+  if(currentScreenDataObject.screenBackgroundInfo != null)
+    cleandataObject["screenBackgroundInfo"] = currentScreenDataObject.screenBackgroundInfo
+  else
+    console.log("############ No background information found for the screen to put in clean data ##################")
+
   Object.keys(currentScreenDataObject["FieldList"]).forEach(key => {
     cleandataObject[key] = currentScreenDataObject["FieldList"][key]
   })
@@ -2160,6 +2165,10 @@ const getCleanData = (currentScreenDataObject) => {
 
   Object.keys(currentScreenDataObject["ChecklistDataObjects"]).forEach(key => {
     var currentChecklist = currentScreenDataObject["ChecklistDataObjects"][key].filter(obj => {return obj.id != "-1"})
+
+  Object.keys(currentScreenDataObject["RadioButtonList"]).forEach(key => {
+    cleandataObject[key] = currentScreenDataObject["RadioButtonList"][key]
+  })
 
     var compactList = []
     for(var checklistObj of currentChecklist)
@@ -2231,7 +2240,9 @@ const GeneratedCode = (props) => {
       //console.log(data)
 
       //console.log(JSON.stringify(data, null, 4))
-      SetCompleteCurrentScreenData(data != null ? data : {})
+      if(data != null)
+        data["screenBackgroundInfo"] = CurrentScreenBackgroundInfo
+      SetCompleteCurrentScreenData(data != null ? data : {} )
       
 
 // ################# Extracting Text input fields from async storage into the states ##############
