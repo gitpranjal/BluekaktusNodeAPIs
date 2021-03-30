@@ -2286,21 +2286,18 @@ const GeneratedCode = (props) => {
           SetCompleteCurrentScreenData(data)
         }
       else
-      {
         SetCompleteCurrentScreenData({})
-        SetDataLoaded(true)
-        return
-      }
+
       
       
 
 // ################# Extracting Text input fields from async storage into the states ##############
-      if(data["FieldList"] != null)
+      if(data != null && data["FieldList"] != null)
         SetFieldList(data["FieldList"])
 
 // ################## Extracting dropdowns information from async storage into the states #######################
 
-      if(data["DropdownList"] != null)
+      if(data != null && data["DropdownList"] != null)
         SetDropdownList(data["DropdownList"])
       else
       // ######################## fetching the dropdown information from api since nothing present in async stotage #########
@@ -2396,7 +2393,7 @@ const GeneratedCode = (props) => {
 // ######################################## dropdown fetching ends ###############################################
 
 // ################## Extracting checklist information from async storage into the states ###########################
-      if(data["ChecklistDataObjects"] != null)
+      if(data != null && data["ChecklistDataObjects"] != null)
       {
         //console.log("######################### Checklist object from async storage ###################")
         //console.log(data["ChecklistDataObjects"])
@@ -2515,7 +2512,7 @@ const GeneratedCode = (props) => {
 // ########################################### fetching info from api for checklist ends ############################
 
 // ################## Extracting hybrid information from async storage into the states ###########################
-      if(data["HybridDataObjects"] != null)
+      if(data != null && data["HybridDataObjects"] != null)
       {
         //console.log("######################### Combined Hybrid object from async storage ###################")
         //console.log(data["HybridDataObjects"])
@@ -2523,7 +2520,7 @@ const GeneratedCode = (props) => {
       }
 
 // ################## Extracting hybrid information from async storage into the states ###########################
-      if(data["RadioButtonList"] != null)
+      if(data != null && data["RadioButtonList"] != null)
       {
         //console.log("######################### Combined radio object from async storage ###################")
         //console.log(data["RadioButtonList"])
