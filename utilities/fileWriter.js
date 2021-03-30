@@ -97,7 +97,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       },
                       {
                           "name": "offeredqty",
@@ -106,7 +107,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       }
                   ],
                   "groups": [],
@@ -221,7 +223,8 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               },
               {
                   "name": "samplesize",
@@ -230,7 +233,8 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               }
           ],
           "groups": [],
@@ -248,7 +252,8 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               },
               {
                   "name": "fg2qty",
@@ -257,7 +262,8 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               }
           ],
           "groups": [],
@@ -275,7 +281,8 @@ var ObjectFromAPI = {
                 "minLength": 0,
                 "maxLength": 100,
                 "defaultValue": "",
-                "required": false
+                "required": false,
+                "inputType": "numeric"
             }
         ],
         "groups": [],
@@ -293,7 +300,8 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               },
               {
                   "name": "cartonselected",
@@ -302,7 +310,8 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               }
           ],
           "groups": [],
@@ -392,7 +401,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       },
                       {
                           "name": "maindefect_maj",
@@ -401,7 +411,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       },
                       {
                           "name": "maindefect_min",
@@ -410,7 +421,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       }
                   ],
                   "groups": [],
@@ -476,7 +488,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       },
                       {
                           "name": "measurementdefect_maj",
@@ -485,7 +498,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       },
                       {
                           "name": "measurementdefect_min",
@@ -494,7 +508,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       }
                   ],
                   "groups": [],
@@ -560,7 +575,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric",
                       },
                       {
                           "name": "miscdefect_maj",
@@ -569,7 +585,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       },
                       {
                           "name": "miscdefect_min",
@@ -578,7 +595,8 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "required": false,
+                          "inputType": "numeric"
                       }
                   ],
                   "groups": [],
@@ -705,10 +723,10 @@ var ObjectFromAPI = {
         "componentPerRow": 1,
         "fields": [
             {
-                "name": "passed",
+                "name": "Passed",
             },
             {
-                "name": "failed",
+                "name": "Failed",
             },
             {
               "name": "onhold",
@@ -1480,6 +1498,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 borderRadius: 5,
               }}
               inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
+              keyboardType=${subViewObject.fields[componentNumber].inputType != null ? `"`+subViewObject.fields[componentNumber].inputType+`"` : `"default"`}
               maxLength={50}
               value={FieldList["${subViewObject.fields[componentNumber].name}"]}
               editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
@@ -1757,8 +1776,13 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
          <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-              labelStyles={{color: "red", fontSize: 10, fontWeight: "bold"}}
-          
+              labelStyles={{fontSize: 12, fontWeight: "bold", backgroundColor: "${secondaryColor}", paddingHorizontal: 4, borderRadius: 2, paddingVertical: 1}}
+              staticLabel
+              customLabelStyles={{
+                colorFocused: 'red',
+                fontSizeFocused: 12,
+              }}
+              keyboardType=${ViewObject.fields[componentNumber].inputType != null ? `"`+ViewObject.fields[componentNumber].inputType+`"` : `"default"`}
               containerStyles={{
                 borderWidth: 2,
                 padding: 10,
@@ -1848,7 +1872,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           {/* ################################################## BUTTON ${ViewObject.fields[componentNumber].name} ################################################ */}
             <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
-                style={{ ...styles.openButton, marginHorizontal: 10, width: "20%", marginVertical: 10, alignSelf: "center"}}
+                style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
                   
                   ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
@@ -2072,7 +2096,7 @@ var code = {
 code["structure"] = 
 `
 import React, { useState, useEffect} from "react";
-import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView, Alert} from "react-native";
+import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
@@ -2131,6 +2155,18 @@ const getData = async (key) => {
     console.log("################ Error getting value from asysync storage ###############")
     console.log(e)
   }
+}
+
+const removeValue = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key)
+  } catch(e) {
+    // remove error
+    console.log("################### Error in deleting record for key "+key)
+    console.log(e)
+  }
+
+  console.log("Romoval of data for screen with ID " + key + "Done")
 }
 
 const clearAll = async () => {
@@ -2212,6 +2248,8 @@ const getCleanData = (currentScreenDataObject) => {
   return cleandataObject
 }
 
+${Placeholders.CodeSnippets["CustomDataModifierFunction"] != null ? Placeholders.CodeSnippets["CustomDataModifierFunction"] : `//Could be Some Code from placeholder`}
+
 
 const GeneratedCode = (props) => {
   const [Sentence, SetSentence] = useState("")
@@ -2222,6 +2260,7 @@ const GeneratedCode = (props) => {
   const [ChecklistDataObjects, SetChecklistDataObjects] = useState(${JSON.stringify(ChecklistDataObjects)})
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
   const [CompleteCurrentScreenData, SetCompleteCurrentScreenData] = useState("")
+  const [DataLoaded, SetDataLoaded] = useState(false)
   
 
   var CurrentScreenId = -1
@@ -2241,17 +2280,27 @@ const GeneratedCode = (props) => {
 
       //console.log(JSON.stringify(data, null, 4))
       if(data != null)
-        data["screenBackgroundInfo"] = CurrentScreenBackgroundInfo
-      SetCompleteCurrentScreenData(data != null ? data : {} )
+        
+        {
+          data["screenBackgroundInfo"] = CurrentScreenBackgroundInfo
+          SetCompleteCurrentScreenData(data)
+        }
+      else
+      {
+        SetCompleteCurrentScreenData({})
+        SetDataLoaded(true)
+        return
+      }
+      
       
 
 // ################# Extracting Text input fields from async storage into the states ##############
-      if(data != null && data["FieldList"] != null)
+      if(data["FieldList"] != null)
         SetFieldList(data["FieldList"])
 
 // ################## Extracting dropdowns information from async storage into the states #######################
 
-      if(data != null && data["DropdownList"] != null)
+      if(data["DropdownList"] != null)
         SetDropdownList(data["DropdownList"])
       else
       // ######################## fetching the dropdown information from api since nothing present in async stotage #########
@@ -2347,7 +2396,7 @@ const GeneratedCode = (props) => {
 // ######################################## dropdown fetching ends ###############################################
 
 // ################## Extracting checklist information from async storage into the states ###########################
-      if(data != null && data["ChecklistDataObjects"] != null)
+      if(data["ChecklistDataObjects"] != null)
       {
         //console.log("######################### Checklist object from async storage ###################")
         //console.log(data["ChecklistDataObjects"])
@@ -2466,7 +2515,7 @@ const GeneratedCode = (props) => {
 // ########################################### fetching info from api for checklist ends ############################
 
 // ################## Extracting hybrid information from async storage into the states ###########################
-      if(data != null && data["HybridDataObjects"] != null)
+      if(data["HybridDataObjects"] != null)
       {
         //console.log("######################### Combined Hybrid object from async storage ###################")
         //console.log(data["HybridDataObjects"])
@@ -2474,7 +2523,7 @@ const GeneratedCode = (props) => {
       }
 
 // ################## Extracting hybrid information from async storage into the states ###########################
-      if(data != null && data["RadioButtonList"] != null)
+      if(data["RadioButtonList"] != null)
       {
         //console.log("######################### Combined radio object from async storage ###################")
         //console.log(data["RadioButtonList"])
@@ -2482,6 +2531,9 @@ const GeneratedCode = (props) => {
       }
 
 
+    })
+    .then(() => {
+      SetDataLoaded(true)
     })
     .catch( e => {
       console.log("################ Error in fetching data object for Screen Id: "+ CurrentScreenId)
@@ -2497,6 +2549,11 @@ const GeneratedCode = (props) => {
     contentContainerStyle={{alignItems: "center"}}
     keyboardShouldPersistTaps="always"
     >
+    {(() => {
+      if(! DataLoaded)
+          return (<View style = {{alignSelf: "center", alignItems: "center"}}><ActivityIndicator size="large" color={"green"} /></View>)
+      })()}
+
        ${mainCode}
 
         <Text style={{color: "grey", fontSize: 20, fontWeight: "bold", marginVertical: 10}}>{Sentence}</Text>

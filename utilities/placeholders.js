@@ -1,9 +1,9 @@
 const Placeholders = {
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://9e4b4954ef15.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "auditchecklist": "http://2efeee915e7c.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
-        "maindefect": "http://9e4b4954ef15.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
+        "maindefect": "http://2efeee915e7c.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
     },
     "StateVariables": {
         "DefectsSummary": {
@@ -318,11 +318,69 @@ const Placeholders = {
 
 
 
+                targetObject["DEFECT_LIST"] = []
+                for (var defectObj of cleanDataFromScreen["maindefect"])
+                {
+                  var newDefectObject = {
+                    "MAJOR": defectObj.maindefect_maj,
+                    "MINOR": defectObj.maindefect_maj,
+                    "TYPE": "Defect",
+                    "DEFECT_ID": defectObj.maindefect_maj,
+                    "MEASUREMENT_VALUE": "",
+                    "CRITICAL": defectObj.maindefect_crit
+                  }
+
+                  targetObject["DEFECT_LIST"].push(newDefectObject)
+                }
+
+                for (var defectObj of cleanDataFromScreen["measurementdefect"])
+                {
+                  var newDefectObject = {
+                    "MAJOR": defectObj.measurementdefect_maj,
+                    "MINOR": defectObj.measurementdefect_min,
+                    "TYPE": "Measurement",
+                    "DEFECT_ID": "0",
+                    "MEASUREMENT_VALUE": defectObj.measurementdefect_min,
+                    "CRITICAL": defectObj.measurementdefect_crit
+                  }
+                  targetObject["DEFECT_LIST"].push(newDefectObject)
+                }
+
+                for (var defectObj of cleanDataFromScreen["miscdefect"])
+                {
+                  var newDefectObject = {
+                    "MAJOR": defectObj.miscdefect_maj,
+                    "MINOR": defectObj.miscdefect_min,
+                    "TYPE": "MISC Defect",
+                    "DEFECT_ID": "0",
+                    "MEASUREMENT_VALUE": defectObj.miscdefect,
+                    "CRITICAL": defectObj.miscdefect_crit
+                  }
+                  targetObject["DEFECT_LIST"].push(newDefectObject)
+                }
+
+                targetObject["CHECK_LIST"] = []
+
+                for(var checklistObj of cleanDataFromScreen["auditchecklist"])
+                {
+                  var newChecklistObj = {
+                    "CHECK_LIST_ID": checklistObj.id,
+                    "CHECK_LIST_NAME": checklistObj.name,
+                    "CHECK_STATUS": checklistObj.result,
+                    "REMARKS": checklistObj.remarks,
+                    "BUYER_NAME": ""
+                  } 
+                  targetObject["CHECK_LIST"].push(newDefectObject)
+                }
+
+
+                return targetObject
+                
 
 
 
 
-            }
+            }  // function definition ends
         
         `,
         "ChecklistApiFetch": `
@@ -570,11 +628,32 @@ const Placeholders = {
 
             "finalSubmission": `
                 //clearAll()
+                //return 
 
-                var cleaneData = getCleanData({...CompleteCurrentScreenData})
+                var cleanData = getCleanData({...CompleteCurrentScreenData})
                 console.log("############################ Cleaned data for current screen ##########################")
-                console.log(cleaneData)
+                console.log(cleanData)
             
+                var resquestObject = CustomDataModifierFunction(cleanData)
+
+                const fetchConfig = {
+                  method: "POST",
+                        body: JSON.stringify(resquestObject),
+                        headers: {
+                          "Content-Type": "application/json",
+                          Accept: "application/json",
+                        },
+                  }
+
+                  fetch("https://maxservicestg.bluekaktus.com/Service1.svc/SaveInspectionFormData_max", fetchConfig)
+                  .then(response => response.json())
+                  .then(body => {
+                    Alert.alert(body["MESSAGE"])
+                    removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
+                    
+                  })
+                  .then(() => props.navigation.navigate("Home"))
+                  
             `,
     
 
