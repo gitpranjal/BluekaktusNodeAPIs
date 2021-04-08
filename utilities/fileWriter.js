@@ -2109,11 +2109,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const screenFunctions = ${ObjectFromAPI.functions}
 
-const storeData = async (key, value, CurrentScreenId) => {
+const storeData = async (key, value, CurrentScreenId, autoSave = true) => {
   //console.log("#################### screen id recieved in storeData function #############")
   //console.log(CurrentScreenId)
   //console.log("##################### value recieved in storeData function ##############")
   //console.log(value)
+  autoSave = ${Placeholders.AutoSave != null ? Placeholders.AutoSave : `autoSave`}
+  if(!autoSave)
+  {
+    console.log("AutoSave is currently false")
+    return
+  }
+
   try {
     const currentCodeData = await getData(CurrentScreenId) 
     var newScreenData = currentCodeData != null ? {...currentCodeData} : null
@@ -2132,9 +2139,12 @@ const storeData = async (key, value, CurrentScreenId) => {
         newScreenData[key] = value
       }
 
+      
+
       //console.log("############# Current screen  data with screen code "+ CurrentScreenId +" after updation #####################")
       //console.log(newScreenData)
     
+     
     await AsyncStorage.setItem(CurrentScreenId, JSON.stringify(newScreenData))
     
     //console.log("######## stored key "+key+" with value #######")
@@ -2179,6 +2189,10 @@ const clearAll = async () => {
 }
 
 const getCleanData = (currentScreenDataObject) => {
+
+
+  console.log("############## Screen data object passed to getCleanData function ###################")
+  console.log(currentScreenDataObject)
 
   var cleandataObject = {}
 
