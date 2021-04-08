@@ -26,10 +26,10 @@ const Placeholders = {
                 var targetObject = {
                     "saveInspList": [
                   {
-                    "ORDER_ID": "118466",
+                    "ORDER_ID": cleanDataFromScreen.screenBackgroundInfo["ORDER_ID"],
                     "PACKED_QTY": cleanDataFromScreen.packedqty,
                     "SAMPLE_SIZE":cleanDataFromScreen.samplesize ,
-                    "INSPECTION_DATE": "2021-03-20 12:24:03",
+                    "INSPECTION_DATE": "2021-04-08 12:24:03",
                     "ACTUAL_RELEASE_TIME": "142",
                     "AQ_LEVEL": cleanDataFromScreen.aqllevel,
                     "MAX_MAJOR_ACCEPTANCE": "0",
@@ -263,7 +263,7 @@ const Placeholders = {
                         "BUYER_NAME": ""
                       }
                     ],
-                    "RESULT": cleanDataFromScreen.packedqty.result ,
+                    "RESULT": cleanDataFromScreen.result ,
                     "IS_PARTIAL": "1",
                     "START_TIME": "2021-03-20 12:22:07",
                     "END_TIME": "2021-03-20 12:24:03",
@@ -290,7 +290,7 @@ const Placeholders = {
                     "RE_AUDIT": "0",
                     "TNA_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["TNA_ACTIVITY_ID"],
                     "QFE_STATUS": "",
-                    "SUSTAINABILITY": "satyam bansal",
+                    "SUSTAINABILITY": cleanDataFromScreen.buyername,               // This means buyer name
                     "GPT_REPORT_NO": "",
                     "GPT_APPROVAL_STATUS": "",
                     "GPT_APPROVAL_REMARK": "",
@@ -319,7 +319,7 @@ const Placeholders = {
 
 
 
-                targetObject["DEFECT_LIST"] = []
+                targetObject["saveInspList"][0]["DEFECT_LIST"] = []
                 for (var defectObj of cleanDataFromScreen["maindefect"])
                 {
                   var newDefectObject = {
@@ -331,7 +331,7 @@ const Placeholders = {
                     "CRITICAL": defectObj.maindefect_crit
                   }
 
-                  targetObject["DEFECT_LIST"].push(newDefectObject)
+                  targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
 
                 for (var defectObj of cleanDataFromScreen["measurementdefect"])
@@ -341,10 +341,10 @@ const Placeholders = {
                     "MINOR": defectObj.measurementdefect_min,
                     "TYPE": "Measurement",
                     "DEFECT_ID": "0",
-                    "MEASUREMENT_VALUE": defectObj.measurementdefect_min,
+                    "MEASUREMENT_VALUE": defectObj.measurementdefect,
                     "CRITICAL": defectObj.measurementdefect_crit
                   }
-                  targetObject["DEFECT_LIST"].push(newDefectObject)
+                  targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
 
                 for (var defectObj of cleanDataFromScreen["miscdefect"])
@@ -357,10 +357,10 @@ const Placeholders = {
                     "MEASUREMENT_VALUE": defectObj.miscdefect,
                     "CRITICAL": defectObj.miscdefect_crit
                   }
-                  targetObject["DEFECT_LIST"].push(newDefectObject)
+                  targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
 
-                targetObject["CHECK_LIST"] = []
+                targetObject["saveInspList"][0]["CHECK_LIST"] = []
 
                 for(var checklistObj of cleanDataFromScreen["auditchecklist"])
                 {
@@ -371,7 +371,7 @@ const Placeholders = {
                     "REMARKS": checklistObj.remarks,
                     "BUYER_NAME": ""
                   } 
-                  targetObject["CHECK_LIST"].push(newDefectObject)
+                  targetObject["saveInspList"][0]["CHECK_LIST"].push(newDefectObject)
                 }
 
 
@@ -631,12 +631,14 @@ const Placeholders = {
                 //clearAll()
                 //return 
 
-                var cleanData = getCleanData({...CompleteCurrentScreenData})
+                var cleanData = getCleanData({...CompleteCurrentScreenData}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
                 console.log("############################ Cleaned data for current screen ##########################")
                 console.log(cleanData)
             
                 var resquestObject = CustomDataModifierFunction(cleanData)
 
+                console.log("############## Data being sent to API ################")
+                console.log(resquestObject)
                 const fetchConfig = {
                   method: "POST",
                         body: JSON.stringify(resquestObject),

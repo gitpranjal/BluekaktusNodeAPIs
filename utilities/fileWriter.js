@@ -2188,7 +2188,7 @@ const clearAll = async () => {
   console.log(' Clearing storage Done.')
 }
 
-const getCleanData = (currentScreenDataObject) => {
+const getCleanData = (currentScreenDataObject, FieldList = {}, DropdownList = {}, HybridDataObjects = {}, ChecklistDataObjects = {}, RadioButtonList = {}) => {
 
 
   console.log("############## Screen data object passed to getCleanData function ###################")
@@ -2200,6 +2200,21 @@ const getCleanData = (currentScreenDataObject) => {
     cleandataObject["screenBackgroundInfo"] = currentScreenDataObject.screenBackgroundInfo
   else
     console.log("############ No background information found for the screen to put in clean data ##################")
+
+  if(currentScreenDataObject["FieldList"] == null)
+    currentScreenDataObject["FieldList"] = FieldList
+  
+  if(currentScreenDataObject["DropdownList"] == null)
+    currentScreenDataObject["DropdownList"] = DropdownList
+
+  if(currentScreenDataObject["HybridDataObjects"] == null)
+    currentScreenDataObject["HybridDataObjects"] = HybridDataObjects
+
+  if(currentScreenDataObject["ChecklistDataObjects"] == null)
+    currentScreenDataObject["ChecklistDataObjects"] = ChecklistDataObjects
+
+  if(currentScreenDataObject["RadioButtonList"] == null)
+    currentScreenDataObject["RadioButtonList"] = RadioButtonList
 
   Object.keys(currentScreenDataObject["FieldList"]).forEach(key => {
     cleandataObject[key] = currentScreenDataObject["FieldList"][key]
@@ -2300,7 +2315,7 @@ const GeneratedCode = (props) => {
           SetCompleteCurrentScreenData(data)
         }
       else
-        SetCompleteCurrentScreenData({})
+        SetCompleteCurrentScreenData({"screenBackgroundInfo": CurrentScreenBackgroundInfo })
 
       
       
