@@ -1,10 +1,10 @@
 const Placeholders = {
-    "AutoSave": false,
+    //"AutoSave": false,
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://f096186048f0.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "auditchecklist": "http://457c04b7bdbc.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
-        "maindefect": "http://f096186048f0.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
+        "maindefect": "http://457c04b7bdbc.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
     },
     "StateVariables": {
         "DefectsSummary": {
@@ -29,7 +29,7 @@ const Placeholders = {
                     "ORDER_ID": cleanDataFromScreen.screenBackgroundInfo["ORDER_ID"],
                     "PACKED_QTY": cleanDataFromScreen.packedqty,
                     "SAMPLE_SIZE":cleanDataFromScreen.samplesize ,
-                    "INSPECTION_DATE": "2021-04-08 12:24:03",
+                    "INSPECTION_DATE": "2021-04-09 10:24:03",
                     "ACTUAL_RELEASE_TIME": "142",
                     "AQ_LEVEL": cleanDataFromScreen.aqllevel,
                     "MAX_MAJOR_ACCEPTANCE": "0",
@@ -263,7 +263,7 @@ const Placeholders = {
                         "BUYER_NAME": ""
                       }
                     ],
-                    "RESULT": cleanDataFromScreen.result ,
+                    "RESULT": cleanDataFromScreen.InspectionResult ,
                     "IS_PARTIAL": "1",
                     "START_TIME": "2021-03-20 12:22:07",
                     "END_TIME": "2021-03-20 12:24:03",
@@ -324,9 +324,9 @@ const Placeholders = {
                 {
                   var newDefectObject = {
                     "MAJOR": defectObj.maindefect_maj,
-                    "MINOR": defectObj.maindefect_maj,
+                    "MINOR": defectObj.maindefect_min,
                     "TYPE": "Defect",
-                    "DEFECT_ID": defectObj.maindefect_maj,
+                    "DEFECT_ID": defectObj.id,
                     "MEASUREMENT_VALUE": "",
                     "CRITICAL": defectObj.maindefect_crit
                   }
@@ -503,6 +503,15 @@ const Placeholders = {
         `
             
             var newFieldList = {...FieldList}
+            
+            if(newRowObject.maindefect_crit == "")
+              newRowObject.maindefect_crit = "0"
+
+            if(newRowObject.maindefect_maj == "")
+              newRowObject.maindefect_maj = "0"
+
+            if(newRowObject.maindefect_min == "")
+              newRowObject.maindefect_min = "0"
 
             newFieldList["totalcritdefect"] = newFieldList["totalcritdefect"] != "" ? (parseInt(newFieldList["totalcritdefect"]) + parseInt(newRowObject.maindefect_crit)).toString() :  newRowObject.maindefect_crit.toString()
             newFieldList["totalmajordefect"] = newFieldList["totalmajordefect"] != "" ? (parseInt(newFieldList["totalmajordefect"]) + parseInt(newRowObject.maindefect_maj)).toString() : newRowObject.maindefect_maj.toString()
@@ -537,6 +546,15 @@ const Placeholders = {
     
                 var newFieldList = {...FieldList}
     
+                if(newRowObject.measurementdefect_crit == "")
+                  newRowObject.measurementdefect_crit = "0"
+
+                if(newRowObject.measurementdefect_maj == "")
+                  newRowObject.measurementdefect_maj = "0"
+
+                if(newRowObject.measurementdefect_min == "")
+                  newRowObject.measurementdefect_min = "0"
+
                 newFieldList["totalcritdefect"] = newFieldList["totalcritdefect"] != "" ? (parseInt(newFieldList["totalcritdefect"]) + parseInt(newRowObject.measurementdefect_crit)).toString() :  newRowObject.measurementdefect_crit.toString()
                 newFieldList["totalmajordefect"] = newFieldList["totalmajordefect"] != "" ? (parseInt(newFieldList["totalmajordefect"]) + parseInt(newRowObject.measurementdefect_maj)).toString() : newRowObject.measurementdefect_maj.toString()
                 newFieldList["totalminordefect"] = newFieldList["totalminordefect"] != "" ? (parseInt(newFieldList["totalminordefect"]) + parseInt(newRowObject.measurementdefect_min)).toString() :  newRowObject.measurementdefect_min.toString()
@@ -571,6 +589,15 @@ const Placeholders = {
         
                     var newFieldList = {...FieldList}
         
+                    if(newRowObject.miscdefect_crit == "")
+                      newRowObject.miscdefect_crit = "0"
+
+                    if(newRowObject.miscdefect_maj == "")
+                      newRowObject.miscdefect_maj = "0"
+
+                    if(newRowObject.miscdefect_min == "")
+                      newRowObject.miscdefect_min = "0"
+
                     newFieldList["totalcritdefect"] = newFieldList["totalcritdefect"] != "" ? (parseInt(newFieldList["totalcritdefect"]) + parseInt(newRowObject.miscdefect_crit)).toString() :  newRowObject.miscdefect_crit.toString()
                     newFieldList["totalmajordefect"] = newFieldList["totalmajordefect"] != "" ? (parseInt(newFieldList["totalmajordefect"]) + parseInt(newRowObject.miscdefect_maj)).toString() : newRowObject.miscdefect_maj.toString()
                     newFieldList["totalminordefect"] = newFieldList["totalminordefect"] != "" ? (parseInt(newFieldList["totalminordefect"]) + parseInt(newRowObject.miscdefect_min)).toString() :  newRowObject.miscdefect_min.toString()
@@ -626,10 +653,32 @@ const Placeholders = {
 
   
             `,
+            "InspectionResult": `
+                
+                //if(SelectedOutcome.label.toLowerCase() == "onhold")
+                //{
+                  
+                  //storeData("RadioButtonList", newRadioButtonList, CurrentScreenId, true, true)
+                  //storeData("ChecklistDataObjects", ChecklistDataObjects, CurrentScreenId, true, true)
+                  //storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
+                  //storeData("DropdownList", DropdownList, CurrentScreenId, true, true)
+                  //storeData("FieldList", FieldList, CurrentScreenId, true, true)
+                  //SetRadioButtonList(newRadioButtonList)
+                  //return
+                //}
+            
+            
+            `,
 
             "finalSubmission": `
-                //clearAll()
-                //return 
+                clearAll()
+                return 
+
+                if(RadioButtonList.InspectionResult == "onhold")
+                {
+                  props.navigation.navigate("BulkOrderListScreen")
+                  return
+                }
 
                 var cleanData = getCleanData({...CompleteCurrentScreenData}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
                 console.log("############################ Cleaned data for current screen ##########################")
@@ -655,7 +704,7 @@ const Placeholders = {
                     removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
                     
                   })
-                  .then(() => props.navigation.navigate("Home"))
+                  .then(() => props.navigation.navigate("BulkOrderListScreen"))
                   
             `,
     
