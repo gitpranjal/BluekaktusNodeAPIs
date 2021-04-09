@@ -31,7 +31,7 @@ var ObjectFromAPI = {
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "buyer_name",
+                  "name": "buyername",
                   "title": "Buyer",
                   "size": "small",
                   "minLength": 0,
@@ -45,19 +45,17 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "button",
-          "name": "upload_image",
+          "type": "dropdown",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "upload_image",
-                  "title": "Upload Image",
-                  "size": "fullWidth",
+                  "name": "aqllevel",
+                  "title": "AQL Level",
+                  "size": "small",
                   "minLength": 0,
                   "maxLength": 0,
                   "required": false,
-                  "onClick": "",
-                  "args": ""
+                  
               }
           ],
           "groups": [],
@@ -65,112 +63,144 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "textField",
-          "componentPerRow": 4,
-          "fields": [
+          "type": "hybrid",
+          "name": "pono",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
               {
-                  "name": "fit_sample",
-                  "title": "Fit Sample Comments",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "pono",
+                          "title": "PO No",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
               },
               {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
+                  "type": "textInputField",
+                  "componentPerRow": 2,
+                  "fields": [
+                      {
+                          "name": "orderqty",
+                          "title": "Order Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      },
+                      {
+                          "name": "offeredqty",
+                          "title": "Offered Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
               },
               {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "excessshortqty",
+                          "title": "Excess/Short Qty",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
               },
               {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
+                  "type": "button",
+                  "name": "powiseqty_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "powiseqty_add",
+                          "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
               }
           ],
-          "groups": [],
           "columns": [],
           "rows": []
       },
       {
-          "type": "textField",
-          "componentPerRow": 4,
-          "fields": [
-              {
-                  "name": "pp_sample",
-                  "title": "PP Sample",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textField",
-          "componentPerRow": 4,
-          "fields": [
-              {
-                  "name": "approved_fabric_trims",
-                  "title": "Approved Fabrics & Trims",
-                  "size": "small",
-                  "minLength": 0,
-                  "maxLength": 100,
-                  "defaultValue": "",
-                  "required": false
-              },
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              },
-              {
-                  "minLength": 0,
-                  "maxLength": 0,
-                  "required": false
-              }
-          ],
-          "groups": [],
-          "columns": [],
-          "rows": []
-      },
-      {
-          "type": "textField",
-          "name": "",
+          "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "production_status",
-                  "title": "Production Status",
+                  "name": "factoryrepresentative",
+                  "title": "Factory Representative",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      
+      {
+          "type": "textInputField",
+          "componentPerRow": 3,
+          "fields": [
+              {
+                  "name": "pqqty_val",
+                  "title": "PR Quantity",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              },
+              {
+                  "name": "doneqty_val",
+                  "title": "Done Quantity",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              },
+              {
+                  "name": "cutqty_val",
+                  "title": "Cut Quantity",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
@@ -187,22 +217,24 @@ var ObjectFromAPI = {
           "componentPerRow": 2,
           "fields": [
               {
-                  "name": "cut_qty",
-                  "title": "Cut Qty",
+                  "name": "packedqty",
+                  "title": "Packed Qty",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               },
               {
-                  "name": "stitch_qty",
-                  "title": "Stitch Qty",
+                  "name": "samplesize",
+                  "title": "Sample Size",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               }
           ],
           "groups": [],
@@ -214,22 +246,24 @@ var ObjectFromAPI = {
           "componentPerRow": 2,
           "fields": [
               {
-                  "name": "wash_qty",
-                  "title": "Wash Qty",
+                  "name": "fg1qty",
+                  "title": "FG1 Qty",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               },
               {
-                  "name": "pkd_qty",
-                  "title": "Pkd Qty",
+                  "name": "fg2qty",
+                  "title": "FG2 Qty",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
               }
           ],
           "groups": [],
@@ -237,27 +271,57 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "textField",
-          "name": "",
-          "componentPerRow": 1,
+        "type": "textInputField",
+        "componentPerRow": 1,
+        "fields": [
+            {
+                "name": "inserttotalnoofcarton",
+                "title": "Insert Total No Of Carton",
+                "size": "small",
+                "minLength": 0,
+                "maxLength": 100,
+                "defaultValue": "",
+                "required": false,
+                "inputType": "numeric"
+            }
+        ],
+        "groups": [],
+        "columns": [],
+        "rows": []
+    },
+      {
+          "type": "textInputField",
+          "componentPerRow": 2,
           "fields": [
               {
-                  "name": "quality_checklist_label",
-                  "title": "Quality Checklist",
+                  "name": "cartonsamplesize",
+                  "title": "Carton Sample Size",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "required": false,
+                  "inputType": "numeric"
+              },
+              {
+                  "name": "cartonselected",
+                  "title": "Carton Selected",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false,
+                  "inputType": "numeric"
               }
           ],
           "groups": [],
           "columns": [],
           "rows": []
       },
+      
       {
           "type": "checklist",
-          "name": "quality_checklist",
+          "name": "auditchecklist",
           "componentPerRow": 1,
           "fields": [
               {
@@ -276,16 +340,16 @@ var ObjectFromAPI = {
               },
               {
                   "name": "result",
-                  "type": "radioButton",
+                  "type": "dropdown",
                   "title": "Result",
                   "options": [
                       {
                           "id": 1,
-                          "name": "Accept"
+                          "name": "Ok"
                       },
                       {
                           "id": 2,
-                          "name": "Reject"
+                          "name": "Not Ok"
                       },
                       {
                           "id": 3,
@@ -303,20 +367,263 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "textInputField",
+          "type": "hybrid",
+          "name": "maindefect",
           "componentPerRow": 1,
-          "fields": [
+          "fields": [],
+          "groups": [
               {
-                  "name": "workmanship_comments",
-                  "title": "Workmanship Comments",
-                  "size": "large",
-                  "minLength": 0,
-                  "maxLength": 1000,
-                  "defaultValue": "",
-                  "required": false
+                  "type": "dropdown",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "maindefect",
+                          "title": "Select Defect",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
+                          "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 3,
+                  "fields": [
+                      {
+                          "name": "maindefect_crit",
+                          "title": "Critical",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      },
+                      {
+                          "name": "maindefect_maj",
+                          "title": "Major",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      },
+                      {
+                          "name": "maindefect_min",
+                          "title": "Minor",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "maindefect_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "maindefect_add",
+                          "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
               }
           ],
-          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "measurementdefect",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "measurementdefect",
+                          "title": "Write Defect Description",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 3,
+                  "fields": [
+                      {
+                          "name": "measurementdefect_crit",
+                          "title": "Critical",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      },
+                      {
+                          "name": "measurementdefect_maj",
+                          "title": "Major",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      },
+                      {
+                          "name": "measurementdefect_min",
+                          "title": "Minor",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "measurementdefect_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "measurementdefect_add",
+                          "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "hybrid",
+          "name": "miscdefect",
+          "componentPerRow": 1,
+          "fields": [],
+          "groups": [
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "miscdefect",
+                          "title": "Write Defect Description",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "textInputField",
+                  "componentPerRow": 3,
+                  "fields": [
+                      {
+                          "name": "miscdefect_crit",
+                          "title": "Critical",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric",
+                      },
+                      {
+                          "name": "miscdefect_maj",
+                          "title": "Major",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      },
+                      {
+                          "name": "miscdefect_min",
+                          "title": "Minor",
+                          "size": "small",
+                          "minLength": 0,
+                          "maxLength": 100,
+                          "defaultValue": "",
+                          "required": false,
+                          "inputType": "numeric"
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              },
+              {
+                  "type": "button",
+                  "name": "miscdefect_add",
+                  "componentPerRow": 1,
+                  "fields": [
+                      {
+                          "name": "miscdefect_add",
+                          "title": "Add",
+                          "size": "regular",
+                          "minLength": 0,
+                          "maxLength": 0,
+                          "required": false,
+                          "onClick": "",
+                          "args": ""
+                      }
+                  ],
+                  "groups": [],
+                  "columns": [],
+                  "rows": []
+              }
+          ],
           "columns": [],
           "rows": []
       },
@@ -325,8 +632,8 @@ var ObjectFromAPI = {
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "factory_representative",
-                  "title": "Factory Representative",
+                  "name": "totalcritdefect",
+                  "title": "Total Critical Defect",
                   "size": "small",
                   "minLength": 0,
                   "maxLength": 100,
@@ -339,25 +646,120 @@ var ObjectFromAPI = {
           "rows": []
       },
       {
-          "type": "button",
-          "name": "submit",
+          "type": "textInputField",
           "componentPerRow": 1,
           "fields": [
               {
-                  "name": "submit",
-                  "title": "Submit",
-                  "size": "regular",
+                  "name": "totalmajordefect",
+                  "title": "Total Major Defect",
+                  "size": "small",
                   "minLength": 0,
-                  "maxLength": 0,
-                  "required": false,
-                  "onClick": "",
-                  "args": ""
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
               }
           ],
           "groups": [],
           "columns": [],
           "rows": []
-      }
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "totalminordefect",
+                  "title": "Total Minor Defect",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "totaldefect",
+                  "title": "Total Defect",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+          "type": "textInputField",
+          "componentPerRow": 1,
+          "fields": [
+              {
+                  "name": "defectrate",
+                  "title": "Defect Rate",
+                  "size": "small",
+                  "minLength": 0,
+                  "maxLength": 100,
+                  "defaultValue": "",
+                  "required": false
+              }
+          ],
+          "groups": [],
+          "columns": [],
+          "rows": []
+      },
+      {
+        "type": "radioButton",
+        "name": "result",
+        "componentPerRow": 1,
+        "fields": [
+            {
+                "name": "Passed",
+            },
+            {
+                "name": "Failed",
+            },
+            {
+              "name": "onhold",
+          }
+        ],
+        "groups": [],
+        "columns": [],
+        "rows": []
+    },
+    {
+      "type": "textInputField",
+      "componentPerRow": 1,
+      "fields": [
+          {
+              "name": "measurementDeviation",
+              "title": "Measurement Deviation",
+          },
+          {
+            "name": "finalRemarks",
+            "title": "Comments",
+        }
+      ],
+      "groups": [],
+      "columns": [],
+      "rows": []
+  },
+  {
+    type: "button",
+    componentPerRow: 1,
+    fields: [
+      {"name": "finalSubmission", title: "Submit",}
+      ]
+  },
   ]
 }
 
@@ -1482,7 +1884,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
-                onPress={() => {
+                onPress={async () => {
                   
                   ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
               }}

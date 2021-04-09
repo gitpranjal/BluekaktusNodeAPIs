@@ -1,5 +1,5 @@
 const Placeholders = {
-    //"AutoSave": false,
+    "AutoSave": false,
     "ApiUrls": {
         //"ApiUrl1": "",
         "auditchecklist": "http://457c04b7bdbc.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
@@ -263,7 +263,7 @@ const Placeholders = {
                         "BUYER_NAME": ""
                       }
                     ],
-                    "RESULT": cleanDataFromScreen.InspectionResult ,
+                    "RESULT": cleanDataFromScreen.result ,
                     "IS_PARTIAL": "1",
                     "START_TIME": "2021-03-20 12:22:07",
                     "END_TIME": "2021-03-20 12:24:03",
@@ -655,36 +655,37 @@ const Placeholders = {
             `,
             "InspectionResult": `
                 
-                //if(SelectedOutcome.label.toLowerCase() == "onhold")
-                //{
-                  
-                  //storeData("RadioButtonList", newRadioButtonList, CurrentScreenId, true, true)
-                  //storeData("ChecklistDataObjects", ChecklistDataObjects, CurrentScreenId, true, true)
-                  //storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
-                  //storeData("DropdownList", DropdownList, CurrentScreenId, true, true)
-                  //storeData("FieldList", FieldList, CurrentScreenId, true, true)
-                  //SetRadioButtonList(newRadioButtonList)
-                  //return
-                //}
-            
+               //Some placeholder code
             
             `,
 
             "finalSubmission": `
-                clearAll()
-                return 
+                //clearAll()
+                //return 
 
-                if(RadioButtonList.InspectionResult == "onhold")
-                {
-                  props.navigation.navigate("BulkOrderListScreen")
-                  return
-                }
 
+                
+                
                 var cleanData = getCleanData({...CompleteCurrentScreenData}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
                 console.log("############################ Cleaned data for current screen ##########################")
                 console.log(cleanData)
             
+
+
                 var resquestObject = CustomDataModifierFunction(cleanData)
+
+                if(cleanData.result == "onhold")
+                {
+                  
+                    await storeData("RadioButtonList", RadioButtonList, CurrentScreenId, true, true)
+                    await storeData("ChecklistDataObjects", ChecklistDataObjects, CurrentScreenId, true, true)
+                    await storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
+                    await storeData("DropdownList", DropdownList, CurrentScreenId, true, true)
+                    await storeData("FieldList", FieldList, CurrentScreenId, true, true)
+                    //props.navigation.navigate("BulkOrderListScreen")
+                    return
+                    
+                }
 
                 console.log("############## Data being sent to API ################")
                 console.log(resquestObject)
