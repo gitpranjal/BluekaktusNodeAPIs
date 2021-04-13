@@ -340,7 +340,7 @@ var ObjectFromAPI = {
               },
               {
                   "name": "result",
-                  "type": "dropdown",
+                  "type": "radioButton",
                   "title": "Result",
                   "options": [
                       {
@@ -1038,7 +1038,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             alignItems: "center", borderRadius: 7,
             backgroundColor: ${ViewObject.type == "radioButton" || ViewObject.type == "textInputField" || ViewObject.type == "dropdown"? `'${secondaryColor}'` : `'${tertiaryColor}'`},
             paddingVertical: 5,
-            elevation: 50,
+            //elevation: 50,
 
           }}>
   `
@@ -1116,7 +1116,20 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                       
                                       return Options
                                     })()}
-                                    initial={-1}
+                                    initial={(() => {
+
+                                      var optionsList = item["valueObject"]["options"]
+                                      var value = ChecklistDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id == item.rowId)[0][item.type]["value"]
+                                      var index = -1
+                                      for (var optionObject of optionsList)
+                                      {
+                                        if(optionObject.name.toLowerCase() == value.toLowerCase())
+                                          return index + 1
+
+                                        index = index + 1
+                                      }
+                                      return -1
+                                    })()}
                                     onPress={(newValue) => {
                                       
                                       var newChecklistDataObjects = {...ChecklistDataObjects}
@@ -2491,7 +2504,7 @@ const GeneratedCode = (props) => {
              
     
               for (var i = 0; i < rowList.length; i++) {
-                var newRowObject = { id: i.toString() };
+                var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
         
                 for (var column of Object.keys(ChecklistStructureInfoObject)) {
                   if (column == "id" || column == "ApiUrl") continue;

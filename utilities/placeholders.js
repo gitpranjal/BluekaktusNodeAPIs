@@ -2,9 +2,9 @@ const Placeholders = {
     "AutoSave": false,
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://457c04b7bdbc.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "auditchecklist": "http://aaac46609ee4.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
-        "maindefect": "http://457c04b7bdbc.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
+        "maindefect": "http://aaac46609ee4.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
     },
     "StateVariables": {
         "DefectsSummary": {
@@ -29,7 +29,7 @@ const Placeholders = {
                     "ORDER_ID": cleanDataFromScreen.screenBackgroundInfo["ORDER_ID"],
                     "PACKED_QTY": cleanDataFromScreen.packedqty,
                     "SAMPLE_SIZE":cleanDataFromScreen.samplesize ,
-                    "INSPECTION_DATE": "2021-04-09 10:24:03",
+                    "INSPECTION_DATE": "2021-04-13 10:24:03",
                     "ACTUAL_RELEASE_TIME": "142",
                     "AQ_LEVEL": cleanDataFromScreen.aqllevel,
                     "MAX_MAJOR_ACCEPTANCE": "0",
@@ -371,7 +371,16 @@ const Placeholders = {
                     "REMARKS": checklistObj.remarks,
                     "BUYER_NAME": ""
                   } 
-                  targetObject["saveInspList"][0]["CHECK_LIST"].push(newDefectObject)
+
+                  if((checklistObj.result).toLowerCase().trim() == "ok")
+                    newChecklistObj["CHECK_STATUS"] = "0"
+                  else if((checklistObj.result).toLowerCase().trim() == "not ok")
+                    newChecklistObj["CHECK_STATUS"] = "1"
+                  else
+                   newChecklistObj["CHECK_STATUS"] = "2"
+
+
+                  targetObject["saveInspList"][0]["CHECK_LIST"].push(newChecklistObj)
                 }
 
 
@@ -682,7 +691,7 @@ const Placeholders = {
                     await storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
                     await storeData("DropdownList", DropdownList, CurrentScreenId, true, true)
                     await storeData("FieldList", FieldList, CurrentScreenId, true, true)
-                    //props.navigation.navigate("BulkOrderListScreen")
+                    props.navigation.navigate("BulkOrderListScreen")
                     return
                     
                 }
