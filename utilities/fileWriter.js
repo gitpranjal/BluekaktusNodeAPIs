@@ -2307,6 +2307,16 @@ const getCleanData = (currentScreenDataObject, FieldList = {}, DropdownList = {}
   return cleandataObject
 }
 
+const SaveOffline = async (CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList) => {
+
+  await storeData("RadioButtonList", RadioButtonList, CurrentScreenId, true, true)
+  await storeData("ChecklistDataObjects", ChecklistDataObjects, CurrentScreenId, true, true)
+  await storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
+  await storeData("DropdownList", DropdownList, CurrentScreenId, true, true)
+  await storeData("FieldList", FieldList, CurrentScreenId, true, true)
+
+}
+
 ${Placeholders.CodeSnippets["CustomDataModifierFunction"] != null ? Placeholders.CodeSnippets["CustomDataModifierFunction"] : `//Could be Some Code from placeholder`}
 
 

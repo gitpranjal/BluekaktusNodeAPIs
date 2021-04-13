@@ -686,11 +686,7 @@ const Placeholders = {
                 if(cleanData.result == "onhold")
                 {
                   
-                    await storeData("RadioButtonList", RadioButtonList, CurrentScreenId, true, true)
-                    await storeData("ChecklistDataObjects", ChecklistDataObjects, CurrentScreenId, true, true)
-                    await storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
-                    await storeData("DropdownList", DropdownList, CurrentScreenId, true, true)
-                    await storeData("FieldList", FieldList, CurrentScreenId, true, true)
+                    await SaveOffline(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
                     props.navigation.navigate("BulkOrderListScreen")
                     return
                     
