@@ -1,4 +1,4 @@
-var AuditFormObject = {
+var ObjectFromAPI = {
     "viewObjects": [
         {
             "type": "textInputField",
@@ -100,7 +100,7 @@ var AuditFormObject = {
                             "minLength": 0,
                             "maxLength": 100,
                             "defaultValue": "",
-                            "required": false
+                            "editable": false
                         }
                     ],
                     "groups": [],
@@ -161,7 +161,7 @@ var AuditFormObject = {
                     "minLength": 0,
                     "maxLength": 100,
                     "defaultValue": "",
-                    "required": false
+                    "editable": false
                 },
                 {
                     "name": "doneqty_val",
@@ -170,7 +170,7 @@ var AuditFormObject = {
                     "minLength": 0,
                     "maxLength": 100,
                     "defaultValue": "",
-                    "required": false
+                    "editable": false
                 },
                 {
                     "name": "cutqty_val",
@@ -207,7 +207,7 @@ var AuditFormObject = {
                     "minLength": 0,
                     "maxLength": 100,
                     "defaultValue": "",
-                    "required": false,
+                    "editable": false,
                     "inputType": "numeric"
                 }
             ],
@@ -236,7 +236,7 @@ var AuditFormObject = {
                     "minLength": 0,
                     "maxLength": 100,
                     "defaultValue": "",
-                    "required": false,
+                    "editable": false,
                     "inputType": "numeric"
                 }
             ],
@@ -314,7 +314,7 @@ var AuditFormObject = {
                 },
                 {
                     "name": "result",
-                    "type": "dropdown",
+                    "type": "radioButton",
                     "title": "Result",
                     "options": [
                         {
@@ -736,4 +736,3 @@ var AuditFormObject = {
     },
     ]
   }
-  

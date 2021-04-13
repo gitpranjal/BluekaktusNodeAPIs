@@ -2251,7 +2251,7 @@ const getCleanData = (currentScreenDataObject, FieldList = {}, DropdownList = {}
   })
 
   Object.keys(currentScreenDataObject["DropdownList"]).forEach(key => {
-    cleandataObject[key] = currentScreenDataObject["DropdownList"][key]["SelectedValue"]["name"] != null ? currentScreenDataObject["DropdownList"][key]["SelectedValue"]["name"] : currentScreenDataObject["DropdownList"][key]["SelectedValue"]
+    cleandataObject[key] = currentScreenDataObject["DropdownList"][key]["SelectedValue"]
   })
 
   Object.keys(currentScreenDataObject["HybridDataObjects"]).forEach(key => {

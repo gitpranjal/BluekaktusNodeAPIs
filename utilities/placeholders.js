@@ -31,7 +31,7 @@ const Placeholders = {
                     "SAMPLE_SIZE":cleanDataFromScreen.samplesize ,
                     "INSPECTION_DATE": "2021-04-13 10:24:03",
                     "ACTUAL_RELEASE_TIME": "142",
-                    "AQ_LEVEL": cleanDataFromScreen.aqllevel,
+                    "AQ_LEVEL": cleanDataFromScreen.aqllevel["name"],
                     "MAX_MAJOR_ACCEPTANCE": "0",
                     "MAX_MINOR_ACCEPTANCE": "0",
                     "INSPECTION_REQUEST_ID": "0",
