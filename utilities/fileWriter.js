@@ -1279,7 +1279,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           keyExtractor={(columnName) => columnName}
           contentContainerStyle = {{flexDirection: "row"}}
           renderItem = {({item}) => {
-            return <Text numberOfLines={10} style={{color: "white", width: 120, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item}</Text>
+            return <Text numberOfLines={10} style={{color: "white", width: 80, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item}</Text>
           }}
         />
       </View>
@@ -1343,7 +1343,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     </View>  
                   )
 
-                return <Text numberOfLines={10} style={{textAlign: 'center', width: 120, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
+                return <Text numberOfLines={10} style={{textAlign: 'center', width: 80, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
               }}
               
             />
