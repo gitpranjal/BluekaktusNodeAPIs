@@ -126,7 +126,7 @@ var ObjectFromAPI = {
                           "minLength": 0,
                           "maxLength": 100,
                           "defaultValue": "",
-                          "required": false
+                          "editable": false
                       }
                   ],
                   "groups": [],
@@ -187,7 +187,7 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "editable": false
               },
               {
                   "name": "doneqty_val",
@@ -196,7 +196,7 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false
+                  "editable": false
               },
               {
                   "name": "cutqty_val",
@@ -233,7 +233,7 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false,
+                  "editable": false,
                   "inputType": "numeric"
               }
           ],
@@ -262,7 +262,7 @@ var ObjectFromAPI = {
                   "minLength": 0,
                   "maxLength": 100,
                   "defaultValue": "",
-                  "required": false,
+                  "editable": false,
                   "inputType": "numeric"
               }
           ],
@@ -1155,6 +1155,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                     textStyle={{fontSize:10, fontWeight: "bold"}}
                                     selectedTextStyle={{fontSize:10, fontWeight: "bold"}}
                                     borderRadius={5}
+                                    textContainerStyle={{height: "100%"}}
                            />
                     )
                   }
@@ -1779,7 +1780,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  //mapping of item array
                  //default selected item index
                  //"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].name}: " + DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue.name }
+                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}: " + DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue.name }
                  placeholderTextColor="#00334e80"
                  //place holder for the search input
                  resetValue={false}
