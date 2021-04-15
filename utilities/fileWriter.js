@@ -1,6 +1,13 @@
 const fs = require('fs');
 const fetch = require("node-fetch")
-const { Placeholders } = require("./placeholders")
+var Placeholders = {}
+try{
+  const Placeholders = require("./placeholders").Placeholders
+}
+catch(error){
+  console.log("################### Placeholder.js file not containing js appropriate code")
+}
+
 
 
 const ColorSchemeLibrary = {
@@ -1436,7 +1443,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  onItemSelect={selectedObject => { 
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"] = selectedObject
-                   ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                    console.log("#### New dropdown list ######")
                    console.log(newDropdownList)
                    SetDropdownList(newDropdownList)
@@ -1524,7 +1531,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               onChangeText = {(newValue) => {
                 var newFieldList = {...FieldList}
                 newFieldList["${subViewObject.fields[componentNumber].name}"] = newValue
-                ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                 
                 
                 
@@ -1606,7 +1613,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     SetFieldList(newFieldList)
                     SetRadioButtonList(newRadioButtonList)
 
-                    ${Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                     storeData("HybridDataObjects", newHybridObjectList, CurrentScreenId)
                   }}
               >
@@ -1699,7 +1706,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             >
             ${currentTextFieldObject.title} : {(
               () => {
-                ${Placeholders.CodeSnippets[currentTextFieldObject.name] != null ? Placeholders.CodeSnippets[currentTextFieldObject.name]: `return "Value to come from Placeholder"`}
+                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[currentTextFieldObject.name] != null ? Placeholders.CodeSnippets[currentTextFieldObject.name]: `return "Value to come from Placeholder"`}
                 
               }
               
@@ -1730,7 +1737,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${fieldName}["SelectedValue"] = selectedObject
-                   ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                    console.log("#### New dropdown list ######")
                    console.log(newDropdownList)
                    SetDropdownList(newDropdownList)
@@ -1822,7 +1829,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   
                   var newFieldsObject = {...FieldList}
                   newFieldsObject["${fieldName}"] = newValue
-                  ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
                   
 
                   SetFieldList(newFieldsObject)
@@ -1858,7 +1865,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     var newRadioButtonList = {...RadioButtonList}
                     newRadioButtonList["${ViewObject.name}"] = SelectedOutcome.label
                    
-                    ${Placeholders.CodeSnippets[ViewObject.name] != null ? Placeholders.CodeSnippets[ViewObject.name] : "//Some code from placeholder"}
+                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.name] != null ? Placeholders.CodeSnippets[ViewObject.name] : "//Some code from placeholder"}
                     SetRadioButtonList(newRadioButtonList)
                     storeData("RadioButtonList", newRadioButtonList, CurrentScreenId)
                     
@@ -1900,7 +1907,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={async () => {
                   
-                  ${Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
               }}
               >
                 <Text style={styles.textStyle}>${ViewObject.fields[componentNumber].title}</Text>
@@ -1986,7 +1993,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
         {
           DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                                   "ValuesListFunction": field.valueListFunction, 
-                                                  "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
+                                                  "ValuesListUrl": Placeholders.ApiUrls != null && Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
                                                   "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                                 }
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
@@ -2001,7 +2008,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "checklist")
   {
     ChecklistDataObjects[viewObj.name.toString()] = []
-    var newFieldCollectionForChecklistObject = {"id": "-1", "ApiUrl": Placeholders.ApiUrls[viewObj.name],}
+    var newFieldCollectionForChecklistObject = {"id": "-1", "ApiUrl":Placeholders.ApiUrls!= null && Placeholders.ApiUrls[viewObj.name] != null ?  Placeholders.ApiUrls[viewObj.name] : "no_checklist_url_supplied",}
  
     var columnsInfoObject = {}
     for (var columnObject of viewObj.columns)
@@ -2101,7 +2108,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
     for(var field of viewObj.fields)
       DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                               "ValuesListFunction": field.valueListFunction != null ? field.valueListFunction : "", 
-                                              "ValuesListUrl": Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
+                                              "ValuesListUrl": Placeholders.ApiUrls != null && Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
                                               "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
                                             }
   }
@@ -2317,7 +2324,7 @@ const SaveOffline = async (CurrentScreenId, FieldList, DropdownList, HybridDataO
 
 }
 
-${Placeholders.CodeSnippets["CustomDataModifierFunction"] != null ? Placeholders.CodeSnippets["CustomDataModifierFunction"] : `//Could be Some Code from placeholder`}
+${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["CustomDataModifierFunction"] != null ? Placeholders.CodeSnippets["CustomDataModifierFunction"] : `//Could be Some Code from placeholder`}
 
 
 const GeneratedCode = (props) => {
@@ -2335,7 +2342,7 @@ const GeneratedCode = (props) => {
   var CurrentScreenId = -1
   var CurrentScreenBackgroundInfo = {}
 
-  ${Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `return "Value to come from Placeholder"`}
+  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `return "Value to come from Placeholder"`}
   
 
   useEffect(() => {
@@ -2408,7 +2415,7 @@ const GeneratedCode = (props) => {
                   var valueKey = ""
                   for(var key of Object.keys(body[0]))
                   { 
-                    ${Placeholders.CodeSnippets["AQLObjectModifier"] != null ? Placeholders.CodeSnippets["AQLObjectModifier"] : `//Could be Some Code from placeholder`}
+                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["AQLObjectModifier"] != null ? Placeholders.CodeSnippets["AQLObjectModifier"] : `//Could be Some Code from placeholder`}
                     if(key.toString().toLowerCase().includes("id"))
                     {
                       idKey = key
@@ -2496,7 +2503,7 @@ const GeneratedCode = (props) => {
         
               const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
                 method: "POST",
-                ${Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `return "Value to come from Placeholder"`}
+                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `return "Value to come from Placeholder"`}
                 headers: {
                   "Content-Type": "application/json",
                   Accept: "application/json",
@@ -2702,6 +2709,7 @@ return code
 
 }
 
+{/*
 codeGenerator(ObjectFromAPI)
 .then(code => {
   // write to a new file named 2pac.txt
@@ -2725,4 +2733,6 @@ codeGenerator(ObjectFromAPI)
   console.log("####### Error in writing file  ##########")
   console.log(error)
 })
+*/}
 
+module.exports.codeGenerator = codeGenerator

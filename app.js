@@ -3,11 +3,17 @@ const multer = require('multer')
 const path = require('path')
 const bodyParser = require("body-parser")
 const helpers = require('./utilities/helpers');
+const fs = require('fs').promises
 
 const hostname = "localhost"
 const port = 3000
 
-const { getContourImage } = require("./utilities/effects")
+const { getContourImage } = require("./utilities/effects");
+const { codeGenerator } = require("./utilities/fileWriter")
+const { fetchScreenObject } = require("./utilities/fetchScreenObject")
+
+const { request } = require("http");
+const { response } = require("express");
 
 
 const storage = multer.diskStorage({
@@ -24,7 +30,7 @@ const storage = multer.diskStorage({
 const app = express()
 
 app.use(bodyParser.json())
-
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use("/static", express.static(path.join(__dirname, "static")))
 
 app.set('views', __dirname + '/views');
@@ -119,6 +125,46 @@ app.post('/uploadImage', (req, res) => {
         res.send(path.join(serverAddress, req.file.path))
     });
 });
+
+app.get("/reactNativeTool", (request, response) => {
+    response.render("reactNativeTool.html")
+})
+
+app.post("/generateCode", async (request, response) => {
+
+    var screenCode = request.body.screenCode
+    var placeholderCode = request.body.placeholderCode
+
+    var status = "Placeholder file not written"
+    
+    {/*fs.writeFile('utilities/placeholders.js', placeholderCode, (err) => {
+        // throws an error, you could also catch it here
+        if (err) throw err;
+    
+        // success case, the file was saved
+        console.log('placeholder saved');
+      });
+    
+    */}
+
+    try {
+        await fs.writeFile('utilities/placeholders.js', placeholderCode)
+        var screenObject = await fetchScreenObject()
+        var code = await codeGenerator(screenObject)
+        response.send(code)
+    }
+    catch(error)
+    {
+        console.log("################### Error in downloading code ############")
+        console.log(error);
+        response.send(error)
+    }
+    
+
+    //status = "Placeholder scuccessfully modified"
+
+    
+})
 
 module.exports = {app: app, port: port, hostname: hostname}
 // const port = 3000
