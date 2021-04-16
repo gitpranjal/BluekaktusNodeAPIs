@@ -14,6 +14,7 @@ const { fetchScreenObject } = require("./utilities/fetchScreenObject")
 
 const { request } = require("http");
 const { response } = require("express");
+const { fdatasync } = require("fs");
 
 
 const storage = multer.diskStorage({
@@ -133,7 +134,16 @@ app.get("/reactNativeTool", (request, response) => {
 app.post("/generateCode", async (request, response) => {
 
     var screenCode = request.body.screenCode
-    var placeholderCode = request.body.placeholderCode
+    var placeholderCodeObject = {}
+    try{
+        placeholderCodeObject   = JSON.parse(request.body.placeholderCode)
+    }
+    catch(error)
+    {
+        console.log("############## Unable to parse user placeholder input into json object ##########")
+        console.log("Placeholder code recieved: ", request.body.placeholderCode)
+    }
+    
 
     var status = "Placeholder file not written"
     
@@ -148,16 +158,36 @@ app.post("/generateCode", async (request, response) => {
     */}
 
     try {
-        await fs.writeFile('utilities/placeholders.js', placeholderCode)
-        var screenObject = await fetchScreenObject()
-        var code = await codeGenerator(screenObject)
-        response.send(code)
+        await fs.writeFile('utilities/placeholders.js', JSON.stringify(placeholderCodeObject))
+        var screenObject = await fetchScreenObject(screenCode)
+        var code = await codeGenerator(screenObject, placeholderCodeObject)
+
+        //console.log("################## Code object recieved from code generator ###################")
+        //console.log("Code Object: ",  code)
+
+        if(code.structure == null)
+        {
+            await response.send(code)
+            return
+        }
+
+        await fs.writeFile(`/var/TMP/generatedCode_${screenCode}.js`, code.structure)
+        await fs.writeFile(`/var/TMP/generatedStyleSheet_${screenCode}.js`, code.style)
+
+        //response.send(code)
+
+        response.download(`/var/TMP/generatedCode_${screenCode}.js`, error => {
+            console.log("######### Error in downloading file ##########")
+            console.log(error)
+        })
+
     }
     catch(error)
     {
-        console.log("################### Error in downloading code ############")
+        console.log("################### Error in code generation process ############")
         console.log(error);
         response.send(error)
+        //
     }
     
 

@@ -1,5 +1,21 @@
 
-  const fetchScreenObject = async () => {
+  const fetch = require("node-fetch")
+  
+  const fetchScreenObject = async (screenCode) => {
+
+    var requestConfig = {
+        method: "POST",
+              body: JSON.stringify({
+                "screenID": screenCode,
+                "logsEnabled": "false"
+            }),
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+    }
+    var response = await fetch("http://125.63.109.206:112/api/reactScreenTool/controls/getControls", requestConfig)
+    var screenObject = await response.json()
 
     const ObjectFromAPI = {
         "viewObjects": [
@@ -740,7 +756,8 @@
         ]
       }
     
-      return ObjectFromAPI
+      //return ObjectFromAPI
+      return screenObject
   }
 
   module.exports.fetchScreenObject = fetchScreenObject 

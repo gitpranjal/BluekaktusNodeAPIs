@@ -1021,12 +1021,23 @@ var objectFromAPI = {                                       //Sample
 
 }
 
-const codeGenerator = async (ObjectFromAPI) => {
+const codeGenerator = async (ObjectFromAPI, Placeholders = Placeholders) => {
 
   var ColorScheme = ObjectFromAPI.colorScheme != null ? ObjectFromAPI.colorScheme : "blue"
   const primaryColor = ColorSchemeLibrary[ColorScheme].primaryColor
 const secondaryColor = ColorSchemeLibrary[ColorScheme].secondaryColor
 const tertiaryColor = ColorSchemeLibrary[ColorScheme].tertiaryColor
+
+console.log("########Placeholder beimg used #########")
+console.log(Placeholders)
+
+if( ObjectFromAPI == null || ObjectFromAPI.viewObjects == null)
+{
+  console.log("################ Invalid screen object passed in code generator function in fileWriter.js #############")
+  console.log(ObjectFromAPI)
+
+  return "Invalid Screen code passed"
+}
 
   var mainCode = `
 <View id="mainSection" style={{borderWidth: 0, borderColor: "red", alignItems: "center", paddingVertical: 5, paddingHorizontal:5, marginHorizontal: 5}}>
@@ -2342,7 +2353,7 @@ const GeneratedCode = (props) => {
   var CurrentScreenId = -1
   var CurrentScreenBackgroundInfo = {}
 
-  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `return "Value to come from Placeholder"`}
+  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
 
   useEffect(() => {
@@ -2503,7 +2514,7 @@ const GeneratedCode = (props) => {
         
               const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
                 method: "POST",
-                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `return "Value to come from Placeholder"`}
+                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `// Code to come from Placeholder`}
                 headers: {
                   "Content-Type": "application/json",
                   Accept: "application/json",
