@@ -136,12 +136,13 @@ app.post("/generateCode", async (request, response) => {
     var screenCode = request.body.screenCode
     var placeholderCodeObject = {}
     try{
-        placeholderCodeObject   = JSON.parse(request.body.placeholderCode)
+        placeholderCodeObject   = JSON.parse(JSON.stringify(request.body.placeholderCode))
     }
     catch(error)
     {
         console.log("############## Unable to parse user placeholder input into json object ##########")
         console.log("Placeholder code recieved: ", request.body.placeholderCode)
+        console.log(error)
     }
     
 
