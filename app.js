@@ -161,6 +161,9 @@ app.post("/generateCode", async (request, response) => {
     try {
         await fs.writeFile('utilities/placeholders.js', JSON.stringify(placeholderCodeObject))
         var screenObject = await fetchScreenObject(screenCode)
+
+        console.log("################### screen object recieved for screen code "+screenCode+" ##########")
+        console.log(screenObject)
         var code = await codeGenerator(screenObject, placeholderCodeObject)
 
         //console.log("################## Code object recieved from code generator ###################")
@@ -177,10 +180,8 @@ app.post("/generateCode", async (request, response) => {
 
         //response.send(code)
 
-        response.download(`/var/TMP/generatedCode_${screenCode}.js`, error => {
-            console.log("######### Error in downloading file ##########")
-            console.log(error)
-        })
+       
+        response.download(`/var/TMP/generatedCode_${screenCode}.js`)
 
     }
     catch(error)

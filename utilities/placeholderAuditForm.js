@@ -2,9 +2,9 @@ const Placeholders = {
     "AutoSave": false,
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://aaac46609ee4.ngrok.io/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
-        "maindefect": "http://aaac46609ee4.ngrok.io/api/reactScreenTool/controls/getFormattedDefectsList",
+        "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
     },
     "StateVariables": {
         "DefectsSummary": {

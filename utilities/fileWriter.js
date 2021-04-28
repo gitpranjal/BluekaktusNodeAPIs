@@ -1021,7 +1021,7 @@ var objectFromAPI = {                                       //Sample
 
 }
 
-const codeGenerator = async (ObjectFromAPI, Placeholders = Placeholders) => {
+const codeGenerator = async (ObjectFromAPI, Placeholders = {}) => {
 
   var ColorScheme = ObjectFromAPI.colorScheme != null ? ObjectFromAPI.colorScheme : "blue"
   const primaryColor = ColorSchemeLibrary[ColorScheme].primaryColor
@@ -2146,7 +2146,7 @@ import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
 import { FloatingLabelInput } from "react-native-floating-label-input"
 import ModalDropdown from 'react-native-modal-dropdown'
-import styles from "../../assets/styles"
+//import styles from "../../assets/styles"
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -2324,6 +2324,7 @@ const getCleanData = (currentScreenDataObject, FieldList = {}, DropdownList = {}
 
   return cleandataObject
 }
+
 
 const SaveOffline = async (CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList) => {
 
@@ -2646,7 +2647,6 @@ const GeneratedCode = (props) => {
   );
 };
 
-{/*
   const styles = StyleSheet.create({
     input: {
         borderWidth: 2,
@@ -2676,7 +2676,7 @@ const GeneratedCode = (props) => {
 
       }
 });
-*/}
+
 
 export default GeneratedCode;
 
