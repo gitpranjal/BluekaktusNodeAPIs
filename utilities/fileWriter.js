@@ -9,6 +9,8 @@ catch(error){
 }
 
 
+const ScreenName = `GeneratedCode`
+
 
 const ColorSchemeLibrary = {
   "blue": {
@@ -1021,7 +1023,7 @@ var objectFromAPI = {                                       //Sample
 
 }
 
-const codeGenerator = async (ObjectFromAPI, Placeholders = {}) => {
+const codeGenerator = async (ObjectFromAPI, Placeholders = {}, ScreenName = ScreenName) => {
 
   var ColorScheme = ObjectFromAPI.colorScheme != null ? ObjectFromAPI.colorScheme : "blue"
   const primaryColor = ColorSchemeLibrary[ColorScheme].primaryColor
@@ -2341,7 +2343,7 @@ const SaveOffline = async (CurrentScreenId, FieldList, DropdownList, HybridDataO
 ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["CustomDataModifierFunction"] != null ? Placeholders.CodeSnippets["CustomDataModifierFunction"] : `//Could be Some Code from placeholder`}
 
 
-const GeneratedCode = (props) => {
+const ${ScreenName} = (props) => {
   const [Sentence, SetSentence] = useState("")
   const [FieldList, SetFieldList] = useState(${JSON.stringify(TextInputObjectList)})
   const [DropdownList, SetDropdownList] = useState(${JSON.stringify(DropdownInputObjectList)})
@@ -2363,6 +2365,9 @@ const GeneratedCode = (props) => {
   useEffect(() => {
 
     // showing data in view mode
+
+    return
+
     var ScreenDataFromApi = {
       "aqllevel": {
         "aqlDtDetails":[
@@ -3051,7 +3056,7 @@ const GeneratedCode = (props) => {
 });
 
 
-export default GeneratedCode;
+export default ${ScreenName};
 
 ` 
 code["style"] = `

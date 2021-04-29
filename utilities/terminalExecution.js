@@ -1493,15 +1493,20 @@ const sizesetInspection = {
           },
     ]
 }
-var ObjectFromAPI = finalInspectionForm
 
 
 
 
-codeGenerator(ObjectFromAPI, Placeholders)
+
+//var ObjectFromAPI = sizesetInspection
+//var ObjectFromAPI = finalInspectionForm
+var ObjectFromAPI = midlineInspection
+var ScreenName = `GeneratedCode3`
+
+codeGenerator(ObjectFromAPI, Placeholders, ScreenName)
 .then(code => {
   // write to a new file named 2pac.txt
-  fs.writeFile('/Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js', code["structure"], (err) => {
+  fs.writeFile(`/Users/geuser/Desktop/bk-sourcing/screens/${ScreenName}.js`, code["structure"], (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 
@@ -1525,4 +1530,5 @@ codeGenerator(ObjectFromAPI, Placeholders)
 })
 
 
-///Users/geuser/Desktop/bk-sourcing/screens
+///Users/geuser/Desktop/bk-sourcing/screens                                                    //bk-sourcing
+///Users/geuser/Desktop/BluekaktusReactNativeScreens/src/screens/GeneratedCode.js              //bluekaktusReactnativescreens
