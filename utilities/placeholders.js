@@ -3,8 +3,10 @@ const Placeholders = {
     "ApiUrls": {
         //"ApiUrl1": "",
         "auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "millfabricchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
+        
     },
     "StateVariables": {
         "DefectsSummary": {
@@ -681,19 +683,19 @@ const Placeholders = {
             
 
 
-                var resquestObject = CustomDataModifierFunction(cleanData)
+                //var resquestObject = CustomDataModifierFunction(cleanData)
 
                 if(cleanData.result == "onhold")
                 {
                   
                     await SaveOffline(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
-                    props.navigation.navigate("BulkOrderListScreen")
+                    //props.navigation.navigate("BulkOrderListScreen")
                     return
                     
                 }
-
-                console.log("############## Data being sent to API ################")
-                console.log(resquestObject)
+                return
+                //console.log("############## Data being sent to API ################")
+                //console.log(resquestObject)
                 const fetchConfig = {
                   method: "POST",
                         body: JSON.stringify(resquestObject),
@@ -710,7 +712,9 @@ const Placeholders = {
                     removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
                     
                   })
-                  .then(() => props.navigation.navigate("BulkOrderListScreen"))
+                  .then(() => {
+                    props.navigation.navigate("BulkOrderListScreen")
+                  })
                   
             `,
     

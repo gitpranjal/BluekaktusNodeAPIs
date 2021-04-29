@@ -1,4 +1,4 @@
-{
+var targetJson = {
     "saveInspList": [
   {
     "ORDER_ID": "118466",

@@ -2326,6 +2326,8 @@ const getCleanData = (currentScreenDataObject, FieldList = {}, DropdownList = {}
 }
 
 
+
+
 const SaveOffline = async (CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList) => {
 
   await storeData("RadioButtonList", RadioButtonList, CurrentScreenId, true, true)
@@ -2349,13 +2351,383 @@ const GeneratedCode = (props) => {
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
   const [CompleteCurrentScreenData, SetCompleteCurrentScreenData] = useState("")
   const [DataLoaded, SetDataLoaded] = useState(false)
+  const [ViewMode, SetViewMode] = useState(true)
   
 
-  var CurrentScreenId = -1
+  var CurrentScreenId = "0"
   var CurrentScreenBackgroundInfo = {}
 
   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
+
+  useEffect(() => {
+
+    // showing data in view mode
+    var ScreenDataFromApi = {
+      "aqllevel": {
+        "aqlDtDetails":[
+          {
+            "grade": "C",
+            "majorAcceptance": 1,
+            "maxValue": 15,
+            "minValue": 9,
+            "minorAcceptance": 2,
+            "sampleSize": 3,
+          },
+          {
+            "grade": "D",
+            "majorAcceptance": 2,
+            "maxValue": 25,
+            "minValue": 16,
+            "minorAcceptance": 3,
+            "sampleSize": 8,
+          },
+          {
+            "grade": "E",
+            "majorAcceptance": 3,
+            "maxValue": 51,
+            "minValue": 26,
+            "minorAcceptance": 4,
+            "sampleSize": 13,
+          },
+          {
+            "grade": "F",
+            "majorAcceptance": 5,
+            "maxValue": 90,
+            "minValue": 51,
+            "minorAcceptance": 6,
+            "sampleSize": 20,
+          },
+          {
+            "grade": "G",
+            "majorAcceptance": 7,
+            "maxValue": 150,
+            "minValue": 91,
+            "minorAcceptance": 8,
+            "sampleSize": 32,
+          },
+          {
+            "grade": "H",
+            "majorAcceptance": 10,
+            "maxValue": 280,
+            "minValue": 151,
+            "minorAcceptance": 11,
+            "sampleSize": 50,
+          },
+          {
+            "grade": "J",
+            "majorAcceptance": 14,
+            "maxValue": 500,
+            "minValue": 281,
+            "minorAcceptance": 15,
+            "sampleSize": 80,
+          },
+          {
+            "grade": "K",
+            "majorAcceptance": 21,
+            "maxValue": 1200,
+            "minValue": 501,
+            "minorAcceptance": 22,
+            "sampleSize": 125,
+          },
+        ],
+        "aqlLevel": 10,
+        "id": "10",
+        "minorToMajorValue": 3,
+        "name": "10",
+        "value": "10",
+      },
+      "auditchecklist": [
+        {
+          "id": "123",
+          "name": "Print",
+          "remarks": "Okay",
+          "result": "Ok",
+        },
+        {
+          "id": "111",
+          "name": "Embroidery",
+          "remarks": "Not okay",
+          "result": "Not Ok",
+        },
+        {
+          "id": "110",
+          "name": "Embellishment",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "106",
+          "name": "Button",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "128",
+          "name": "Zipper",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "119",
+          "name": "Joker Tag",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "126",
+          "name": "Wash",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "122",
+          "name": "Polybag",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "121",
+          "name": "Main Label",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "107",
+          "name": "Care Label",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "127",
+          "name": "Weight [Gsm]",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "116",
+          "name": "Handfeel",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "120",
+          "name": "Loose Thread",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "115",
+          "name": "Garment Odor",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "117",
+          "name": "Hangtag",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "118",
+          "name": "Ironing",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "113",
+          "name": "Fold Size",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "104",
+          "name": "Barcode At Garment",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "124",
+          "name": "Ratio Pack",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "109",
+          "name": "Carton Qty Accuracy",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "108",
+          "name": "Carton Marking",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "125",
+          "name": "Visual Audit",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "105",
+          "name": "Bulk Garment Measurement",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "112",
+          "name": "Fabric Lab Test Report",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "114",
+          "name": "Garment Lab Test Report",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "103",
+          "name": "Availability Of Approved PP Sample",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "136",
+          "name": "RFID Security tag attached",
+          "remarks": "",
+          "result": "",
+        },
+        {
+          "id": "130",
+          "name": "Others",
+          "remarks": "",
+          "result": "",
+        },
+      ],
+      "buyername": "Baba elaichi",
+      "cartonsamplesize": "2",
+      "cartonselected": "2",
+      "cutqty_val": "",
+      "defectrate": "166.66666666666669%",
+      "doneqty_val": "",
+      "excessshortqty": "",
+      "factoryrepresentative": "babu rao apte",
+      "fg1qty": "10",
+      "fg2qty": "2",
+      "finalRemarks": "Good Job",
+      "inserttotalnoofcarton": "3",
+      "maindefect":[
+        {
+          "id": "65",
+          "maindefect": "ARMHOLE SHAPE OFF",
+          "maindefect_crit": "0",
+          "maindefect_maj": "2",
+          "maindefect_min": "0",
+        },
+      ],
+      "maindefect_crit": "",
+      "maindefect_maj": "2",
+      "maindefect_min": "",
+      "measurementDeviation": "Wide ",
+      "measurementdefect": [
+        {
+          "id": "1",
+          "measurementdefect": "Defect 1",
+          "measurementdefect_crit": "0",
+          "measurementdefect_maj": "0",
+          "measurementdefect_min": "2",
+        },
+      ],
+      "measurementdefect_crit": "",
+      "measurementdefect_maj": "",
+      "measurementdefect_min": "2",
+      "miscdefect":[
+        {
+          "id": "1",
+          "miscdefect": "Defect 3",
+          "miscdefect_crit": "0",
+          "miscdefect_maj": "0",
+          "miscdefect_min": "1",
+        },
+      ],
+      "miscdefect_crit": "",
+      "miscdefect_maj": "",
+      "miscdefect_min": "1",
+      "offeredqty": "",
+      "orderqty": "",
+      "packedqty": "12",
+      "pono": [
+        {
+          "excessshortqty": "3",
+          "id": "1",
+          "offeredqty": "15",
+          "orderqty": "12",
+          "pono": "1A",
+        },
+      ],
+      "pqqty_val": "",
+      "result": "onhold",
+      "samplesize": "3",
+      "screenBackgroundInfo": {},
+      "totalcritdefect": "0",
+      "totaldefect": "5",
+      "totalmajordefect": "2",
+      "totalminordefect": "3",
+    }
+    
+    var newFieldList = {...FieldList}
+    var newDropdownList = {...DropdownList}
+    var newRadioButtonList = {...RadioButtonList}
+    var newHybridDataObjects = {...HybridDataObjects}
+    var newChecklistDataObjects = {...ChecklistDataObjects}
+
+    Object.keys(ScreenDataFromApi).forEach((key) => {
+
+      if(key in ChecklistDataObjects)
+      {
+        newChecklistDataObjects[key] = newChecklistDataObjects[key].concat(ScreenDataFromApi[key])
+        return
+      }
+      if(key in HybridDataObjects)
+      {
+        newHybridDataObjects[key] = newHybridDataObjects[key].concat(ScreenDataFromApi[key])
+        console.log("############### new hybrid list for "+key+" ################")
+        console.log(newHybridDataObjects)
+        return
+      }
+
+      if(key in FieldList)
+      {
+        newFieldList[key] = ScreenDataFromApi[key]
+        return
+      }
+
+      if(key in DropdownList)
+      {
+        newDropdownList[key]["SelectedValue"] = ScreenDataFromApi[key]
+        return
+      }
+
+      if(key in RadioButtonList)
+      {
+        newRadioButtonList[key] = ScreenDataFromApi[key]
+        return
+      }
+
+      
+    })
+
+    SetFieldList(newFieldList)
+    SetDropdownList(newDropdownList)
+    SetRadioButtonList(newRadioButtonList)
+    SetHybridDataObjects(newHybridDataObjects)
+    SetChecklistDataObjects(newChecklistDataObjects)
+
+  }, [])
+
 
   useEffect(() => {
 
@@ -2481,7 +2853,8 @@ const GeneratedCode = (props) => {
 // ######################################## dropdown fetching ends ###############################################
 
 // ################## Extracting checklist information from async storage into the states ###########################
-      if(data != null && data["ChecklistDataObjects"] != null)
+
+     if(data != null && data["ChecklistDataObjects"] != null)
       {
         //console.log("######################### Checklist object from async storage ###################")
         //console.log(data["ChecklistDataObjects"])
