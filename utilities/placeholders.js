@@ -643,8 +643,9 @@ const Placeholders = {
 
             "currentScreenBackgroundInfo": `
 
-                {/*CurrentScreenBackgroundInfo = props.navigation.getParam("orderInfo")
-                CurrentScreenId = props.navigation.getParam("orderInfo")["TNA_ACTIVITY_ID"]
+                CurrentScreenBackgroundInfo = props.route.params.screenInformation
+                CurrentScreenId = CurrentScreenBackgroundInfo["screenId"]
+
 
                 
 
@@ -654,15 +655,18 @@ const Placeholders = {
                     console.log("############# Current screen background information ##############")
                     console.log(CurrentScreenBackgroundInfo)
 
-                    var newFieldList = {...FieldList}
+                    {/*var newFieldList = {...FieldList}
                     newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR_QTY"]
                     newFieldList["doneqty_val"] = "0"
                     SetFieldList(newFieldList)
+                    */}
+
+                    //SetViewMode(CurrentScreenBackgroundInfo["ViewMode"])
                     
 
                 }, [])
 
-              */}
+              
             `,
             "InspectionResult": `
                 

@@ -1331,6 +1331,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                           id="rowDeletion"
                           style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 5, justifyContent: "center", marginHorizontal: 10}}
                           onPress={() => {
+                              if(ViewMode == true)
+                                return
+
                               console.log("deletion will take place")
                               var newHybridDataObjects = {...HybridDataObjects}
                               newHybridDataObjects["${ViewObject.name}"] = newHybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != item.value )
@@ -1362,9 +1365,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                      
                     </View>  
                   )
-
                 return <Text numberOfLines={10} style={{textAlign: 'center', width: 80, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
-              }}
+
+                }}
               
             />
            
@@ -1454,6 +1457,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                //On text change listner on the searchable input
                  onTextChange={(text) => console.log(text)}
                  onItemSelect={selectedObject => { 
+                   if(ViewMode == true)
+                    return
+
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${subViewObject.fields[componentNumber].name}["SelectedValue"] = selectedObject
                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
@@ -1540,7 +1546,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               keyboardType=${subViewObject.fields[componentNumber].inputType != null ? `"`+subViewObject.fields[componentNumber].inputType+`"` : `"default"`}
               maxLength={50}
               value={FieldList["${subViewObject.fields[componentNumber].name}"]}
-              editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true}}
+              editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true} && !ViewMode}
               onChangeText = {(newValue) => {
                 var newFieldList = {...FieldList}
                 newFieldList["${subViewObject.fields[componentNumber].name}"] = newValue
@@ -1564,7 +1570,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={() => {
-                    
+                  
+                  if(ViewMode == true)
+                    return
+
                   var CurrentObjectId = null
                     var fieldNames = [] 
                     for(var obj of HybridDataObjects["${ViewObject.name}"])
@@ -1747,7 +1756,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                //On text change listner on the searchable input
                  onTextChange={(text) => console.log(text)}
                  onItemSelect={selectedObject => { 
-                   
+                   if(ViewMode == true)
+                    return
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${fieldName}["SelectedValue"] = selectedObject
                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
@@ -1837,7 +1847,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
               maxLength={50}
               value={FieldList["${ViewObject.fields[componentNumber].name}"]}
-              editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true}}
+              editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true} && !ViewMode}
               onChangeText = {(newValue) => {
                   
                   var newFieldsObject = {...FieldList}
@@ -1863,6 +1873,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15}}
                     textStyle={{marginHorizontal: 10, fontSize: 12, fontWeight: "bold", color: "grey"}}
+                    disabled={ViewMode}
                     data={
 
                         (() => {
@@ -1919,7 +1930,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
                 onPress={async () => {
-                  
+                  if(ViewMode == true)
+                    return
+
                   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
               }}
               >
@@ -2353,7 +2366,7 @@ const ${ScreenName} = (props) => {
   const [PlaceholderStates, SetPlaceholderStates] = useState(${JSON.stringify(Placeholders.StateVariables)})
   const [CompleteCurrentScreenData, SetCompleteCurrentScreenData] = useState("")
   const [DataLoaded, SetDataLoaded] = useState(false)
-  const [ViewMode, SetViewMode] = useState(true)
+  const [ViewMode, SetViewMode] = useState(props.route.params.screenInformation.ViewMode)
   
 
   var CurrentScreenId = "0"
@@ -2366,7 +2379,12 @@ const ${ScreenName} = (props) => {
 
     // showing data in view mode
 
-    return
+    //return
+
+    if( !ViewMode)
+      return
+
+    SetDataLoaded(true)
 
     var ScreenDataFromApi = {
       "aqllevel": {
@@ -2693,14 +2711,86 @@ const ${ScreenName} = (props) => {
 
       if(key in ChecklistDataObjects)
       {
-        newChecklistDataObjects[key] = newChecklistDataObjects[key].concat(ScreenDataFromApi[key])
+
+        var ChecklistStructureInfoObject = ChecklistDataObjects[key].filter((obj) => obj.id == "-1")[0]
+
+        var rowList = ScreenDataFromApi[key]
+
+        for (var i = 0; i < rowList.length; i++) {
+          var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
+  
+          for (var column of Object.keys(ChecklistStructureInfoObject)) {
+            if (column == "id" || column == "ApiUrl") continue;
+            //console.log("################ row list object ##############")
+            //console.log(rowList[i])
+            if (ChecklistStructureInfoObject[column]["type"] == "textField") {
+              newRowObject[column] = {
+                type: "textField",
+                value: rowList[i][column],
+              };
+            }
+            if (
+              ChecklistStructureInfoObject[column]["type"] == "textInputField"
+            ) {
+              newRowObject[column] = {
+                type: ChecklistStructureInfoObject[column]["type"],
+                variableName: column + "_" + i,
+                value: rowList[i][column]
+              };
+            }
+            if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
+              newRowObject[column] = {
+                type: ChecklistStructureInfoObject[column]["type"],
+                variableName: column + "_" + i,
+                options: ChecklistStructureInfoObject[column]["options"],
+                value: rowList[i][column]
+              };
+            }
+            if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
+              newRowObject[column] = {
+                type: ChecklistStructureInfoObject[column]["type"],
+                variableName: column + "_" + i,
+                SelectedValue: rowList[i][column],
+                ValueListUrl: "",
+                ValuesList: ChecklistStructureInfoObject[column]["options"] ,
+              };
+            }
+          }
+  
+          newChecklistDataObjects[key].push(newRowObject);
+
+        }
         return
       }
+
       if(key in HybridDataObjects)
       {
-        newHybridDataObjects[key] = newHybridDataObjects[key].concat(ScreenDataFromApi[key])
-        console.log("############### new hybrid list for "+key+" ################")
-        console.log(newHybridDataObjects)
+        var blueprintObject = {}
+        for(var obj of newHybridDataObjects[key])
+        {
+          if(obj["id"] == "-1")
+          {
+            blueprintObject = obj
+            break
+          }
+        }
+        var newCurrentHybridList = []
+        newCurrentHybridList.push(blueprintObject)
+        for(var obj of ScreenDataFromApi[key])
+        {
+          var newObj = {}
+          for(var keyName of Object.keys(blueprintObject))
+          {
+            if(keyName == "id")
+              continue
+            newObj[keyName] = obj[keyName]
+          }
+          newObj["id"] = obj["id"]
+            newCurrentHybridList.push(newObj)
+        }
+        newHybridDataObjects[key] = newCurrentHybridList
+        //console.log("############### new hybrid list for "+key+" ################")
+        //console.log(newHybridDataObjects)
         return
       }
 
@@ -2736,7 +2826,8 @@ const ${ScreenName} = (props) => {
 
   useEffect(() => {
 
-    
+    if(ViewMode == true)
+      return
     
     getData(CurrentScreenId)
     .then(data => {
@@ -2859,7 +2950,7 @@ const ${ScreenName} = (props) => {
 
 // ################## Extracting checklist information from async storage into the states ###########################
 
-     if(data != null && data["ChecklistDataObjects"] != null)
+     if(data != null && data["ChecklistDataObjects"] != null )
       {
         //console.log("######################### Checklist object from async storage ###################")
         //console.log(data["ChecklistDataObjects"])

@@ -1497,11 +1497,10 @@ const sizesetInspection = {
 
 
 
-
+var ObjectFromAPI = finalInspectionForm
 //var ObjectFromAPI = sizesetInspection
-//var ObjectFromAPI = finalInspectionForm
-var ObjectFromAPI = midlineInspection
-var ScreenName = `GeneratedCode3`
+//var ObjectFromAPI = midlineInspection
+var ScreenName = `GeneratedCode1`
 
 codeGenerator(ObjectFromAPI, Placeholders, ScreenName)
 .then(code => {
