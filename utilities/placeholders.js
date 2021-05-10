@@ -1,5 +1,10 @@
 const Placeholders = {
     "AutoSave": false,
+    "ScreenSpecificImports": `
+      import axios from "@networkConfig";
+      import { useSelector, useDispatch } from "react-redux"
+      import { selectUser } from "../slices/authSlice";
+    `,
     "ApiUrls": {
         //"ApiUrl1": "",
         "auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
@@ -647,6 +652,9 @@ const Placeholders = {
                 CurrentScreenId = CurrentScreenBackgroundInfo["screenId"]
 
 
+                const currentUser = useSelector(selectUser)
+                console.log("########### Current user ##################")
+                console.log(currentUser)
                 
 
 
@@ -654,12 +662,13 @@ const Placeholders = {
 
                     console.log("############# Current screen background information ##############")
                     console.log(CurrentScreenBackgroundInfo)
-
-                    {/*var newFieldList = {...FieldList}
+ 
+                    ////
+                    var newFieldList = {...FieldList}
                     newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR_QTY"]
                     newFieldList["doneqty_val"] = "0"
                     SetFieldList(newFieldList)
-                    */}
+                    ////
 
                     //SetViewMode(CurrentScreenBackgroundInfo["ViewMode"])
                     
@@ -687,38 +696,101 @@ const Placeholders = {
             
 
 
-                //var resquestObject = CustomDataModifierFunction(cleanData)
+                var resquestObject = CustomDataModifierFunction(cleanData)
 
                 if(cleanData.result == "onhold")
                 {
                   
                     await SaveOffline(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
-                    //props.navigation.navigate("BulkOrderListScreen")
+                    props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                    Alert.alert("Data saved to phone!")
                     return
                     
                 }
-                return
+                
                 //console.log("############## Data being sent to API ################")
                 //console.log(resquestObject)
+
+                console.log("############################### Request being sent #########################")
+                console.log({
+                  "companyID": currentUser.companyId,
+                  "inspectionDetails": resquestObject
+                })
+
+                
                 const fetchConfig = {
                   method: "POST",
-                        body: JSON.stringify(resquestObject),
+                        body: JSON.stringify({
+                          "companyID": currentUser.companyId,
+                          "inspectionDetails": resquestObject
+                        }),
                         headers: {
                           "Content-Type": "application/json",
                           Accept: "application/json",
+                          Authorization: "Bearer " + currentUser.authToken
                         },
                   }
 
-                  fetch("https://maxservicestg.bluekaktus.com/Service1.svc/SaveInspectionFormData_max", fetchConfig)
+                  fetch("https://devsourcingapi.bluekaktus.com/quality/saveInspectionDetails", fetchConfig)
                   .then(response => response.json())
                   .then(body => {
-                    Alert.alert(body["MESSAGE"])
-                    removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
-                    
+                    console.log("$$$$$$$$$$$$$$$$", body)
+                    Alert.alert(body.result)
+                    //removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
+                    //removeValue(CurrentScreenId)
+                    if(body.result == "Success")
+                      removeValue(CurrentScreenId)
+
                   })
                   .then(() => {
-                    props.navigation.navigate("BulkOrderListScreen")
+                    props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
                   })
+                  .catch(error => {
+                    Alert.alert("Could not submit inspection!")
+                    console.log("######## Error in posting inspection data ##############")
+                    console.log(error)
+                  })
+                
+              
+                
+               {/*
+                axios.post("/quality/saveInspectionDetails", {
+                  "companyID": currentUser.companyID,
+                  "inspectionDetails": resquestObject
+                })
+                .then(response => {
+                  console.log("######### Response after posting inspection data #########")
+                  console.log(response)
+                  Alert.alert(response.result != null ? response.result : "Response has no result key" )
+                })
+                .catch(error => {
+                  Alert.alert("Could not submit inspection!")
+                  console.log("######## Error in posting inspection data ##############")
+                  console.log(error)
+                })
+                */}
+
+                {/*
+                try {
+                  const response = await axios.post("/quality/saveInspectionDetails", {
+                    "companyID": currentUser.companyID,
+                    "inspectionDetails": resquestObject
+                  });
+            
+                  console.log(response.data, "token");
+                  if (response.status == "200") {
+                    const { data } = response;
+                    Alert.alert(data.result)
+                    }
+                  
+                } 
+                catch (error) {
+                  console.log("############## Error in sending save inspection post request #########")
+                  console.log(error)
+                }
+
+              */}
+              
                   
             `,
     

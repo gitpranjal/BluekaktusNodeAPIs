@@ -1494,12 +1494,617 @@ const sizesetInspection = {
     ]
 }
 
+var finalInspectionFormArvind = {
+    "viewObjects": [
+        {
+            "type": "dropdown",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "aql_level",
+                    "title": "AQL Level",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 0,
+                    "required": false,
+                    "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "factory_representative",
+                    "title": "Factory Representative",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "text"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 3,
+            "fields": [
+                {
+                    "name": "pr_qty",
+                    "title": "PR Quantity",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                },
+                {
+                    "name": "done_qty",
+                    "title": "Done Quantity",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                },
+                {
+                    "name": "cut_qty",
+                    "title": "Cut Quantity",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 2,
+            "fields": [
+                {
+                    "name": "packed_qty",
+                    "title": "Packed Qty",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                },
+                {
+                    "name": "sample_size",
+                    "title": "Sample Size",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 2,
+            "fields": [
+                {
+                    "name": "fg1_qty",
+                    "title": "FG1 Qty",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                },
+                {
+                    "name": "fg2_qty",
+                    "title": "FG2 Qty",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 2,
+            "fields": [
+                {
+                    "name": "carton_sample_size",
+                    "title": "Carton Sample Size",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                },
+                {
+                    "name": "carton_selected",
+                    "title": "Carton Selected",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "text"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "insert_total_cartons",
+                    "title": "Insert Total No Of Carton",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "radioButton",
+            "name": "part_inspection",
+            "title": "Part Inspection",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "Yes",
+                    "minLength": 0,
+                    "maxLength": 0,
+                    "required": false
+                },
+                {
+                    "name": "No",
+                    "minLength": 0,
+                    "maxLength": 0,
+                    "required": false
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "radioButton",
+            "name": "reaudit",
+            "title": "Re-Audit",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "Yes",
+                    "minLength": 0,
+                    "maxLength": 0,
+                    "required": false
+                },
+                {
+                    "name": "No",
+                    "minLength": 0,
+                    "maxLength": 0,
+                    "required": false
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "hybrid",
+            "name": "main_defect",
+            "componentPerRow": 1,
+            "fields": [],
+            "groups": [
+                {
+                    "type": "dropdown",
+                    "componentPerRow": 1,
+                    "fields": [
+                        {
+                            "name": "main_defect",
+                            "title": "Select Defect",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 0,
+                            "required": false,
+                            "valueListUrl": "http://c842ec7a39cc.ngrok.io/api/reactScreenTool/controls/getDropdownValues"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                },
+                {
+                    "type": "textInputField",
+                    "title": "",
+                    "componentPerRow": 3,
+                    "fields": [
+                        {
+                            "name": "main_defect_crit",
+                            "title": "Critical",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        },
+                        {
+                            "name": "main_defect_maj",
+                            "title": "Major",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        },
+                        {
+                            "name": "main_defect_min",
+                            "title": "Minor",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                },
+                {
+                    "type": "textInputField",
+                    "componentPerRow": 1,
+                    "fields": [
+                        {
+                            "name": "main_defect_add",
+                            "title": "Add",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "text"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                }
+            ],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "hybrid",
+            "name": "measurement_defect",
+            "componentPerRow": 1,
+            "fields": [],
+            "groups": [
+                {
+                    "type": "textInputField",
+                    "componentPerRow": 1,
+                    "fields": [
+                        {
+                            "name": "measurement_defect",
+                            "title": "Measurement Defect",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "text"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                },
+                {
+                    "type": "textInputField",
+                    "title": "",
+                    "componentPerRow": 3,
+                    "fields": [
+                        {
+                            "name": "measurement_defect_crit",
+                            "title": "Critical",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        },
+                        {
+                            "name": "measurement_defect_maj",
+                            "title": "Major",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        },
+                        {
+                            "name": "measurement_defect_min",
+                            "title": "Minor",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                },
+                {
+                    "type": "textInputField",
+                    "componentPerRow": 1,
+                    "fields": [
+                        {
+                            "name": "measurement_defect_add",
+                            "title": "Add",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "text"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                }
+            ],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "hybrid",
+            "name": "misc_defect",
+            "componentPerRow": 1,
+            "fields": [],
+            "groups": [
+                {
+                    "type": "textInputField",
+                    "componentPerRow": 1,
+                    "fields": [
+                        {
+                            "name": "misc_defect",
+                            "title": "Miscellaneous Defect",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "text"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                },
+                {
+                    "type": "textInputField",
+                    "title": "",
+                    "componentPerRow": 3,
+                    "fields": [
+                        {
+                            "name": "misc_defect_crit",
+                            "title": "Critical",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        },
+                        {
+                            "name": "misc_defect_maj",
+                            "title": "Major",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        },
+                        {
+                            "name": "misc_defect_min",
+                            "title": "Minor",
+                            "size": "small",
+                            "minLength": 0,
+                            "maxLength": 100,
+                            "defaultValue": "",
+                            "required": false,
+                            "inputType": "numeric"
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                },
+                {
+                    "type": "button",
+                    "name": "misc_defect_add",
+                    "componentPerRow": 1,
+                    "fields": [
+                        {
+                            "name": "misc_defect_add",
+                            "title": "Add",
+                            "size": "regular",
+                            "minLength": 0,
+                            "maxLength": 0,
+                            "required": false,
+                            "onClick": "",
+                            "args": ""
+                        }
+                    ],
+                    "groups": [],
+                    "columns": [],
+                    "rows": []
+                }
+            ],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "total_crit",
+                    "title": "Total Critical Defect",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "total_maj",
+                    "title": "Major",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "total_min",
+                    "title": "Minor",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "total_defect",
+                    "title": "Total Defect",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "numeric"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+        {
+            "type": "textInputField",
+            "title": "",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "defect_rate",
+                    "title": "Defect Rate",
+                    "size": "small",
+                    "minLength": 0,
+                    "maxLength": 100,
+                    "defaultValue": "",
+                    "required": false,
+                    "inputType": "text"
+                }
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        }
+    ]
+}
 
 
 
 var ObjectFromAPI = finalInspectionForm
+
 //var ObjectFromAPI = sizesetInspection
 //var ObjectFromAPI = midlineInspection
+//var ObjectFromAPI = finalInspectionFormArvind
 var ScreenName = `GeneratedCode1`
 
 codeGenerator(ObjectFromAPI, Placeholders, ScreenName)

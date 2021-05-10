@@ -29,6 +29,12 @@ const ColorSchemeLibrary = {
     "primaryColor": `#696969`,
     "secondaryColor": `#708090`,
     "tertiaryColor": `#b0c4de`
+  },
+
+  "red": {
+    "primaryColor": `#dc143c`,
+    "secondaryColor": `#ffc0cb`,
+    "tertiaryColor": `#ffb6c1`
   }
 }
 
@@ -2164,6 +2170,8 @@ import ModalDropdown from 'react-native-modal-dropdown'
 //import styles from "../../assets/styles"
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
+${Placeholders.ScreenSpecificImports != null ? Placeholders.ScreenSpecificImports: "//Screen specific imports from placeholder could be here"}
 
 const screenFunctions = ${ObjectFromAPI.functions}
 
