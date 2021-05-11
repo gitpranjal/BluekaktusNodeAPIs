@@ -11,6 +11,7 @@ const Placeholders = {
         "millfabricchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
+        "ViewDataApi": "https://devsourcingapi.bluekaktus.com/quality/getInspectionDetails"
         
     },
     "StateVariables": {

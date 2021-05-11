@@ -2426,12 +2426,163 @@ const ${ScreenName} = (props) => {
 
     //return
 
+    const getCurrentScreenDataFromApi = async (ApiUrl, requestObject) => {
+
+      console.log("##################### Api Url passed ################### "+ApiUrl)
+      console.log("#################### request object for view api ##############")
+      console.log(requestObject)
+     
+        const { data } = await axios.post(ApiUrl, requestObject)
+        console.log("############## Data recieved for current screen in view mode from api ##################")
+        console.log(data)
+        return (data.result)[0]
+      
+      
+    }
+
+    var ViewApiUrlFromPlaceholder = ${Placeholders.ApiUrls != null && Placeholders.ApiUrls["ViewDataApi"] != null ? `"${Placeholders.ApiUrls["ViewDataApi"]}"`: `""`}
+     
+    
     if( !ViewMode)
       return
 
-    SetDataLoaded(true)
+    getCurrentScreenDataFromApi( ViewApiUrlFromPlaceholder, props.route.params.screenInformation["requestObjectForViewData"])
+    .then((ScreenDataFromApi) => {
+      SetDataLoaded(true)
 
-    var ScreenDataFromApi = {
+    
+
+    var newFieldList = {...FieldList}
+    var newDropdownList = {...DropdownList}
+    var newRadioButtonList = {...RadioButtonList}
+    var newHybridDataObjects = {...HybridDataObjects}
+    var newChecklistDataObjects = {...ChecklistDataObjects}
+
+    Object.keys(ScreenDataFromApi).forEach((key) => {
+
+      if(key in ChecklistDataObjects)
+      {
+
+        var ChecklistStructureInfoObject = ChecklistDataObjects[key].filter((obj) => obj.id == "-1")[0]
+
+        var rowList = ScreenDataFromApi[key]
+
+        for (var i = 0; i < rowList.length; i++) {
+          var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
+  
+          for (var column of Object.keys(ChecklistStructureInfoObject)) {
+            if (column == "id" || column == "ApiUrl") continue;
+            //console.log("################ row list object ##############")
+            //console.log(rowList[i])
+            if (ChecklistStructureInfoObject[column]["type"] == "textField") {
+              newRowObject[column] = {
+                type: "textField",
+                value: (rowList[i][column]).toString(),
+              };
+            }
+            if (
+              ChecklistStructureInfoObject[column]["type"] == "textInputField"
+            ) {
+              newRowObject[column] = {
+                type: ChecklistStructureInfoObject[column]["type"],
+                variableName: column + "_" + i,
+                value: (rowList[i][column]).toString()
+              };
+            }
+            if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
+              newRowObject[column] = {
+                type: ChecklistStructureInfoObject[column]["type"],
+                variableName: column + "_" + i,
+                options: ChecklistStructureInfoObject[column]["options"],
+                value: (rowList[i][column]).toString()
+              };
+            }
+            if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
+              newRowObject[column] = {
+                type: ChecklistStructureInfoObject[column]["type"],
+                variableName: column + "_" + i,
+                SelectedValue: rowList[i][column],
+                ValueListUrl: "",
+                ValuesList: ChecklistStructureInfoObject[column]["options"] ,
+              };
+            }
+          }
+  
+          newChecklistDataObjects[key].push(newRowObject);
+
+        }
+        return
+      }
+
+      if(key in HybridDataObjects)
+      {
+        var blueprintObject = {}
+        for(var obj of newHybridDataObjects[key])
+        {
+          if(obj["id"] == "-1")
+          {
+            blueprintObject = obj
+            break
+          }
+        }
+        var newCurrentHybridList = []
+        newCurrentHybridList.push(blueprintObject)
+        for(var obj of ScreenDataFromApi[key])
+        {
+          var newObj = {}
+          for(var keyName of Object.keys(blueprintObject))
+          {
+            if(keyName == "id")
+              continue
+            newObj[keyName] = obj[keyName]
+          }
+          newObj["id"] = obj["id"]
+            newCurrentHybridList.push(newObj)
+        }
+        newHybridDataObjects[key] = newCurrentHybridList
+        //console.log("############### new hybrid list for "+key+" ################")
+        //console.log(newHybridDataObjects)
+        return
+      }
+
+      if(key in FieldList)
+      {
+        newFieldList[key] = (ScreenDataFromApi[key]).toString()
+        return
+      }
+
+      if(key in DropdownList)
+      {
+        newDropdownList[key]["SelectedValue"] = ScreenDataFromApi[key]
+        return
+      }
+
+      if(key in RadioButtonList)
+      {
+        newRadioButtonList[key] = (ScreenDataFromApi[key]).toString()
+        return
+      }
+
+      
+    })
+
+    SetFieldList(newFieldList)
+    SetDropdownList(newDropdownList)
+    SetRadioButtonList(newRadioButtonList)
+    SetHybridDataObjects(newHybridDataObjects)
+    SetChecklistDataObjects(newChecklistDataObjects)
+
+
+
+      //############################# Screen data fetched and distributed in the screen ####################
+    })
+    .catch((error) => {
+      console.log("############# Error in fetching from view API ############")
+      console.log(error)
+    })
+    
+
+    var SampleScreenDataFromApi = {
       "aqllevel": {
         "aqlDtDetails":[
           {
@@ -2745,127 +2896,7 @@ const ${ScreenName} = (props) => {
       "totalmajordefect": "2",
       "totalminordefect": "3",
     }
-    
-    var newFieldList = {...FieldList}
-    var newDropdownList = {...DropdownList}
-    var newRadioButtonList = {...RadioButtonList}
-    var newHybridDataObjects = {...HybridDataObjects}
-    var newChecklistDataObjects = {...ChecklistDataObjects}
-
-    Object.keys(ScreenDataFromApi).forEach((key) => {
-
-      if(key in ChecklistDataObjects)
-      {
-
-        var ChecklistStructureInfoObject = ChecklistDataObjects[key].filter((obj) => obj.id == "-1")[0]
-
-        var rowList = ScreenDataFromApi[key]
-
-        for (var i = 0; i < rowList.length; i++) {
-          var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
-  
-          for (var column of Object.keys(ChecklistStructureInfoObject)) {
-            if (column == "id" || column == "ApiUrl") continue;
-            //console.log("################ row list object ##############")
-            //console.log(rowList[i])
-            if (ChecklistStructureInfoObject[column]["type"] == "textField") {
-              newRowObject[column] = {
-                type: "textField",
-                value: rowList[i][column],
-              };
-            }
-            if (
-              ChecklistStructureInfoObject[column]["type"] == "textInputField"
-            ) {
-              newRowObject[column] = {
-                type: ChecklistStructureInfoObject[column]["type"],
-                variableName: column + "_" + i,
-                value: rowList[i][column]
-              };
-            }
-            if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
-              newRowObject[column] = {
-                type: ChecklistStructureInfoObject[column]["type"],
-                variableName: column + "_" + i,
-                options: ChecklistStructureInfoObject[column]["options"],
-                value: rowList[i][column]
-              };
-            }
-            if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
-              newRowObject[column] = {
-                type: ChecklistStructureInfoObject[column]["type"],
-                variableName: column + "_" + i,
-                SelectedValue: rowList[i][column],
-                ValueListUrl: "",
-                ValuesList: ChecklistStructureInfoObject[column]["options"] ,
-              };
-            }
-          }
-  
-          newChecklistDataObjects[key].push(newRowObject);
-
-        }
-        return
-      }
-
-      if(key in HybridDataObjects)
-      {
-        var blueprintObject = {}
-        for(var obj of newHybridDataObjects[key])
-        {
-          if(obj["id"] == "-1")
-          {
-            blueprintObject = obj
-            break
-          }
-        }
-        var newCurrentHybridList = []
-        newCurrentHybridList.push(blueprintObject)
-        for(var obj of ScreenDataFromApi[key])
-        {
-          var newObj = {}
-          for(var keyName of Object.keys(blueprintObject))
-          {
-            if(keyName == "id")
-              continue
-            newObj[keyName] = obj[keyName]
-          }
-          newObj["id"] = obj["id"]
-            newCurrentHybridList.push(newObj)
-        }
-        newHybridDataObjects[key] = newCurrentHybridList
-        //console.log("############### new hybrid list for "+key+" ################")
-        //console.log(newHybridDataObjects)
-        return
-      }
-
-      if(key in FieldList)
-      {
-        newFieldList[key] = ScreenDataFromApi[key]
-        return
-      }
-
-      if(key in DropdownList)
-      {
-        newDropdownList[key]["SelectedValue"] = ScreenDataFromApi[key]
-        return
-      }
-
-      if(key in RadioButtonList)
-      {
-        newRadioButtonList[key] = ScreenDataFromApi[key]
-        return
-      }
-
-      
-    })
-
-    SetFieldList(newFieldList)
-    SetDropdownList(newDropdownList)
-    SetRadioButtonList(newRadioButtonList)
-    SetHybridDataObjects(newHybridDataObjects)
-    SetChecklistDataObjects(newChecklistDataObjects)
-
+   
   }, [])
 
 
