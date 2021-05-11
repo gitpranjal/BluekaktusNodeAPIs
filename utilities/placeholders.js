@@ -33,16 +33,16 @@ const Placeholders = {
                 var targetObject = {
                     "saveInspList": [
                   {
-                    "ORDER_ID": cleanDataFromScreen.screenBackgroundInfo["ORDER_ID"],
+                    "ORDER_ID": cleanDataFromScreen.screenBackgroundInfo["orderId"],
                     "PACKED_QTY": cleanDataFromScreen.packedqty,
                     "SAMPLE_SIZE":cleanDataFromScreen.samplesize ,
-                    "INSPECTION_DATE": "2021-04-13 10:24:03",
+                    "INSPECTION_DATE": cleanDataFromScreen.screenBackgroundInfo["presentDate"],
                     "ACTUAL_RELEASE_TIME": "142",
                     "AQ_LEVEL": cleanDataFromScreen.aqllevel["name"],
                     "MAX_MAJOR_ACCEPTANCE": "0",
                     "MAX_MINOR_ACCEPTANCE": "0",
                     "INSPECTION_REQUEST_ID": "0",
-                    "INSPECTION_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["ACTIVITY_ID"],
+                    "INSPECTION_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["activityID"],
                     "USER_ID": "801",
                     "MOBILE_APP_VERSION": "A_1.17",
                     "INSPECTION_RECORD_TYPE": "ADH",
@@ -288,14 +288,14 @@ const Placeholders = {
                     "INLINE_INSPECTION_FLAG": "0",
                     "INTERIM_INSPECTION_FLAG": "0",
                     "COMMENT": cleanDataFromScreen.finalRemarks,
-                    "FG1_QTY": "2",
-                    "FG2_QTY": "",
+                    "FG1_QTY": cleanDataFromScreen.fg1qty,
+                    "FG2_QTY": cleanDataFromScreen.fg2qty,
                     "CARTON_SELECTED": "1",
                     "FACTORY_REPRESENTATIVE": cleanDataFromScreen.factoryrepresentative,
                     "FINAL_SAMPLE_SIZE": "",
                     "TOTAL_CARTONS_GOH": "2",
                     "RE_AUDIT": "0",
-                    "TNA_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["TNA_ACTIVITY_ID"],
+                    "TNA_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["tnaActivityID"],
                     "QFE_STATUS": "",
                     "SUSTAINABILITY": cleanDataFromScreen.buyername,               // This means buyer name
                     "GPT_REPORT_NO": "",
@@ -711,19 +711,33 @@ const Placeholders = {
                 //console.log("############## Data being sent to API ################")
                 //console.log(resquestObject)
 
-                console.log("############################### Request being sent #########################")
-                console.log({
-                  "companyID": currentUser.companyId,
-                  "inspectionDetails": resquestObject
-                })
-
                 
+                
+
+                const nestedRequestObject = {
+                  "companyID": currentUser.companyId,
+                  "inspectionDetails": {
+                    "saveInspList1": {
+                      "INSPECTION_MT": resquestObject["saveInspList"],
+                      "INSPECTION_ORDER_DT": [{
+                        "ORDER_ID":resquestObject["saveInspList"][0]["ORDER_ID"],
+                        "PACKED_QTY": resquestObject["saveInspList"][0]["PACKED_QTY"],
+                        "SAMPLE_SIZE": resquestObject["saveInspList"][0]["SAMPLE_SIZE"],
+                        "FG1_QTY": resquestObject["saveInspList"][0]["FG1_QTY"],
+                        "FG2_QTY": resquestObject["saveInspList"][0]["FG2_QTY"]
+                    }],
+                      "INSPECTION_DEFECT_DT": resquestObject["saveInspList"][0]["DEFECT_LIST"],
+                      "INSPECTION_CHECK_LIST": resquestObject["saveInspList"][0]["CHECK_LIST"]
+                    }
+                  }
+                }
+                
+                console.log("############################### Request being sent #########################")
+                console.log(nestedRequestObject)
+
                 const fetchConfig = {
                   method: "POST",
-                        body: JSON.stringify({
-                          "companyID": currentUser.companyId,
-                          "inspectionDetails": resquestObject
-                        }),
+                        body: JSON.stringify(nestedRequestObject),
                         headers: {
                           "Content-Type": "application/json",
                           Accept: "application/json",
@@ -731,7 +745,7 @@ const Placeholders = {
                         },
                   }
 
-                  fetch("https://devsourcingapi.bluekaktus.com/quality/saveInspectionDetails", fetchConfig)
+                  fetch("http://386f88d3aada.ngrok.io/quality/saveInspectionDetails", fetchConfig)
                   .then(response => response.json())
                   .then(body => {
                     console.log("$$$$$$$$$$$$$$$$", body)
