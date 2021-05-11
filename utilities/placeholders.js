@@ -665,7 +665,7 @@ const Placeholders = {
  
                     ////
                     var newFieldList = {...FieldList}
-                    newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR_QTY"]
+                    newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["prQty"].toString()
                     newFieldList["doneqty_val"] = "0"
                     SetFieldList(newFieldList)
                     ////

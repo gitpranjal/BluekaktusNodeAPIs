@@ -1531,7 +1531,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(subViewObject.type == "textInputField")
           {
             newComponentCode = `
-            
+         {/*   
          <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
@@ -1564,6 +1564,22 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             }}
           />
           </View>
+          */}
+
+          <TextInput
+              label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
+              keyboardType=${subViewObject.fields[componentNumber].inputType != null ? `"`+subViewObject.fields[componentNumber].inputType+`"` : `"default"`}
+              maxLength={50}
+              value={FieldList["${subViewObject.fields[componentNumber].name}"]}
+              editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true} && !ViewMode}
+              style={{width: "${widthPerCompenent}"}}
+              onChangeText={(newValue) => {
+                var newFieldList = {...FieldList}
+                newFieldList["${subViewObject.fields[componentNumber].name}"] = newValue
+                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                SetFieldList(newFieldList)
+            }}
+            />
 
             `
           }
@@ -1833,7 +1849,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             newComponentCode = `
 
           {/* ############################################ TEXTINPUT FIELD ${ViewObject.fields[componentNumber].name} ###################################################### */}
-         <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
+         {/*
+          <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
          <FloatingLabelInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
               labelStyles={{fontSize: 12, fontWeight: "bold", backgroundColor: "${secondaryColor}", paddingHorizontal: 4, borderRadius: 2, paddingVertical: 1}}
@@ -1866,6 +1883,26 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               }}
           />
           </View>
+            */}
+
+            <TextInput
+              label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
+              keyboardType=${ViewObject.fields[componentNumber].inputType != null ? `"`+ViewObject.fields[componentNumber].inputType+`"` : `"default"`}
+              maxLength={50}
+              value={FieldList["${ViewObject.fields[componentNumber].name}"]}
+              editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true} && !ViewMode}
+              onChangeText = {(newValue) => {
+                  
+                  var newFieldsObject = {...FieldList}
+                  newFieldsObject["${fieldName}"] = newValue
+                  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                  
+
+                  SetFieldList(newFieldsObject)
+                  storeData("FieldList", newFieldsObject, CurrentScreenId)
+              }}
+              style={{width: "${widthPerCompenent}"}}
+            />
             {/* ############################################ TEXTINPUT FIELD ${ViewObject.fields[componentNumber].name} ends ###################################################### */}
             `
           }
@@ -2160,12 +2197,12 @@ var code = {
 code["structure"] = 
 `
 import React, { useState, useEffect} from "react";
-import {StyleSheet,Text,TextInput,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator} from "react-native";
+import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
-import { FloatingLabelInput } from "react-native-floating-label-input"
+import { TextInput } from 'react-native-paper'
 import ModalDropdown from 'react-native-modal-dropdown'
 //import styles from "../../assets/styles"
 
