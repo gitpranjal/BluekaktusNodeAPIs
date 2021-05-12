@@ -7,7 +7,7 @@ const Placeholders = {
     `,
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
+        //"auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "millfabricchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
@@ -39,7 +39,7 @@ const Placeholders = {
                     "SAMPLE_SIZE":cleanDataFromScreen.samplesize ,
                     "INSPECTION_DATE": cleanDataFromScreen.screenBackgroundInfo["presentDate"],
                     "ACTUAL_RELEASE_TIME": "142",
-                    "AQ_LEVEL": cleanDataFromScreen.aqllevel["name"],
+                    "AQL_LEVEL": cleanDataFromScreen.aqllevel["name"],
                     "MAX_MAJOR_ACCEPTANCE": "0",
                     "MAX_MINOR_ACCEPTANCE": "0",
                     "INSPECTION_REQUEST_ID": "0",
@@ -305,7 +305,7 @@ const Placeholders = {
                     "TIMELINE": "",
                     "SUGGESTION_BY_LIFESTYLE": "",
                     "LOG_COMMERCIAL_APPROVAL": "",
-                    "REMARK": "",
+                    "REMARK": cleanDataFromScreen.finalRemarks,
                     "PACKING_ACCURACY_CHECK": "",
                     "WAREHOUSE_LOCATION": "",
                     "DIGITAL_TAB_REMARK": "",
@@ -333,9 +333,9 @@ const Placeholders = {
                   var newDefectObject = {
                     "MAJOR": defectObj.maindefect_maj,
                     "MINOR": defectObj.maindefect_min,
-                    "TYPE": "Defect",
+                    "DEFECT_TYPE": "Defect",
                     "DEFECT_ID": defectObj.id,
-                    "MEASUREMENT_VALUE": "",
+                    "MEASUREMENT_VALUE": defectObj.maindefect,
                     "CRITICAL": defectObj.maindefect_crit
                   }
 
@@ -347,7 +347,7 @@ const Placeholders = {
                   var newDefectObject = {
                     "MAJOR": defectObj.measurementdefect_maj,
                     "MINOR": defectObj.measurementdefect_min,
-                    "TYPE": "Measurement",
+                    "DEFECT_TYPE": "Measurement",
                     "DEFECT_ID": "0",
                     "MEASUREMENT_VALUE": defectObj.measurementdefect,
                     "CRITICAL": defectObj.measurementdefect_crit
@@ -360,7 +360,7 @@ const Placeholders = {
                   var newDefectObject = {
                     "MAJOR": defectObj.miscdefect_maj,
                     "MINOR": defectObj.miscdefect_min,
-                    "TYPE": "MISC Defect",
+                    "DEFECT_TYPE": "MISC Defect",
                     "DEFECT_ID": "0",
                     "MEASUREMENT_VALUE": defectObj.miscdefect,
                     "CRITICAL": defectObj.miscdefect_crit
@@ -402,11 +402,13 @@ const Placeholders = {
         
         `,
         "ChecklistApiFetch": `
+           
             body: JSON.stringify({
                 "userID": 801,
                 "factoryID": 548
         
             }),
+          
         `,
         "AQLObjectModifier": `
             if(dropdownObjectName == "aqllevel")
@@ -699,22 +701,6 @@ const Placeholders = {
 
                 var resquestObject = CustomDataModifierFunction(cleanData)
 
-                if(cleanData.result == "onhold")
-                {
-                  
-                    await SaveOffline(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
-                    props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
-                    Alert.alert("Data saved to phone!")
-                    return
-                    
-                }
-                
-                //console.log("############## Data being sent to API ################")
-                //console.log(resquestObject)
-
-                
-                
-
                 const nestedRequestObject = {
                   "companyID": currentUser.companyId,
                   "inspectionDetails": {
@@ -733,9 +719,27 @@ const Placeholders = {
                   }
                 }
                 
-                console.log("############################### Request being sent #########################")
+                console.log("############################### Request object to be sent #########################")
                 console.log(nestedRequestObject)
 
+
+                if(cleanData.result == "onhold")
+                {
+                  
+                    await SaveOffline(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
+                    props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                    Alert.alert("Data saved to phone!")
+                    return
+                    
+                }
+                
+                //console.log("############## Data being sent to API ################")
+                //console.log(resquestObject)
+
+                
+                
+
+                
                 const fetchConfig = {
                   method: "POST",
                         body: JSON.stringify(nestedRequestObject),
@@ -746,7 +750,7 @@ const Placeholders = {
                         },
                   }
 
-                  fetch("http://386f88d3aada.ngrok.io/quality/saveInspectionDetails", fetchConfig)
+                  fetch("https://devsourcingapi.bluekaktus.com/quality/saveInspectionDetails", fetchConfig)
                   .then(response => response.json())
                   .then(body => {
                     console.log("$$$$$$$$$$$$$$$$", body)

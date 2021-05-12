@@ -1029,9 +1029,9 @@ var objectFromAPI = {                                       //Sample
 
 }
 
-const codeGenerator = async (ObjectFromAPI, Placeholders = {}, ScreenName = ScreenName) => {
+const codeGenerator = async (ObjectFromAPI, Placeholders = {}, ScreenName = ScreenName, colorScheme = "blue") => {
 
-  var ColorScheme = ObjectFromAPI.colorScheme != null ? ObjectFromAPI.colorScheme : "blue"
+  var ColorScheme = ObjectFromAPI.colorScheme != null ? ObjectFromAPI.colorScheme : ColorSchemeLibrary[colorScheme] != null ? colorScheme : "blue"
   const primaryColor = ColorSchemeLibrary[ColorScheme].primaryColor
 const secondaryColor = ColorSchemeLibrary[ColorScheme].secondaryColor
 const tertiaryColor = ColorSchemeLibrary[ColorScheme].tertiaryColor
@@ -1832,7 +1832,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  //mapping of item array
                  //default selected item index
                  //"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}: " + DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue.name }
+                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}: " + DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue }
                  placeholderTextColor="#00334e80"
                  //place holder for the search input
                  resetValue={false}
@@ -2553,6 +2553,7 @@ const ${ScreenName} = (props) => {
 
       if(key in DropdownList)
       {
+        console.log("################# Dropdown "+key+" found to have value "+ScreenDataFromApi[key] +"from api #############")
         newDropdownList[key]["SelectedValue"] = ScreenDataFromApi[key]
         return
       }
