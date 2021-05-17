@@ -2063,7 +2063,8 @@ for(var viewObj of ObjectFromAPI.viewObjects)
           DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                                   "ValuesListFunction": field.valueListFunction, 
                                                   "ValuesListUrl": Placeholders.ApiUrls != null && Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
-                                                  "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
+                                                  "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}],
+                                                  "FetchConfig": Placeholders.FetchConfigs != null && Placeholders.FetchConfigs[field.name] != null ? Placeholders.FetchConfigs[field.name] : {"method": "GET"},
                                                 }
           newFieldCollectionForHybridObject[field.name] = field.title != null ? field.title : field.name
           //HybridDataObjects[viewObj.name][field.name] = []
@@ -2077,7 +2078,10 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "checklist")
   {
     ChecklistDataObjects[viewObj.name.toString()] = []
-    var newFieldCollectionForChecklistObject = {"id": "-1", "ApiUrl":Placeholders.ApiUrls!= null && Placeholders.ApiUrls[viewObj.name] != null ?  Placeholders.ApiUrls[viewObj.name] : "no_checklist_url_supplied",}
+    var newFieldCollectionForChecklistObject = {"id": "-1", 
+                                                "ApiUrl":Placeholders.ApiUrls!= null && Placeholders.ApiUrls[viewObj.name] != null ?  Placeholders.ApiUrls[viewObj.name] : "no_checklist_url_supplied",
+                                                "FetchConfig": Placeholders.FetchConfigs != null && Placeholders.FetchConfigs[viewObj.name] != null ? Placeholders.FetchConfigs[viewObj.name] : {"method": "GET"}, 
+                                              }
  
     var columnsInfoObject = {}
     for (var columnObject of viewObj.columns)
@@ -2178,7 +2182,8 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       DropdownInputObjectList[field.name] = {"SelectedValue": "", 
                                               "ValuesListFunction": field.valueListFunction != null ? field.valueListFunction : "", 
                                               "ValuesListUrl": Placeholders.ApiUrls != null && Placeholders.ApiUrls[field.name] != null ? Placeholders.ApiUrls[field.name] : field.valueListUrl != null ? field.valueListUrl : "",
-                                              "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}]
+                                              "ValuesList": [{"id": "1", "name": "option1",}, {"id": "2", "name": "option2"}],
+                                              "FetchConfig": Placeholders.FetchConfigs != null && Placeholders.FetchConfigs[field.name] != null ? Placeholders.FetchConfigs[field.name] : {"method": "GET"},
                                             }
   }
   if(viewObj.type == "radioButton")
@@ -2419,7 +2424,7 @@ const ${ScreenName} = (props) => {
 
   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
-
+  
   useEffect(() => {
 
     // showing data in view mode
@@ -2935,6 +2940,7 @@ const ${ScreenName} = (props) => {
       else
       // ######################## fetching the dropdown information from api since nothing present in async stotage #########
       {
+        console.log("######################## fetching the dropdown information from api since nothing present in async stotage #########")
         var tasks = []
         var dropdownsListObject = {...DropdownList}
         Object.keys(dropdownsListObject).forEach((dropdownObjectName) => {
@@ -2947,21 +2953,39 @@ const ${ScreenName} = (props) => {
             console.log("############### Couldn't find working or valid url for dropdown: "+dropdownObjectName)
             return
           }
-          // fetching configurations should come from placeholder, following is the default configuration
-          const fetchConfig = {
-              method: "POST",
-                    body: JSON.stringify({
-                      "basicparams": {
-                          "companyID": 84,
-                          "userID": 13
-                      }
-                  }),
-                    headers: {
-                      "Content-Type": "application/json",
-                      Accept: "application/json",
-                    },
-          }
-          const response = await fetch(dropdownObject.ValuesListUrl, fetchConfig)
+          // fetching configurations should come from placeholder
+          
+          
+          // ############################# Evaluating the fetch config's variable names passed as strings from placeholder ########
+              var FetchConfig = dropdownObject.FetchConfig
+              for(var key of Object.keys(FetchConfig.body != null ? FetchConfig.body: {}))
+              {
+                try{
+                  FetchConfig["body"][key] = eval(FetchConfig["body"][key])
+                }
+                catch(e)
+                {
+                  //console.log("############# Did not evaluate "+FetchConfig["body"][key])
+                  continue
+                }
+                
+              }
+
+              FetchConfig["body"] = JSON.stringify(FetchConfig["body"] != null ? FetchConfig["body"] : {})
+              
+              if("Authorization" in FetchConfig.headers)
+              {
+                var AuthElementsList = FetchConfig.headers["Authorization"].split(" ")   //Splitting into bearer and token
+                var token = eval(AuthElementsList[1])
+                var newAuth = ""+AuthElementsList[0]+" "+token
+                FetchConfig.headers["Authorization"] = newAuth
+              }
+
+              console.log("################ fetch config created for dropdown "+dropdownObjectName+" ############")
+              console.log(FetchConfig)
+
+
+          const response = await fetch(dropdownObject.ValuesListUrl, FetchConfig)
           var body = await response.json()
 
           body = body.result != null ? body.result : body
@@ -3059,7 +3083,35 @@ const ${ScreenName} = (props) => {
               );
               console.log(ChecklistStructureInfoObject.ApiUrl);
                 
-              const fetchConfig = {
+              // ############################# Evaluating the fetch config's variable names passed as strings from placeholder ########
+              var FetchConfig = ChecklistStructureInfoObject.FetchConfig
+              for(var key of Object.keys(FetchConfig.body != null ? FetchConfig.body: {}))
+              {
+                try{
+                  FetchConfig["body"][key] = eval(FetchConfig["body"][key])
+                }
+                catch(e)
+                {
+                  //console.log("############# Did not evaluate "+FetchConfig["body"][key])
+                  continue
+                }
+                
+              }
+
+              FetchConfig["body"] = JSON.stringify(FetchConfig["body"] != null ? FetchConfig["body"] : {})
+              
+              if("Authorization" in FetchConfig.headers)
+              {
+                var AuthElementsList = FetchConfig.headers["Authorization"].split(" ")   //Splitting into bearer and token
+                var token = eval(AuthElementsList[1])
+                var newAuth = ""+AuthElementsList[0]+" "+token
+                FetchConfig.headers["Authorization"] = newAuth
+              }
+
+              console.log("################ fetch config created for checklist "+checklistEntity+" ############")
+              console.log(FetchConfig)
+              {/*
+              const FetchConfig = {
                 method: "POST",
                 ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `// Code to come from Placeholder`}
                 headers: {
@@ -3067,7 +3119,8 @@ const ${ScreenName} = (props) => {
                   Accept: "application/json",
                 },
               }
-              const response = await fetch(ChecklistStructureInfoObject.ApiUrl,fetchConfig );
+              */}
+              const response = await fetch(ChecklistStructureInfoObject.ApiUrl, FetchConfig );
               // .then(response => response.json())
         
               const body = await response.json();

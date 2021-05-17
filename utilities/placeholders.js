@@ -8,12 +8,56 @@ const Placeholders = {
     "ApiUrls": {
         //"ApiUrl1": "",
         //"auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "millfabricchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
         "ViewDataApi": "https://devsourcingapi.bluekaktus.com/quality/getInspectionDetails"
         
     },
+    "FetchConfigs": {
+      "auditchecklist": {
+            method: "POST",
+                body: {
+                  "companyID": `currentUser.companyId`,
+              },
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: "Bearer " + `currentUser.authToken`
+              },
+        },
+
+      "maindefect": {
+                    method: "POST",
+                          body: JSON.stringify({
+                            "basicparams": {
+                                "companyID": 84,
+                                "userID": 13
+                            }
+                        }),
+                          headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                          },
+                },
+                
+      "aqllevel": {
+        method: "POST",
+              body: JSON.stringify({
+                "basicparams": {
+                    "companyID": 84,
+                    "userID": 13
+                }
+            }),
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+        },
+    },
+
+
     "StateVariables": {
         "DefectsSummary": {
             "totalCritical": "0",
