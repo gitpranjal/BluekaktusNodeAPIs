@@ -1513,7 +1513,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    //to restrict the items dropdown hieght
                    maxHeight: '100%',
                  }}
-                 items={DropdownList["${subViewObject.fields[componentNumber].name}"].ValuesList}
+                 items={ViewMode == true ? [] : DropdownList["${subViewObject.fields[componentNumber].name}"].ValuesList}
                  //mapping of item array
                  //default selected item index
                  placeholder={"Select ${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"}
@@ -1828,7 +1828,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    //to restrict the items dropdown hieght
                    maxHeight: '100%',
                  }}
-                 items={DropdownList["${ViewObject.fields[componentNumber].name}"].ValuesList}
+                 items={ViewMode == true ? [] : DropdownList["${ViewObject.fields[componentNumber].name}"].ValuesList}
                  //mapping of item array
                  //default selected item index
                  //"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
@@ -3058,15 +3058,16 @@ const ${ScreenName} = (props) => {
                   "############"
               );
               console.log(ChecklistStructureInfoObject.ApiUrl);
-        
-              const response = await fetch(ChecklistStructureInfoObject.ApiUrl, {
+                
+              const fetchConfig = {
                 method: "POST",
                 ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `// Code to come from Placeholder`}
                 headers: {
                   "Content-Type": "application/json",
                   Accept: "application/json",
                 },
-              });
+              }
+              const response = await fetch(ChecklistStructureInfoObject.ApiUrl,fetchConfig );
               // .then(response => response.json())
         
               const body = await response.json();

@@ -2100,13 +2100,13 @@ var finalInspectionFormArvind = {
 
 
 
-//var ObjectFromAPI = finalInspectionForm
+var ObjectFromAPI = finalInspectionForm
 //var ObjectFromAPI = sizesetInspection
 //var ObjectFromAPI = midlineInspection
-var ObjectFromAPI = finalInspectionFormArvind
-var ScreenName = `FinalInspectionArvind`
+//var ObjectFromAPI = finalInspectionFormArvind
+var ScreenName = `GeneratedCode1`
 
-codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "red")
+codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "blue")
 .then(code => {
   // write to a new file named 2pac.txt
   fs.writeFile(`/Users/geuser/Desktop/bk-sourcing/screens/${ScreenName}.js`, code["structure"], (err) => {
