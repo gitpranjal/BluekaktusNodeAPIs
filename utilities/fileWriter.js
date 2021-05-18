@@ -2202,14 +2202,15 @@ var code = {
 code["structure"] = 
 `
 import React, { useState, useEffect} from "react";
-import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator} from "react-native";
+import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator, Modal} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
 import SwitchSelector from "react-native-switch-selector"
 import { TextInput } from 'react-native-paper'
 import ModalDropdown from 'react-native-modal-dropdown'
-//import styles from "../../assets/styles"
+import {Camera} from 'expo-camera'
+import { Icon } from 'react-native-elements'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -2417,14 +2418,28 @@ const ${ScreenName} = (props) => {
   const [CompleteCurrentScreenData, SetCompleteCurrentScreenData] = useState("")
   const [DataLoaded, SetDataLoaded] = useState(false)
   const [ViewMode, SetViewMode] = useState(props.route.params.screenInformation.ViewMode)
+  const [CameraOpen, SetCameraOpen] = useState(true)
+  const [CameraPressed, SetCameraPressed] = useState(false)
   
 
   var CurrentScreenId = "0"
   var CurrentScreenBackgroundInfo = {}
+  var cameraReference = null
 
   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
   
+  const __takePicture = async () => {
+    if (!cameraReference) return
+    SetCameraPressed(true)
+    const photo = await cameraReference.takePictureAsync()
+    console.log("################## Image uri of newly clicked image ############## " )
+    console.log(photo.uri)
+    SetCameraOpen(false)
+    //props.callback(photo, props.currentDefectObject)
+  }
+
+
   useEffect(() => {
 
     // showing data in view mode
@@ -3232,6 +3247,29 @@ const ${ScreenName} = (props) => {
     
   }, [])
   
+  if(CameraOpen)
+    return (<Camera
+      style={{flex: 1,width:"100%"}}
+      ref={(r) => {
+        cameraReference = r
+      }}
+    >
+        <View style={{alignSelf: "center", borderColor: "green", borderWidth: 3, marginTop: "30%", height: 250, width: "80%"}}>
+
+        </View>
+        <TouchableOpacity
+          style={{alignSelf: "center", marginTop: 50 , alignItems: "center", justifyContent: "center"}}
+          onPress={__takePicture}
+        >
+            <Icon
+              reverse
+              name='ios-camera'
+              type='ionicon'
+              color={ !CameraPressed ? "blue" : "grey"}
+              size={40}
+            />
+        </TouchableOpacity>
+    </Camera>)
 
   return (
     <ScrollView 
