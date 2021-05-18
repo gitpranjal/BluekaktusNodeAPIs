@@ -1315,11 +1315,15 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
         keyExtractor={(dataObject) => dataObject.id.toString()}
         contentContainerStyle = {{borderColor: "black",}}
         renderItem = {({item}) => {
+          var currentRowObject = item
           var currentRowArray = []
           var i = 0
           for(var key of Object.keys(item))
           {
-            currentRowArray.push({"id": i.toString(), value: item[key], type: key})
+            if(key == "images")                      // Ignoring anything accept texts. Add such conditions to ignore the display of certain keys in the table
+              continue
+
+            currentRowArray.push({"id": i.toString(), value: item[key], type: key})    //Modifying the current row object's data (key , value pairs) into an array to be used further by a flatlist
             i += 1
           }
           return (
@@ -1330,21 +1334,24 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               keyExtractor={(currentElementObject) => currentElementObject.id.toString()}
               style={{paddingVertical: 3, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
+
+                // ###################### Camera and deletion icons come when id comes while iteration #####################
                 if(item.type == "id")
                   return (
                     <View style={{flexDirection: "row", marginRight: 3}}>
                       
                       
                       {(() => {
-                        if(currentRowArray.length > 2)
+                        if(currentRowArray.length > 2)                  // Just a random condition, may be used to set other conditions
                           return (
 
                             <TouchableOpacity
                             id="Camera button"
                             //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
                             onPress={() => {
-                                console.log("for viewing details")
-                               
+                                console.log("#### Opening camera #######")
+                                CurrentHybridTableRowObject = currentRowObject   //Setting the reference to current row to the global variable to be used in storing image
+                                SetCameraOpen(true)
                             }}
                     
                         >
@@ -1356,10 +1363,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                   size={25}
                               />
                               {(() => {
-                                  if(item.imageNames != null && item.imageNames.length!=0)
+                                  if(currentRowObject.images != null && currentRowObject.images.length!=0)
                                   return(
                                       <View style={{alignSelf: "flex-start", backgroundColor: "red", borderRadius: 10}}>
-                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{item.imageNames.length}</Text>
+                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{currentRowObject.images.length}</Text>
                                       </View>
                                   )
                               })()}
@@ -2430,6 +2437,9 @@ const SaveOffline = async (CurrentScreenId, FieldList, DropdownList, HybridDataO
 
 ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["CustomDataModifierFunction"] != null ? Placeholders.CodeSnippets["CustomDataModifierFunction"] : `//Could be Some Code from placeholder`}
 
+var CurrentHybridTableRowObject = {}  // This global variable is declared outside the screen function because if inside the screen function, 
+                                      //it will get reinitialized and loose its data everytime some state changes
+                                      // Modifying this reference also modifies the state since it is a refernce to an object of HybriddataObjects' subobject
 
 const ${ScreenName} = (props) => {
   const [Sentence, SetSentence] = useState("")
@@ -2444,8 +2454,10 @@ const ${ScreenName} = (props) => {
   const [ViewMode, SetViewMode] = useState(props.route.params.screenInformation.ViewMode)
   const [CameraOpen, SetCameraOpen] = useState(false)
   const [CameraPressed, SetCameraPressed] = useState(false)
-  
 
+  // ######### Global variables/objects ################
+  
+  
   var CurrentScreenId = "0"
   var CurrentScreenBackgroundInfo = {}
   var cameraReference = null
@@ -2453,6 +2465,8 @@ const ${ScreenName} = (props) => {
   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
   
+
+
   const __takePicture = async () => {
     if (!cameraReference) return
     SetCameraPressed(true)
@@ -2461,6 +2475,17 @@ const ${ScreenName} = (props) => {
     console.log(photo.uri)
     SetCameraOpen(false)
     //props.callback(photo, props.currentDefectObject)
+    console.log("##################### Current hybrid row object ###############")
+    console.log(CurrentHybridTableRowObject)
+    //CurrentHybridTableRowObject["maindefect"] = "chutmaar department"
+
+    if(!("images"in CurrentHybridTableRowObject))
+     CurrentHybridTableRowObject["images"] = []
+
+    var newImageObject = {"imageName": (photo.uri).split("/")[(photo.uri).split("/").length -1], "imageUri": photo.uri }
+    CurrentHybridTableRowObject["images"].push(newImageObject)
+
+    SetHybridDataObjects({...HybridDataObjects})
   }
 
 
