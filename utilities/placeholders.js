@@ -30,12 +30,12 @@ const Placeholders = {
 
       "maindefect": {
                     method: "POST",
-                          body: JSON.stringify({
+                          body: {
                             "basicparams": {
                                 "companyID": 84,
                                 "userID": 13
                             }
-                        }),
+                        },
                           headers: {
                             "Content-Type": "application/json",
                             Accept: "application/json",
@@ -44,12 +44,12 @@ const Placeholders = {
                 
       "aqllevel": {
         method: "POST",
-              body: JSON.stringify({
+              body: {
                 "basicparams": {
                     "companyID": 84,
                     "userID": 13
                 }
-            }),
+            },
               headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",

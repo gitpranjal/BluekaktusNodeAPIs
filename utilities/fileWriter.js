@@ -2987,6 +2987,8 @@ const ${ScreenName} = (props) => {
 
           const response = await fetch(dropdownObject.ValuesListUrl, FetchConfig)
           var body = await response.json()
+          console.log("########################## Data recieved from API for dropdown "+dropdownObjectName+" ###########")
+          console.log(body)
 
           body = body.result != null ? body.result : body
                 var modifiedList = []
@@ -3033,6 +3035,7 @@ const ${ScreenName} = (props) => {
 
         })     // Loop ends here
 
+        // ############################ Even if a single dropdown fetching fails, none of the dropdown list will be populated ####
         Promise.all(tasks)
         .then(() => {
           SetDropdownList(dropdownsListObject)
@@ -3186,6 +3189,7 @@ const ${ScreenName} = (props) => {
         
         });
         
+        // ############################ Even if a single checklist fetching fails, none of the checklist will be populated ####
         Promise.all(tasks).then(() => {
             SetChecklistDataObjects(newChecklistDataObjects)
             //console.log("##################### newChecklistDataObjects ################")
