@@ -1305,7 +1305,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           keyExtractor={(columnName) => columnName}
           contentContainerStyle = {{flexDirection: "row"}}
           renderItem = {({item}) => {
-            return <Text numberOfLines={10} style={{color: "white", width: 80, textAlign: 'center', fontWeight: "bold", fontSize: 12, }}>{item}</Text>
+            return <Text numberOfLines={10} style={{color: "white", width: 70, textAlign: 'center', fontWeight: "bold", fontSize: 10, }}>{item}</Text>
           }}
         />
       </View>
@@ -1328,14 +1328,50 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               id="rowContent"
               data={currentRowArray}
               keyExtractor={(currentElementObject) => currentElementObject.id.toString()}
-              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
+              style={{paddingVertical: 3, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
                 if(item.type == "id")
                   return (
-                    <View style={{flexDirection: "row",}}>
+                    <View style={{flexDirection: "row", marginRight: 3}}>
+                      
+                      
+                      {(() => {
+                        if(currentRowArray.length > 2)
+                          return (
+
+                            <TouchableOpacity
+                            id="Camera button"
+                            //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
+                            onPress={() => {
+                                console.log("for viewing details")
+                               
+                            }}
+                    
+                        >
+                            <View id="Image icon" style={{flexDirection: "row", justifyContent: "flex-start"}}>
+                              <Icon
+                                  name='ios-camera'
+                                  type='ionicon'
+                                  color={"blue"}
+                                  size={25}
+                              />
+                              {(() => {
+                                  if(item.imageNames != null && item.imageNames.length!=0)
+                                  return(
+                                      <View style={{alignSelf: "flex-start", backgroundColor: "red", borderRadius: 10}}>
+                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{item.imageNames.length}</Text>
+                                      </View>
+                                  )
+                              })()}
+                          </View>
+
+                          </TouchableOpacity>   
+                          )
+                      })()}
+
                       <TouchableOpacity
                           id="rowDeletion"
-                          style={{backgroundColor: "red", width: 20, alignItems: "center", borderRadius: 5, justifyContent: "center", marginHorizontal: 10}}
+                          style={{marginHorizontal: 5}}
                           onPress={() => {
                               if(ViewMode == true)
                                 return
@@ -1349,29 +1385,17 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                           }}
                   
                       >
-                          <Text style={{color: "white", fontSize: 15, fontWeight: "bold"}}>X</Text>
+                        <Icon
+                          name='trash-outline'
+                          type='ionicon'
+                          color={"red"}
+                          size={25}
+                        />
                       </TouchableOpacity> 
-                      
-                      {(() => {
-                        if(currentRowArray.length > 10)
-                          return (
-                            <TouchableOpacity
-                            id="ViewingDetail"
-                            style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5, paddingVertical: 5}}
-                            onPress={() => {
-                                console.log("for viewing details")
-                               
-                            }}
-                    
-                        >
-                            <Text style={{color: "grey", fontSize: 12, fontWeight: "bold"}}>Detail</Text>
-                          </TouchableOpacity>   
-                          )
-                      })()}
                      
                     </View>  
                   )
-                return <Text numberOfLines={10} style={{textAlign: 'center', width: 80, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
+                return <Text numberOfLines={10} style={{textAlign: 'center', width: 70, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
 
                 }}
               
@@ -2418,7 +2442,7 @@ const ${ScreenName} = (props) => {
   const [CompleteCurrentScreenData, SetCompleteCurrentScreenData] = useState("")
   const [DataLoaded, SetDataLoaded] = useState(false)
   const [ViewMode, SetViewMode] = useState(props.route.params.screenInformation.ViewMode)
-  const [CameraOpen, SetCameraOpen] = useState(true)
+  const [CameraOpen, SetCameraOpen] = useState(false)
   const [CameraPressed, SetCameraPressed] = useState(false)
   
 
