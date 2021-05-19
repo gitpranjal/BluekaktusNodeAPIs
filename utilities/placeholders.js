@@ -24,7 +24,8 @@ const Placeholders = {
               headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: "Bearer " + `currentUser.authToken`
+                Authorization: "Bearer " + `currentUser.authToken`,
+                //"companyID": `currentUser.companyId`
               },
         },
 

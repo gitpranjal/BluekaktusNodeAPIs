@@ -11,8 +11,18 @@ catch(error){
 
 const ScreenName = `GeneratedCode`
 
+const StylingLibrary = {
+  "textInputField": {"backgroundColor": "white", "fontSize": 12, "height": 50, },
+  "buttons": {"backgroundColor": "#10226A"}
+}
 
 const ColorSchemeLibrary = {
+  "appSpecific": {
+    "primaryColor": `#3d4081`,           //darkest
+    "secondaryColor": `white`,         //darker
+    "tertiaryColor": `#e6e6fa`           // light
+  }, 
+
   "blue": {
     "primaryColor": `#4682b4`,           //darkest
     "secondaryColor": `#b0c4de`,         //darker
@@ -1090,10 +1100,12 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             var ColumnHeadings = []
             for(var key of Object.keys(sampleObjectWithIdNegative1))
             {
-              if(key == "id" || key == "ApiUrl")
+              if(sampleObjectWithIdNegative1[key].title == null)       // These have to be ignored for screen heading
                continue
               ColumnHeadings.push(sampleObjectWithIdNegative1[key])
             }
+            console.log("############### Column headings #########")
+            console.log(ColumnHeadings)
             return ColumnHeadings
           })() }
           keyExtractor={(columnNameObject) => columnNameObject.title}
@@ -1234,7 +1246,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     return (
                       <TextInput
                       // style= {{marginLeft: 4, color: "blue"}}
-                      style={{borderBottomColor:'black', paddingHorizontal: 15, fontSize: 10, borderBottomWidth: 1, paddingVertical: 3, marginHorizontal: 15, width: 90}}
+                      style={{...${JSON.stringify(StylingLibrary.textInputField)}, borderBottomColor:'black', paddingHorizontal: 15, fontSize: 10, borderBottomWidth: 1, marginHorizontal: 15, width: 90}}
                       placeholder={""}
                       placeholderTextColor={"grey"}
                       maxLength={50}
@@ -1603,7 +1615,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               maxLength={50}
               value={FieldList["${subViewObject.fields[componentNumber].name}"]}
               editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true} && !ViewMode}
-              style={{width: "${widthPerCompenent}"}}
+              style={{width: "${widthPerCompenent}", ...${JSON.stringify(StylingLibrary.textInputField)}}}
               onChangeText={(newValue) => {
                 var newFieldList = {...FieldList}
                 newFieldList["${subViewObject.fields[componentNumber].name}"] = newValue
@@ -1932,7 +1944,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   SetFieldList(newFieldsObject)
                   storeData("FieldList", newFieldsObject, CurrentScreenId)
               }}
-              style={{width: "${widthPerCompenent}"}}
+              style={{width: "${widthPerCompenent}",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
             />
             {/* ############################################ TEXTINPUT FIELD ${ViewObject.fields[componentNumber].name} ends ###################################################### */}
             `
@@ -2109,6 +2121,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "checklist")
   {
     ChecklistDataObjects[viewObj.name.toString()] = []
+    // Put condition for all three of these to be not shown in column heading
     var newFieldCollectionForChecklistObject = {"id": "-1", 
                                                 "ApiUrl":Placeholders.ApiUrls!= null && Placeholders.ApiUrls[viewObj.name] != null ?  Placeholders.ApiUrls[viewObj.name] : "no_checklist_url_supplied",
                                                 "FetchConfig": Placeholders.FetchConfigs != null && Placeholders.FetchConfigs[viewObj.name] != null ? Placeholders.FetchConfigs[viewObj.name] : {"method": "GET"}, 
@@ -3193,8 +3206,8 @@ const ${ScreenName} = (props) => {
               const body = await response.json();
         
               const newRowlist = body.result != null ? body.result : body;
-              //console.log("############# new rowlist for checklist named " +checklistEntity +" from api ##############");
-              //console.log(newRowlist);
+              console.log("############# new rowlist for checklist named " +checklistEntity +" from api ##############");
+              console.log(newRowlist);
         
               rowList = rowList.concat(newRowlist);
         
@@ -3204,7 +3217,7 @@ const ${ScreenName} = (props) => {
                 var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
         
                 for (var column of Object.keys(ChecklistStructureInfoObject)) {
-                  if (column == "id" || column == "ApiUrl") continue;
+                  if (column == "id" || column == "ApiUrl" || column == "FetchConfig") continue;
                   //console.log("################ row list object ##############")
                   //console.log(rowList[i])
                   if (ChecklistStructureInfoObject[column]["type"] == "textField") {
@@ -3322,7 +3335,7 @@ const ${ScreenName} = (props) => {
 
   return (
     <ScrollView 
-    contentContainerStyle={{alignItems: "center"}}
+    contentContainerStyle={{alignItems: "center", backgroundColor: "#10226A"}}
     keyboardShouldPersistTaps="always"
     >
     {(() => {
@@ -3360,7 +3373,7 @@ const ${ScreenName} = (props) => {
         textAlign: "center"
       },
       openButton: {
-        backgroundColor: "${secondaryColor}",
+        backgroundColor: "${StylingLibrary.buttons != null && StylingLibrary.buttons.backgroundColor != null ? StylingLibrary.buttons.backgroundColor  : secondaryColor }",
         borderRadius: 5,
         padding: 10,
         elevation: 10,
@@ -3398,7 +3411,7 @@ export default StyleSheet.create({
     textAlign: "center"
   },
   openButton: {
-    backgroundColor: "${secondaryColor}",
+    backgroundColor: "${StylingLibrary.buttons != null && StylingLibrary.buttons.backgroundColor != null ? StylingLibrary.buttons.backgroundColor  : secondaryColor }",
     borderRadius: 5,
     padding: 10,
     elevation: 10,

@@ -2106,7 +2106,7 @@ var ObjectFromAPI = finalInspectionForm
 //var ObjectFromAPI = finalInspectionFormArvind
 var ScreenName = `GeneratedCode1`
 
-codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "blue")
+codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "appSpecific")
 .then(code => {
   // write to a new file named 2pac.txt
   fs.writeFile(`/Users/geuser/Desktop/bk-sourcing/screens/${ScreenName}.js`, code["structure"], (err) => {
