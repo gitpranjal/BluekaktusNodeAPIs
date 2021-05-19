@@ -1362,8 +1362,13 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                             //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
                             onPress={() => {
                                 console.log("#### Opening camera #######")
+                                
                                 CurrentHybridTableRowObject = currentRowObject   //Setting the reference to current row to the global variable to be used in storing image
-                                SetCameraOpen(true)
+                                
+                                if(CurrentHybridTableRowObject.images == null || CurrentHybridTableRowObject.images.length == 0)
+                                  SetCameraOpen(true)
+                                else
+                                  SetImageModalVisibility(true)
                             }}
                     
                         >
@@ -2246,7 +2251,7 @@ var code = {
 code["structure"] = 
 `
 import React, { useState, useEffect} from "react";
-import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator, Modal} from "react-native";
+import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator, Modal, ImageBackground} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
@@ -2467,6 +2472,7 @@ const ${ScreenName} = (props) => {
   const [ViewMode, SetViewMode] = useState(props.route.params.screenInformation.ViewMode)
   const [CameraOpen, SetCameraOpen] = useState(false)
   const [CameraPressed, SetCameraPressed] = useState(false)
+  const [ImageModalVisibility, SetImageModalVisibility] = useState(false)
 
   // ######### Global variables/objects ################
   
@@ -3335,9 +3341,148 @@ const ${ScreenName} = (props) => {
 
   return (
     <ScrollView 
-    contentContainerStyle={{alignItems: "center", backgroundColor: "#10226A"}}
+    contentContainerStyle={{alignItems: "center"}}
     keyboardShouldPersistTaps="always"
     >
+
+                <Modal
+                    id="ImageListView"
+                    animationType="slide"
+                    transparent={true}
+                   
+                    visible = {ImageModalVisibility}
+                    onRequestClose={() => {SetImageModalVisibility(false)}}
+                >
+                    <View style={{width: "100%", height: "100%", backgroundColor: "white", alignSelf: "center", alignItems: "center"}}>
+                        <TouchableOpacity
+                            id="ImageModalHeader"
+                            style={{backgroundColor: "blue", padding: 10, margin: 5, borderRadius: 5, alignSelf: "flex-start"}}
+                            onPress={() => {SetImageModalVisibility(false)}}
+                        >
+                            <Text style={{color: "white", fontSize: 20}}>Back</Text>
+                        </TouchableOpacity>
+
+
+                        {/*<View style={{marginHorizontal: 10, marginTop: 20, marginBottom: 10}}>*/}
+                            <FlatList
+                                data={CurrentHybridTableRowObject.images}
+                                keyExtractor={(ImageUriObject) => ImageUriObject.imageUri}
+                                style={{marginVertical:5}}
+                                renderItem = {({item}) => {
+                                    return (
+                                       
+                                        <ImageBackground
+                                            source={{ uri: item.imageUri }}
+                                            style={{
+                                                width: 300,
+                                                height: 250,
+                                                marginVertical: 10,
+                                                borderWidth: 2,
+                                                borderColor: "grey",
+                                                borderRadius: 5,
+                                                alignItems: "flex-end",
+                                                justifyContent: "flex-start"
+                                            }}
+                                        >   
+                                            <View style={{flexDirection: "row", marginTop: 5, marginHorizontal: 7}}>
+                                                <TouchableOpacity
+                                                    style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
+                                                    onPress={() => {
+
+                                                        Alert.alert(
+                        
+                                                            'Image deletion',
+                                                            'Are you sure you want to delete the image?',
+                                                            [
+                                                              {
+                                                                text: 'No',
+                                                                onPress: () => console.log('####### Image deletion cancelled #######'),
+                                                 
+                                                              },
+                                                              {
+                                                                text: 'Confirm', 
+                                                                onPress: () => console.log("############ Would delete image #############")
+                                                              },
+                                                            ],
+                                                            {cancelable: false},
+                                                          )
+                                                        
+                                                        
+                                                    }}
+                                                    //disabled={SelectedOrderInfo.inspectionID != 0}
+                                                >
+                                                    <Icon
+                                                        reverse
+                                                        name='ios-trash'
+                                                        type='ionicon'
+                                                        color={"red"}
+                                                        size={20}
+                                                    />
+                                                </TouchableOpacity>
+                                                {/*<TouchableOpacity
+                                                    style={{marginRight: 10, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
+                                                    onPress={() => {
+                                                        console.log("pressed")
+                                                        props.navigation.navigate("ImageDrawing")
+                                                        SetImageModalVisibility(false)
+                                                        props.navigation.navigate("ImageDrawing", { BackgroundImageUri: item.uri , BackgroundImageName: item.name, combinedDefectsList: CombinedDefectsList.slice(), 
+                                                                                                    defectImageObjectsList: DefectImageObjectsList.slice(), updateCallback: UpdateWithEditedImage })
+                                                        
+                                                    }}
+                                                    disabled={ViewMode}
+                                                >
+                                                    <Icon
+                                                        reverse
+                                                        name='ios-brush'
+                                                        type='ionicon'
+                                                        color={"red"}
+                                                        size={20}
+                                                    />
+                                                </TouchableOpacity>
+                                                */}
+                                            </View>
+                                            
+                                        </ImageBackground>
+                                    )
+                                }}
+                            />
+                        {/*</View>*/} 
+                            
+                        <TouchableOpacity 
+                            style={{...styles.addbutton, alignSelf: "flex-start", bottom: 10, marginHorizontal: 10}}
+                            onPress={() => {
+                                // openImagePickerAsync(CurrentSelectedDefectObjectForImageInput)
+                                // __startCamera(CurrentSelectedDefectObjectForImageInput)
+                                Alert.alert(
+                        
+                                    'Image Source',
+                                    'Select the source of Image',
+                                    [
+                                      {
+                                        text: 'Camera',
+                                        onPress: () => SetCameraOpen(true),
+                         
+                                      },
+                                      {
+                                        text: 'Gallery', 
+                                        onPress: () => console.log("########## Would open gallery ########")
+                                      },
+                                    ],
+                                    {cancelable: true},
+                                  )
+                            }}
+                        >
+                            <Text style={{fontWeight: "bold", fontSize: 20}} numberOfLines={1}>
+                            +
+                            </Text>
+                        </TouchableOpacity>
+
+
+                    </View>
+
+                </Modal>
+
+
     {(() => {
       if(! DataLoaded)
           return (<View style = {{alignSelf: "center", alignItems: "center"}}><ActivityIndicator size="large" color={"green"} /></View>)
