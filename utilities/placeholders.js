@@ -747,7 +747,7 @@ const Placeholders = {
                 var resquestObject = CustomDataModifierFunction(cleanData)
 
                 const nestedRequestObject = {
-                  "companyID": currentUser.companyId,
+                  "companyID": CurrentScreenBackgroundInfo.companyId,
                   "inspectionDetails": {
                     "saveInspList1": {
                       "INSPECTION_MT": resquestObject["saveInspList"],
@@ -791,7 +791,7 @@ const Placeholders = {
                         headers: {
                           "Content-Type": "application/json",
                           Accept: "application/json",
-                          Authorization: "Bearer " + currentUser.authToken
+                          Authorization: "Bearer " + CurrentScreenBackgroundInfo.authToken
                         },
                   }
 

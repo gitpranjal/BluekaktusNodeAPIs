@@ -1366,7 +1366,16 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                 CurrentHybridTableRowObject = currentRowObject   //Setting the reference to current row to the global variable to be used in storing image
                                 
                                 if(CurrentHybridTableRowObject.images == null || CurrentHybridTableRowObject.images.length == 0)
-                                  SetCameraOpen(true)
+                                  {
+                                    if (!CameraPermission) {
+                                          
+                                      SetCameraOpen(false)
+                                      Alert.alert('Camera Access denied')
+                                      return 
+                                    } 
+                                    else
+                                      SetCameraOpen(true)
+                                  }
                                 else
                                   SetImageModalVisibility(true)
                             }}
@@ -1880,7 +1889,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                  //mapping of item array
                  //default selected item index
                  //"Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}: " + DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue }
+                 placeholder={DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue == "" ? "Select ${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}" : "${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}: " + (DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue.name != null ? DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue.name : DropdownList["${ViewObject.fields[componentNumber].name}"].SelectedValue ) }
                  placeholderTextColor="#00334e80"
                  //place holder for the search input
                  resetValue={false}
@@ -2473,6 +2482,7 @@ const ${ScreenName} = (props) => {
   const [CameraOpen, SetCameraOpen] = useState(false)
   const [CameraPressed, SetCameraPressed] = useState(false)
   const [ImageModalVisibility, SetImageModalVisibility] = useState(false)
+  const [CameraPermission, SetCameraPermission] = useState(false)
 
   // ######### Global variables/objects ################
   
@@ -3019,6 +3029,14 @@ const ${ScreenName} = (props) => {
 
     if(ViewMode == true)
       return
+
+
+    (async () => {
+
+      const { status } = await Camera.requestPermissionsAsync();
+      SetCameraPermission(status === 'granted');
+
+    })()
     
     getData(CurrentScreenId)
     .then(data => {
@@ -3294,7 +3312,7 @@ const ${ScreenName} = (props) => {
   if(CameraOpen)
     return (<Camera
       style={{flex: 1,width:"100%"}}
-      ref={(r) => {
+      ref={(r) => {  
         cameraReference = r
       }}
     >
@@ -3436,7 +3454,16 @@ const ${ScreenName} = (props) => {
                                     [
                                       {
                                         text: 'Camera',
-                                        onPress: () => SetCameraOpen(true),
+                                        onPress: () => {
+                                          if (!CameraPermission) {
+                                          
+                                            SetCameraOpen(false)
+                                            Alert.alert('Camera Access denied')
+                                            return 
+                                          } 
+                                          else
+                                            SetCameraOpen(true)
+                                        },
                          
                                       },
                                       {
