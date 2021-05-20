@@ -19,13 +19,13 @@ const Placeholders = {
       "auditchecklist": {
             method: "POST",
                 body: {
-                  "companyID": `currentUser.companyId`,
+                  "companyID": "companyId",            // Will try to find companyId in screenBackgroundInfo
               },
               headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: "Bearer " + `currentUser.authToken`,
-                //"companyID": `currentUser.companyId`
+                Authorization: {"type": "Bearer", "value" : "authToken"},  // Will try to find authToken in screenBackgroundInfo
+                "companyID": "companyId"
               },
         },
 
@@ -700,9 +700,9 @@ const Placeholders = {
                 CurrentScreenId = CurrentScreenBackgroundInfo["screenId"]
 
 
-                const currentUser = useSelector(selectUser)
-                console.log("########### Current user ##################")
-                console.log(currentUser)
+                //const currentUser = useSelector(selectUser)
+                //console.log("########### Current user ##################")
+                //console.log(currentUser)
                 
 
 

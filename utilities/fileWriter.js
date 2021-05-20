@@ -2484,6 +2484,32 @@ const ${ScreenName} = (props) => {
   ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["currentScreenBackgroundInfo"] != null ? Placeholders.CodeSnippets["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
   
+  const ModifyFetchConfig = (FetchConfig) => {
+
+        for(var key of Object.keys(FetchConfig.body != null ? FetchConfig.body: {}))
+          {
+            if((FetchConfig["body"][key]).toString() in CurrentScreenBackgroundInfo)
+              FetchConfig["body"][key] = CurrentScreenBackgroundInfo[FetchConfig["body"][key].toString()]
+          }
+
+          FetchConfig["body"] = JSON.stringify(FetchConfig["body"] != null ? FetchConfig["body"] : {})
+          
+          for(var key of Object.keys(FetchConfig.headers != null ? FetchConfig.headers: {}))
+          {
+            if(key == "Authorization")
+            {
+              var AuthObject = FetchConfig.headers["Authorization"]   // type,value being sent from placeholder
+              var TokenType = (AuthObject["type"]).toString()
+              var TokenValue = (AuthObject["value"]).toString() in CurrentScreenBackgroundInfo ? CurrentScreenBackgroundInfo[(AuthObject["value"]).toString()] : (AuthObject["value"]).toString()
+              FetchConfig.headers["Authorization"] = TokenType + " " + TokenValue 
+              continue
+            }
+
+            if((FetchConfig["headers"][key]).toString() in CurrentScreenBackgroundInfo)
+              FetchConfig["headers"][key] = CurrentScreenBackgroundInfo[FetchConfig["headers"][key].toString()]
+          }
+
+      }
 
 
   const __takePicture = async () => {
@@ -3041,28 +3067,7 @@ const ${ScreenName} = (props) => {
           
           // ############################# Evaluating the fetch config's variable names passed as strings from placeholder ########
               var FetchConfig = dropdownObject.FetchConfig
-              for(var key of Object.keys(FetchConfig.body != null ? FetchConfig.body: {}))
-              {
-                try{
-                  FetchConfig["body"][key] = eval(FetchConfig["body"][key])
-                }
-                catch(e)
-                {
-                  //console.log("############# Did not evaluate "+FetchConfig["body"][key])
-                  continue
-                }
-                
-              }
-
-              FetchConfig["body"] = JSON.stringify(FetchConfig["body"] != null ? FetchConfig["body"] : {})
-              
-              if("Authorization" in FetchConfig.headers)
-              {
-                var AuthElementsList = FetchConfig.headers["Authorization"].split(" ")   //Splitting into bearer and token
-                var token = eval(AuthElementsList[1])
-                var newAuth = ""+AuthElementsList[0]+" "+token
-                FetchConfig.headers["Authorization"] = newAuth
-              }
+              ModifyFetchConfig(FetchConfig)
 
               console.log("################ fetch config created for dropdown "+dropdownObjectName+" ############")
               console.log(FetchConfig)
@@ -3171,41 +3176,12 @@ const ${ScreenName} = (props) => {
                 
               // ############################# Evaluating the fetch config's variable names passed as strings from placeholder ########
               var FetchConfig = ChecklistStructureInfoObject.FetchConfig
-              for(var key of Object.keys(FetchConfig.body != null ? FetchConfig.body: {}))
-              {
-                try{
-                  FetchConfig["body"][key] = eval(FetchConfig["body"][key])
-                }
-                catch(e)
-                {
-                  //console.log("############# Did not evaluate "+FetchConfig["body"][key])
-                  continue
-                }
-                
-              }
-
-              FetchConfig["body"] = JSON.stringify(FetchConfig["body"] != null ? FetchConfig["body"] : {})
               
-              if("Authorization" in FetchConfig.headers)
-              {
-                var AuthElementsList = FetchConfig.headers["Authorization"].split(" ")   //Splitting into bearer and token
-                var token = eval(AuthElementsList[1])
-                var newAuth = ""+AuthElementsList[0]+" "+token
-                FetchConfig.headers["Authorization"] = newAuth
-              }
+              ModifyFetchConfig(FetchConfig)
 
               console.log("################ fetch config created for checklist "+checklistEntity+" ############")
               console.log(FetchConfig)
-              {/*
-              const FetchConfig = {
-                method: "POST",
-                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["ChecklistApiFetch"] != null ? Placeholders.CodeSnippets["ChecklistApiFetch"]: `// Code to come from Placeholder`}
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                },
-              }
-              */}
+              
               const response = await fetch(ChecklistStructureInfoObject.ApiUrl, FetchConfig );
               // .then(response => response.json())
         
