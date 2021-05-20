@@ -4,24 +4,7 @@ const fs = require('fs');
 const fetch = require("node-fetch")
 const finalInspectionForm = {
     "viewObjects": [
-        {
-            "type": "textInputField",
-            "componentPerRow": 1,
-            "fields": [
-                {
-                    "name": "buyername",
-                    "title": "Buyer",
-                    "size": "small",
-                    "minLength": 0,
-                    "maxLength": 100,
-                    "defaultValue": "",
-                    "required": false
-                }
-            ],
-            "groups": [],
-            "columns": [],
-            "rows": []
-        },
+       
         {
             "type": "dropdown",
             "componentPerRow": 1,
@@ -40,101 +23,7 @@ const finalInspectionForm = {
             "columns": [],
             "rows": []
         },
-        {
-            "type": "hybrid",
-            "name": "pono",
-            "componentPerRow": 1,
-            "fields": [],
-            "groups": [
-                {
-                    "type": "textInputField",
-                    "componentPerRow": 1,
-                    "fields": [
-                        {
-                            "name": "pono",
-                            "title": "PO No",
-                            "size": "small",
-                            "minLength": 0,
-                            "maxLength": 100,
-                            "defaultValue": "",
-                            "required": false
-                        }
-                    ],
-                    "groups": [],
-                    "columns": [],
-                    "rows": []
-                },
-                {
-                    "type": "textInputField",
-                    "componentPerRow": 2,
-                    "fields": [
-                        {
-                            "name": "orderqty",
-                            "title": "Order Qty",
-                            "size": "small",
-                            "minLength": 0,
-                            "maxLength": 100,
-                            "defaultValue": "",
-                            "required": false,
-                            "inputType": "numeric"
-                        },
-                        {
-                            "name": "offeredqty",
-                            "title": "Offered Qty",
-                            "size": "small",
-                            "minLength": 0,
-                            "maxLength": 100,
-                            "defaultValue": "",
-                            "required": false,
-                            "inputType": "numeric"
-                        }
-                    ],
-                    "groups": [],
-                    "columns": [],
-                    "rows": []
-                },
-                {
-                    "type": "textInputField",
-                    "componentPerRow": 1,
-                    "fields": [
-                        {
-                            "name": "excessshortqty",
-                            "title": "Excess/Short Qty",
-                            "size": "small",
-                            "minLength": 0,
-                            "maxLength": 100,
-                            "defaultValue": "",
-                            "editable": false
-                        }
-                    ],
-                    "groups": [],
-                    "columns": [],
-                    "rows": []
-                },
-                {
-                    "type": "button",
-                    "name": "powiseqty_add",
-                    "componentPerRow": 1,
-                    "fields": [
-                        {
-                            "name": "powiseqty_add",
-                            "title": "Add",
-                            "size": "regular",
-                            "minLength": 0,
-                            "maxLength": 0,
-                            "required": false,
-                            "onClick": "",
-                            "args": ""
-                        }
-                    ],
-                    "groups": [],
-                    "columns": [],
-                    "rows": []
-                }
-            ],
-            "columns": [],
-            "rows": []
-        },
+        
         {
             "type": "textInputField",
             "componentPerRow": 1,
@@ -2100,11 +1989,11 @@ var finalInspectionFormArvind = {
 
 
 
-var ObjectFromAPI = finalInspectionForm
-//var ObjectFromAPI = sizesetInspection
+//var ObjectFromAPI = finalInspectionForm
+var ObjectFromAPI = sizesetInspection
 //var ObjectFromAPI = midlineInspection
 //var ObjectFromAPI = finalInspectionFormArvind
-var ScreenName = `GeneratedCode1`
+var ScreenName = `GeneratedCode2`
 
 codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "appSpecific")
 .then(code => {

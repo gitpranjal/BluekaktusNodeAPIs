@@ -9,7 +9,7 @@ const Placeholders = {
         //"ApiUrl1": "",
         //"auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
         "auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
-        "millfabricchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
+        "millfabricchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
         "ViewDataApi": "https://devsourcingapi.bluekaktus.com/quality/getInspectionDetails"
@@ -28,6 +28,18 @@ const Placeholders = {
                 "companyID": "companyId"
               },
         },
+        "millfabricchecklist": {
+          method: "POST",
+              body: {
+                "companyID": "companyId",            // Will try to find companyId in screenBackgroundInfo
+            },
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: {"type": "Bearer", "value" : "authToken"},  // Will try to find authToken in screenBackgroundInfo
+              "companyID": "companyId"
+            },
+      },
 
       "maindefect": {
                     method: "POST",
@@ -425,12 +437,15 @@ const Placeholders = {
                     "BUYER_NAME": ""
                   } 
 
+       
                   if((checklistObj.result).toLowerCase().trim() == "ok")
                     newChecklistObj["CHECK_STATUS"] = "0"
                   else if((checklistObj.result).toLowerCase().trim() == "not ok")
                     newChecklistObj["CHECK_STATUS"] = "1"
                   else
                    newChecklistObj["CHECK_STATUS"] = "2"
+
+                
 
 
                   targetObject["saveInspList"][0]["CHECK_LIST"].push(newChecklistObj)
@@ -791,7 +806,8 @@ const Placeholders = {
                         headers: {
                           "Content-Type": "application/json",
                           Accept: "application/json",
-                          Authorization: "Bearer " + CurrentScreenBackgroundInfo.authToken
+                          Authorization: "Bearer " + CurrentScreenBackgroundInfo.authToken,
+                          "companyID": CurrentScreenBackgroundInfo["companyId"]
                         },
                   }
 

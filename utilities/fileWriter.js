@@ -1301,26 +1301,33 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
     <View id ="${ViewObject.name} table" style={{marginVertical: 10, width: "100%", }}>
     <ScrollView horizontal id="${ViewObject.name} table" contentContainerStyle={{flexDirection: "column"}}>
-    
-      <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "${primaryColor}",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
-        <FlatList
-          id="Headings"
-          data={(() => {
-            var sampleObjectWithIdNegative1 = {}
-            for(var obj of HybridDataObjects["${ViewObject.name}"])
-            {
-              if(obj["id"] == "-1")
-                sampleObjectWithIdNegative1 = obj
-            }
-            return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
-          })() }
-          keyExtractor={(columnName) => columnName}
-          contentContainerStyle = {{flexDirection: "row"}}
-          renderItem = {({item}) => {
-            return <Text numberOfLines={10} style={{color: "white", width: 70, textAlign: 'center', fontWeight: "bold", fontSize: 10, }}>{item}</Text>
-          }}
-        />
-      </View>
+      {(() => {
+        if(HybridDataObjects["${ViewObject.name}"].length > 1)
+          return (
+
+            <View style={{flexDirection: "row", paddingVertical: 7, backgroundColor: "${primaryColor}",  borderRadius: 3, justifyContent: "flex-start", alignItems: "center",}}>
+            <FlatList
+              id="Headings"
+              data={(() => {
+                var sampleObjectWithIdNegative1 = {}
+                for(var obj of HybridDataObjects["${ViewObject.name}"])
+                {
+                  if(obj["id"] == "-1")
+                    sampleObjectWithIdNegative1 = obj
+                }
+                return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
+              })() }
+              keyExtractor={(columnName) => columnName}
+              contentContainerStyle = {{flexDirection: "row"}}
+              renderItem = {({item}) => {
+                return <Text numberOfLines={10} style={{color: "white", width: 70, textAlign: 'center', fontWeight: "bold", fontSize: 10, }}>{item}</Text>
+              }}
+            />
+          </View>
+
+          )
+      })()}
+      
       <FlatList
         id="Table content"
         data={HybridDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id != "-1")}
@@ -1362,22 +1369,32 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                             //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
                             onPress={() => {
                                 console.log("#### Opening camera #######")
-                                
-                                CurrentHybridTableRowObject = currentRowObject   //Setting the reference to current row to the global variable to be used in storing image
-                                
-                                if(CurrentHybridTableRowObject.images == null || CurrentHybridTableRowObject.images.length == 0)
-                                  {
-                                    if (!CameraPermission) {
-                                          
-                                      SetCameraOpen(false)
-                                      Alert.alert('Camera Access denied')
-                                      return 
-                                    } 
-                                    else
-                                      SetCameraOpen(true)
-                                  }
+                                CurrentHybridTableRowObject = currentRowObject
+                                if(ViewMode == true)
+                                {
+                                  if(CurrentHybridTableRowObject.images != null && CurrentHybridTableRowObject.images.length != 0)
+                                    SetImageModalVisibility(true)
+
+                                }
                                 else
-                                  SetImageModalVisibility(true)
+                                {
+                                     //Setting the reference to current row to the global variable to be used in storing image
+                                
+                                  if(CurrentHybridTableRowObject.images == null || CurrentHybridTableRowObject.images.length == 0)
+                                    {
+                                      if (!CameraPermission) {
+                                            
+                                        SetCameraOpen(false)
+                                        Alert.alert('Camera Access denied')
+                                        return 
+                                      } 
+                                      else
+                                        SetCameraOpen(true)
+                                    }
+                                  else
+                                    SetImageModalVisibility(true)
+                                }
+                                
                             }}
                     
                         >
@@ -2496,6 +2513,11 @@ const ${ScreenName} = (props) => {
   
   const ModifyFetchConfig = (FetchConfig) => {
 
+        if(FetchConfig.method != null && FetchConfig.method.toLowerCase() == "get")
+        {
+          console.log("############ fetch config left to defeault value as none specified through placeholder #########")
+          return
+        }
         for(var key of Object.keys(FetchConfig.body != null ? FetchConfig.body: {}))
           {
             if((FetchConfig["body"][key]).toString() in CurrentScreenBackgroundInfo)
@@ -3447,6 +3469,8 @@ const ${ScreenName} = (props) => {
                             onPress={() => {
                                 // openImagePickerAsync(CurrentSelectedDefectObjectForImageInput)
                                 // __startCamera(CurrentSelectedDefectObjectForImageInput)
+                                if(ViewMode == true)
+                                  return
                                 Alert.alert(
                         
                                     'Image Source',
