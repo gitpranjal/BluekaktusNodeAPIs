@@ -1989,11 +1989,11 @@ var finalInspectionFormArvind = {
 
 
 
-//var ObjectFromAPI = finalInspectionForm
-var ObjectFromAPI = sizesetInspection
+var ObjectFromAPI = finalInspectionForm
+//var ObjectFromAPI = sizesetInspection
 //var ObjectFromAPI = midlineInspection
 //var ObjectFromAPI = finalInspectionFormArvind
-var ScreenName = `GeneratedCode2`
+var ScreenName = `GeneratedCode1`
 
 codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "appSpecific")
 .then(code => {

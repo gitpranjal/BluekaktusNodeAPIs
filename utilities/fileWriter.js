@@ -1147,6 +1147,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     const InputKey = item["valueObject"].variableName
                     return (
                       <SwitchSelector
+                                    disabled={ViewMode == true}
                                     options={(() => {
                                       var Options = []
                                       for(var optionObject of item["valueObject"]["options"])
@@ -1202,6 +1203,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     const InputKey = item["valueObject"].variableName
                     return (
                       <ModalDropdown 
+                        disabled={ViewMode == true}
                         options={(() => {
                           var Options = []
                           for (var obj of item["valueObject"].ValuesList)
@@ -1252,7 +1254,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                       maxLength={50}
                       // onBlur={Keyboard.dismiss}
                       value={ChecklistDataObjects["${ViewObject.name}"].filter((rowObject) => rowObject.id == item.rowId)[0][item.type]["value"]}    //item.type means the column(name)
-                      editable={${true}}
+                      editable={ViewMode != true}
                       onChangeText = {(newValue) => {
                         
                         var newChecklistDataObjects = {...ChecklistDataObjects}
@@ -1990,7 +1992,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15}}
                     textStyle={{marginHorizontal: 10, fontSize: 12, fontWeight: "bold", color: "grey"}}
-                    disabled={ViewMode}
+                    disabled={ViewMode == true}
                     data={
 
                         (() => {
