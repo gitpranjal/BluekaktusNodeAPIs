@@ -2502,6 +2502,7 @@ const ${ScreenName} = (props) => {
   const [CameraPressed, SetCameraPressed] = useState(false)
   const [ImageModalVisibility, SetImageModalVisibility] = useState(false)
   const [CameraPermission, SetCameraPermission] = useState(false)
+  const [ImageComment, SetImageComment] = useState("")
 
   // ######### Global variables/objects ################
   
@@ -2546,7 +2547,7 @@ const ${ScreenName} = (props) => {
       }
 
 
-  const __takePicture = async () => {
+  const takePicture = async (imageComment = "") => {
     if (!cameraReference) return
     SetCameraPressed(true)
     const photo = await cameraReference.takePictureAsync()
@@ -2561,7 +2562,7 @@ const ${ScreenName} = (props) => {
     if(!("images"in CurrentHybridTableRowObject))
      CurrentHybridTableRowObject["images"] = []
 
-    var newImageObject = {"imageName": (photo.uri).split("/")[(photo.uri).split("/").length -1], "imageUri": photo.uri }
+    var newImageObject = {"imageName": (photo.uri).split("/")[(photo.uri).split("/").length -1], "imageUri": photo.uri, "imageComment": imageComment}
     CurrentHybridTableRowObject["images"].push(newImageObject)
 
     SetHybridDataObjects({...HybridDataObjects})
@@ -3343,9 +3344,23 @@ const ${ScreenName} = (props) => {
         <View style={{alignSelf: "center", borderColor: "green", borderWidth: 3, marginTop: "30%", height: 250, width: "80%"}}>
 
         </View>
+
+        <TextInput
+        label="Comments"
+        
+        maxLength={50}
+        value={ImageComment}
+        
+        onChangeText = {(newValue) => {
+            
+           SetImageComment(newValue)
+          
+        }}
+        style={{marginVertical: 5, alignSelf: "center", width: "80%",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
+      />
         <TouchableOpacity
           style={{alignSelf: "center", marginTop: 50 , alignItems: "center", justifyContent: "center"}}
-          onPress={__takePicture}
+          onPress={() => takePicture(ImageComment)}
         >
             <Icon
               reverse
@@ -3388,79 +3403,83 @@ const ${ScreenName} = (props) => {
                                 style={{marginVertical:5}}
                                 renderItem = {({item}) => {
                                     return (
-                                       
+                                        <View>
+                                        <Text style={{marginVertical: 2, color: "grey"}}>{item.imageComment}</Text>
                                         <ImageBackground
-                                            source={{ uri: item.imageUri }}
-                                            style={{
-                                                width: 300,
-                                                height: 250,
-                                                marginVertical: 10,
-                                                borderWidth: 2,
-                                                borderColor: "grey",
-                                                borderRadius: 5,
-                                                alignItems: "flex-end",
-                                                justifyContent: "flex-start"
-                                            }}
-                                        >   
-                                            <View style={{flexDirection: "row", marginTop: 5, marginHorizontal: 7}}>
-                                                <TouchableOpacity
-                                                    style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
-                                                    onPress={() => {
+                                        source={{ uri: item.imageUri }}
+                                        style={{
+                                            width: 300,
+                                            height: 250,
+                                            marginVertical: 10,
+                                            borderWidth: 2,
+                                            borderColor: "grey",
+                                            borderRadius: 5,
+                                            alignItems: "flex-end",
+                                            justifyContent: "flex-start"
+                                        }}
+                                    >   
+                                        <View style={{flexDirection: "row", marginTop: 5, marginHorizontal: 7}}>
+                                            <TouchableOpacity
+                                                style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
+                                                onPress={() => {
 
-                                                        Alert.alert(
-                        
-                                                            'Image deletion',
-                                                            'Are you sure you want to delete the image?',
-                                                            [
-                                                              {
-                                                                text: 'No',
-                                                                onPress: () => console.log('####### Image deletion cancelled #######'),
-                                                 
-                                                              },
-                                                              {
-                                                                text: 'Confirm', 
-                                                                onPress: () => console.log("############ Would delete image #############")
-                                                              },
-                                                            ],
-                                                            {cancelable: false},
-                                                          )
-                                                        
-                                                        
-                                                    }}
-                                                    //disabled={SelectedOrderInfo.inspectionID != 0}
-                                                >
-                                                    <Icon
-                                                        reverse
-                                                        name='ios-trash'
-                                                        type='ionicon'
-                                                        color={"red"}
-                                                        size={20}
-                                                    />
-                                                </TouchableOpacity>
-                                                {/*<TouchableOpacity
-                                                    style={{marginRight: 10, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
-                                                    onPress={() => {
-                                                        console.log("pressed")
-                                                        props.navigation.navigate("ImageDrawing")
-                                                        SetImageModalVisibility(false)
-                                                        props.navigation.navigate("ImageDrawing", { BackgroundImageUri: item.uri , BackgroundImageName: item.name, combinedDefectsList: CombinedDefectsList.slice(), 
-                                                                                                    defectImageObjectsList: DefectImageObjectsList.slice(), updateCallback: UpdateWithEditedImage })
-                                                        
-                                                    }}
-                                                    disabled={ViewMode}
-                                                >
-                                                    <Icon
-                                                        reverse
-                                                        name='ios-brush'
-                                                        type='ionicon'
-                                                        color={"red"}
-                                                        size={20}
-                                                    />
-                                                </TouchableOpacity>
-                                                */}
-                                            </View>
-                                            
-                                        </ImageBackground>
+                                                    Alert.alert(
+                    
+                                                        'Image deletion',
+                                                        'Are you sure you want to delete the image?',
+                                                        [
+                                                          {
+                                                            text: 'No',
+                                                            onPress: () => console.log('####### Image deletion cancelled #######'),
+                                             
+                                                          },
+                                                          {
+                                                            text: 'Confirm', 
+                                                            onPress: () => console.log("############ Would delete image #############")
+                                                          },
+                                                        ],
+                                                        {cancelable: false},
+                                                      )
+                                                    
+                                                    
+                                                }}
+                                                //disabled={SelectedOrderInfo.inspectionID != 0}
+                                            >
+                                                <Icon
+                                                    reverse
+                                                    name='ios-trash'
+                                                    type='ionicon'
+                                                    color={"red"}
+                                                    size={20}
+                                                />
+                                            </TouchableOpacity>
+                                            {/*<TouchableOpacity
+                                                style={{marginRight: 10, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
+                                                onPress={() => {
+                                                    console.log("pressed")
+                                                    props.navigation.navigate("ImageDrawing")
+                                                    SetImageModalVisibility(false)
+                                                    props.navigation.navigate("ImageDrawing", { BackgroundImageUri: item.uri , BackgroundImageName: item.name, combinedDefectsList: CombinedDefectsList.slice(), 
+                                                                                                defectImageObjectsList: DefectImageObjectsList.slice(), updateCallback: UpdateWithEditedImage })
+                                                    
+                                                }}
+                                                disabled={ViewMode}
+                                            >
+                                                <Icon
+                                                    reverse
+                                                    name='ios-brush'
+                                                    type='ionicon'
+                                                    color={"red"}
+                                                    size={20}
+                                                />
+                                            </TouchableOpacity>
+                                            */}
+                                        </View>
+                                        
+                                    </ImageBackground>
+                                        
+                                        </View>
+                                        
                                     )
                                 }}
                             />
