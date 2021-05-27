@@ -1382,16 +1382,37 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                 {
                                      //Setting the reference to current row to the global variable to be used in storing image
                                 
+                                  
                                   if(CurrentHybridTableRowObject.images == null || CurrentHybridTableRowObject.images.length == 0)
                                     {
-                                      if (!CameraPermission) {
-                                            
-                                        SetCameraOpen(false)
-                                        Alert.alert('Camera Access denied')
-                                        return 
-                                      } 
-                                      else
-                                        SetCameraOpen(true)
+
+                                      Alert.alert(
+                        
+                                        'Image Source',
+                                        'Select the source of Image',
+                                        [
+                                          {
+                                            text: 'Camera',
+                                            onPress: () => {
+                                              if (!CameraPermission) {
+                                              
+                                                SetCameraOpen(false)
+                                                Alert.alert('Camera Access denied')
+                                                return 
+                                              } 
+                                              else
+                                                SetCameraOpen(true)
+                                            },
+                             
+                                          },
+                                          {
+                                            text: 'Gallery', 
+                                            onPress: () => {openImagePickerAsync(ImageComment)}
+                                          },
+                                        ],
+                                        {cancelable: true},
+                                      )
+
                                     }
                                   else
                                     SetImageModalVisibility(true)
@@ -2288,6 +2309,8 @@ import { TextInput } from 'react-native-paper'
 import ModalDropdown from 'react-native-modal-dropdown'
 import {Camera} from 'expo-camera'
 import { Icon } from 'react-native-elements'
+import * as ImagePicker from "expo-image-picker"
+import * as ImageManipulator from 'expo-image-manipulator'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -2502,6 +2525,7 @@ const ${ScreenName} = (props) => {
   const [CameraPressed, SetCameraPressed] = useState(false)
   const [ImageModalVisibility, SetImageModalVisibility] = useState(false)
   const [CameraPermission, SetCameraPermission] = useState(false)
+  const [GalleryPermission, SetGalleryPermission] = useState(false)
   const [ImageComment, SetImageComment] = useState("")
 
   // ######### Global variables/objects ################
@@ -2546,6 +2570,47 @@ const ${ScreenName} = (props) => {
 
       }
 
+      const openImagePickerAsync = async (imageComment) => {
+       
+    
+        if (GalleryPermission === false) {
+          alert("Permission to gallery not granted");
+          return;
+        }
+    
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          aspect: [500, 250],
+        });
+        
+        
+        {/*
+        var newImageObject = {
+            
+            name: pickerResult.uri.split("/").pop(),
+            type: "image/jpeg",
+            uri: pickerResult.uri
+          }
+        */}
+    
+        const resizedPhoto = await ImageManipulator.manipulateAsync(
+        pickerResult.uri,
+        // [{ resize: { width: 300, height: 250} }], // resize to width of 300 and preserve aspect ratio 
+        [],
+        { compress: 0.2, format: 'jpeg' },
+        );
+
+    
+        if(!("images"in CurrentHybridTableRowObject))
+          CurrentHybridTableRowObject["images"] = []
+
+        var newImageObject = {"imageName": pickerResult.uri.split("/").pop(), "imageUri": resizedPhoto.uri, "imageComment": imageComment}
+        CurrentHybridTableRowObject["images"].push(newImageObject)
+
+        SetHybridDataObjects({...HybridDataObjects})
+
+  
+      }
 
   const takePicture = async (imageComment = "") => {
     if (!cameraReference) return
@@ -3055,6 +3120,12 @@ const ${ScreenName} = (props) => {
     if(ViewMode == true)
       return
 
+      (async () => {
+        if (Platform.OS !== 'web') {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          SetGalleryPermission(status === 'granted');
+        }
+      })();
 
     (async () => {
 
@@ -3360,7 +3431,10 @@ const ${ScreenName} = (props) => {
       />
         <TouchableOpacity
           style={{alignSelf: "center", marginTop: 50 , alignItems: "center", justifyContent: "center"}}
-          onPress={() => takePicture(ImageComment)}
+          onPress={() => {
+            takePicture(ImageComment)
+            SetImageComment("")
+          }}
         >
             <Icon
               reverse
@@ -3403,7 +3477,7 @@ const ${ScreenName} = (props) => {
                                 style={{marginVertical:5}}
                                 renderItem = {({item}) => {
                                     return (
-                                        <View>
+                                        <View style={{marginVertical: 10}}>
                                         <Text style={{marginVertical: 2, color: "grey"}}>{item.imageComment}</Text>
                                         <ImageBackground
                                         source={{ uri: item.imageUri }}
@@ -3492,6 +3566,8 @@ const ${ScreenName} = (props) => {
                                 // __startCamera(CurrentSelectedDefectObjectForImageInput)
                                 if(ViewMode == true)
                                   return
+
+                                
                                 Alert.alert(
                         
                                     'Image Source',
@@ -3513,11 +3589,13 @@ const ${ScreenName} = (props) => {
                                       },
                                       {
                                         text: 'Gallery', 
-                                        onPress: () => console.log("########## Would open gallery ########")
+                                        onPress: () => {openImagePickerAsync(ImageComment)}
                                       },
                                     ],
                                     {cancelable: true},
                                   )
+                                  
+
                             }}
                         >
                             <Text style={{fontWeight: "bold", fontSize: 20}} numberOfLines={1}>
