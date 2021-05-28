@@ -3114,26 +3114,44 @@ const ${ScreenName} = (props) => {
    
   }, [])
 
-
+  // Getting permission
   useEffect(() => {
 
     if(ViewMode == true)
       return
 
-      (async () => {
+      const getGalleryPermission = async () => {
         if (Platform.OS !== 'web') {
           const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
           SetGalleryPermission(status === 'granted');
         }
-      })();
+      }
 
-    (async () => {
+     const getCameraPermission = async () => {
 
       const { status } = await Camera.requestPermissionsAsync();
       SetCameraPermission(status === 'granted');
 
+    }
+     
+    (async () => {
+
+      await getGalleryPermission()
+      await getCameraPermission()
+
     })()
+
+  }, [])
+
+
+  // Checking if offline stored data is present for current screen id
+  useEffect(() => {
+
+    if(ViewMode == true)
+      return
+
     
+
     getData(CurrentScreenId)
     .then(data => {
       console.log("################ Data for screen code "+ CurrentScreenId + " ###################")
@@ -3477,8 +3495,7 @@ const ${ScreenName} = (props) => {
                                 style={{marginVertical:5}}
                                 renderItem = {({item}) => {
                                     return (
-                                        <View style={{marginVertical: 10}}>
-                                        <Text style={{marginVertical: 2, color: "grey"}}>{item.imageComment}</Text>
+                                        <View style={{marginVertical: 12}}>
                                         <ImageBackground
                                         source={{ uri: item.imageUri }}
                                         style={{
@@ -3491,7 +3508,7 @@ const ${ScreenName} = (props) => {
                                             alignItems: "flex-end",
                                             justifyContent: "flex-start"
                                         }}
-                                    >   
+                                        >   
                                         <View style={{flexDirection: "row", marginTop: 5, marginHorizontal: 7}}>
                                             <TouchableOpacity
                                                 style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
@@ -3551,6 +3568,7 @@ const ${ScreenName} = (props) => {
                                         </View>
                                         
                                     </ImageBackground>
+                                    <Text style={{marginVertical: 2, color: "grey", fontWeight: "bold"}}>{item.imageComment}</Text>
                                         
                                         </View>
                                         
