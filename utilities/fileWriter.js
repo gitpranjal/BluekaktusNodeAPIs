@@ -1341,7 +1341,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           var i = 0
           for(var key of Object.keys(item))
           {
-            if(key == "images")                      // Ignoring anything accept texts. Add such conditions to ignore the display of certain keys in the table
+            if(key == "files")                      // Ignoring anything accept texts. Add such conditions to ignore the display of certain keys in the table
               continue
 
             currentRowArray.push({"id": i.toString(), value: item[key], type: key})    //Modifying the current row object's data (key , value pairs) into an array to be used further by a flatlist
@@ -1374,7 +1374,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                 CurrentHybridTableRowObject = currentRowObject
                                 if(ViewMode == true)
                                 {
-                                  if(CurrentHybridTableRowObject.images != null && CurrentHybridTableRowObject.images.length != 0)
+                                  if(CurrentHybridTableRowObject.files != null && CurrentHybridTableRowObject.files.length != 0)
                                     SetImageModalVisibility(true)
 
                                 }
@@ -1383,7 +1383,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                      //Setting the reference to current row to the global variable to be used in storing image
                                 
                                   
-                                  if(CurrentHybridTableRowObject.images == null || CurrentHybridTableRowObject.images.length == 0)
+                                  if(CurrentHybridTableRowObject.files == null || CurrentHybridTableRowObject.files.length == 0)
                                     {
 
                                       Alert.alert(
@@ -1429,10 +1429,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                   size={25}
                               />
                               {(() => {
-                                  if(currentRowObject.images != null && currentRowObject.images.length!=0)
+                                  if(currentRowObject.files != null && currentRowObject.files.length!=0)
                                   return(
                                       <View style={{alignSelf: "flex-start", backgroundColor: "red", borderRadius: 10}}>
-                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{currentRowObject.images.length}</Text>
+                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{currentRowObject.files.length}</Text>
                                       </View>
                                   )
                               })()}
@@ -2570,7 +2570,7 @@ const ${ScreenName} = (props) => {
 
       }
 
-      const openImagePickerAsync = async (imageComment) => {
+      const openImagePickerAsync = async (fileComment) => {
        
     
         if (GalleryPermission === false) {
@@ -2601,11 +2601,11 @@ const ${ScreenName} = (props) => {
         );
 
     
-        if(!("images"in CurrentHybridTableRowObject))
-          CurrentHybridTableRowObject["images"] = []
+        if(!("files"in CurrentHybridTableRowObject))
+          CurrentHybridTableRowObject["files"] = []
 
-        var newImageObject = {"imageName": pickerResult.uri.split("/").pop(), "imageUri": resizedPhoto.uri, "imageComment": imageComment}
-        CurrentHybridTableRowObject["images"].push(newImageObject)
+        var newImageObject = {"fileName": pickerResult.uri.split("/").pop(), "fileUri": resizedPhoto.uri, "fileComment": fileComment, fileType: "image"}
+        CurrentHybridTableRowObject["files"].push(newImageObject)
 
         SetHybridDataObjects({...HybridDataObjects})
 
@@ -2624,11 +2624,11 @@ const ${ScreenName} = (props) => {
     console.log(CurrentHybridTableRowObject)
     //CurrentHybridTableRowObject["maindefect"] = "chutmaar department"
 
-    if(!("images"in CurrentHybridTableRowObject))
-     CurrentHybridTableRowObject["images"] = []
+    if(!("files"in CurrentHybridTableRowObject))
+     CurrentHybridTableRowObject["files"] = []
 
-    var newImageObject = {"imageName": (photo.uri).split("/")[(photo.uri).split("/").length -1], "imageUri": photo.uri, "imageComment": imageComment}
-    CurrentHybridTableRowObject["images"].push(newImageObject)
+    var newImageObject = {"fileName": (photo.uri).split("/")[(photo.uri).split("/").length -1], "fileUri": photo.uri, "fileComment": imageComment, fileType: "image"}
+    CurrentHybridTableRowObject["files"].push(newImageObject)
 
     SetHybridDataObjects({...HybridDataObjects})
   }
@@ -3435,18 +3435,17 @@ const ${ScreenName} = (props) => {
         </View>
 
         <TextInput
-        label="Comments"
-        
-        maxLength={50}
-        value={ImageComment}
-        
-        onChangeText = {(newValue) => {
-            
-           SetImageComment(newValue)
+          label="Comments"
+          maxLength={50}
+          value={ImageComment}
           
-        }}
-        style={{marginVertical: 5, alignSelf: "center", width: "80%",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
-      />
+          onChangeText = {(newValue) => {
+            SetImageComment(newValue)
+          }}
+          style={{marginVertical: 5, alignSelf: "center", width: "80%",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
+        />
+
+        
         <TouchableOpacity
           style={{alignSelf: "center", marginTop: 50 , alignItems: "center", justifyContent: "center"}}
           onPress={() => {
@@ -3490,14 +3489,14 @@ const ${ScreenName} = (props) => {
 
                         {/*<View style={{marginHorizontal: 10, marginTop: 20, marginBottom: 10}}>*/}
                             <FlatList
-                                data={CurrentHybridTableRowObject.images}
-                                keyExtractor={(ImageUriObject) => ImageUriObject.imageUri}
+                                data={CurrentHybridTableRowObject.files}
+                                keyExtractor={(fileObject) => fileObject.fileUri}
                                 style={{marginVertical:5}}
                                 renderItem = {({item}) => {
                                     return (
                                         <View style={{marginVertical: 12}}>
                                         <ImageBackground
-                                        source={{ uri: item.imageUri }}
+                                        source={{ uri: item.fileUri }}
                                         style={{
                                             width: 300,
                                             height: 250,
@@ -3568,7 +3567,7 @@ const ${ScreenName} = (props) => {
                                         </View>
                                         
                                     </ImageBackground>
-                                    <Text style={{marginVertical: 2, color: "grey", fontWeight: "bold"}}>{item.imageComment}</Text>
+                                    <Text style={{marginVertical: 2, color: "grey", fontWeight: "bold"}}>{item.fileComment}</Text>
                                         
                                         </View>
                                         

@@ -7,8 +7,8 @@ const Placeholders = {
     `,
     "ApiUrls": {
         //"ApiUrl1": "",
-        //"auditchecklist": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedChecklistRows",
-        "auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
+        "auditchecklist": "http://866400e0773e.ngrok.io/quality/getFormattedChecklistRows",
+        //"auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "millfabricchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
