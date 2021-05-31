@@ -2583,7 +2583,11 @@ const ${ScreenName} = (props) => {
           aspect: [500, 250],
         });
         
-        
+        if(pickerResult.uri == null)
+        {
+          console.log("############# Image selection from gallery cancelled ##############")
+          return
+        }
         {/*
         var newImageObject = {
             
@@ -3434,6 +3438,7 @@ const ${ScreenName} = (props) => {
 
         </View>
 
+        {/*
         <TextInput
           label="Comments"
           maxLength={50}
@@ -3444,6 +3449,7 @@ const ${ScreenName} = (props) => {
           }}
           style={{marginVertical: 5, alignSelf: "center", width: "80%",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
         />
+        */}
 
         
         <TouchableOpacity
