@@ -7,8 +7,8 @@ const Placeholders = {
     `,
     "ApiUrls": {
         //"ApiUrl1": "",
-        "auditchecklist": "http://866400e0773e.ngrok.io/quality/getFormattedChecklistRows",
-        //"auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
+        //"auditchecklist": "http://866400e0773e.ngrok.io/quality/getFormattedChecklistRows",
+        "auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "millfabricchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
         "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
@@ -393,8 +393,19 @@ const Placeholders = {
                     "DEFECT_TYPE": "Defect",
                     "DEFECT_ID": defectObj.id,
                     "MEASUREMENT_VALUE": defectObj.maindefect,
-                    "CRITICAL": defectObj.maindefect_crit
+                    "CRITICAL": defectObj.maindefect_crit,
+                    "DEFECT_FILES": [],
+
                   }
+                  if(defectObj.files != null)
+                  {
+                    for(var fileObject of defectObj.files)
+                    {
+                      var newDefectFileObj = {"FILE_NAME": fileObject["fileName"], "KEY_NAME": fileObject["fileName"]}
+                      newDefectObject["DEFECT_FILES"].push(newDefectFileObj)
+                    }
+                  }
+                 
 
                   targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
@@ -407,8 +418,20 @@ const Placeholders = {
                     "DEFECT_TYPE": "Measurement",
                     "DEFECT_ID": "0",
                     "MEASUREMENT_VALUE": defectObj.measurementdefect,
-                    "CRITICAL": defectObj.measurementdefect_crit
+                    "CRITICAL": defectObj.measurementdefect_crit,
+                    "DEFECT_FILES": [],
                   }
+
+                 
+                  if(defectObj.files != null)
+                  {
+                    for(var fileObject of defectObj.files)
+                    {
+                      var newDefectFileObj = {"FILE_NAME": fileObject["fileName"], "KEY_NAME": fileObject["fileName"]}
+                      newDefectObject["DEFECT_FILES"].push(newDefectFileObj)
+                    }
+                  }
+                  
                   targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
 
@@ -420,8 +443,19 @@ const Placeholders = {
                     "DEFECT_TYPE": "MISC Defect",
                     "DEFECT_ID": "0",
                     "MEASUREMENT_VALUE": defectObj.miscdefect,
-                    "CRITICAL": defectObj.miscdefect_crit
+                    "CRITICAL": defectObj.miscdefect_crit,
+                    "DEFECT_FILES": [],
                   }
+
+                  if(defectObj.files != null)
+                  {
+                    for(var fileObject of defectObj.files)
+                    {
+                      var newDefectFileObj = {"FILE_NAME": fileObject["fileName"], "KEY_NAME": fileObject["fileName"]}
+                      newDefectObject["DEFECT_FILES"].push(newDefectFileObj)
+                    }
+                  }
+
                   targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
 
@@ -783,6 +817,7 @@ const Placeholders = {
                 console.log(nestedRequestObject)
 
 
+
                 if(cleanData.result == "onhold")
                 {
                   
@@ -793,18 +828,33 @@ const Placeholders = {
                     
                 }
                 
-                //console.log("############## Data being sent to API ################")
-                //console.log(resquestObject)
+            
+                
+                var formData  = new FormData()
+                formData.append("json", JSON.stringify(nestedRequestObject))
 
-                
-                
+                Object.keys(HybridDataObjects).forEach(hybridObjectName => {
+                  for(var defectObject of HybridDataObjects[hybridObjectName])
+                  {
+                    if("files" in defectObject)
+                    {
+                      for(var fileObject of defectObject["files"])
+                      {
+                        formData.append(fileObject.fileName, {"name": fileObject.fileName, "uri": fileObject.fileUri})
+                      }
+                    }
+                  }
+                  
 
-                
+                })
+
+                console.log("####################### Form Data created ####################")
+                console.log(formData)
                 const fetchConfig = {
                   method: "POST",
-                        body: JSON.stringify(nestedRequestObject),
+                        body: formData,
                         headers: {
-                          "Content-Type": "application/json",
+                          "Content-Type": "multipart/form-data",
                           Accept: "application/json",
                           Authorization: "Bearer " + CurrentScreenBackgroundInfo.authToken,
                           "companyID": CurrentScreenBackgroundInfo["companyId"]
@@ -812,7 +862,10 @@ const Placeholders = {
                   }
 
                   fetch("https://devsourcingapi.bluekaktus.com/quality/saveInspectionDetails", fetchConfig)
-                  .then(response => response.json())
+                  .then(response => {
+                    console.log("############## Response status ##################### ", response.status)
+                    return response.json()
+                  })
                   .then(body => {
                     console.log("$$$$$$$$$$$$$$$$", body)
                     Alert.alert(body.result)

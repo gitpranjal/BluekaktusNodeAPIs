@@ -1137,7 +1137,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               id="rowContent"
               data={currentRowArray}
               keyExtractor={(currentElementObject) => currentElementObject.id.toString()}
-              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
+              style={{paddingVertical: 5, flexDirection: "row", borderWidth: 1, borderColor: "#800080", borderRadius: 3, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
                 
                
@@ -1322,7 +1322,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               keyExtractor={(columnName) => columnName}
               contentContainerStyle = {{flexDirection: "row"}}
               renderItem = {({item}) => {
-                return <Text numberOfLines={10} style={{color: "white", width: 70, textAlign: 'center', fontWeight: "bold", fontSize: 10, }}>{item}</Text>
+                return <Text numberOfLines={10} style={{marginHorizontal: 2, color: "white", width: 60, textAlign: 'center', fontWeight: "bold", fontSize: 10, }}>{item}</Text>
               }}
             />
           </View>
@@ -1353,7 +1353,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               id="rowContent"
               data={currentRowArray}
               keyExtractor={(currentElementObject) => currentElementObject.id.toString()}
-              style={{paddingVertical: 3, flexDirection: "row", borderWidth: 2, borderColor: "red", borderRadius: 5, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
+              style={{paddingVertical: 3, flexDirection: "row", borderWidth: 1, borderColor: "#800080", borderRadius: 3, justifyContent: "flex-start",  alignItem: "center", alignItems: "center"}}
               renderItem = {({item}) => {
 
                 // ###################### Camera and deletion icons come when id comes while iteration #####################
@@ -1468,7 +1468,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                      
                     </View>  
                   )
-                return <Text numberOfLines={10} style={{textAlign: 'center', width: 70, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
+                return <Text numberOfLines={10} style={{marginHorizontal: 2, textAlign: 'center', width: 60, color: "grey", fontWeight: "bold", fontSize: 10,}}>{item.value}</Text>
 
                 }}
               
@@ -2008,10 +2008,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           {
             newComponentCode = `
           {/* ################################################## RADIO BUTTON ${ViewObject.name} ########################################## */}
-            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
-                <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.name}</Text>
+            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%", backgroundColor: "${tertiaryColor}"}}>
+                <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.title != null ? ViewObject.title : ViewObject.name}</Text>
                 <RadioButtonRN
-                    style={{width: "80%", marginHorizontal: 25, marginBottom: 15}}
+                    style={{width: "80%", marginHorizontal: 25, marginBottom: 15, }}
                     textStyle={{marginHorizontal: 10, fontSize: 12, fontWeight: "bold", color: "grey"}}
                     disabled={ViewMode == true}
                     data={
@@ -3525,7 +3525,10 @@ const ${ScreenName} = (props) => {
                                                           },
                                                           {
                                                             text: 'Confirm', 
-                                                            onPress: () => console.log("############ Would delete image #############")
+                                                            onPress: () => {
+                                                              CurrentHybridTableRowObject.files = (CurrentHybridTableRowObject.files ).filter((fileObject) => fileObject.fileName != item.fileName)
+                                                              SetHybridDataObjects({...HybridDataObjects})
+                                                            }
                                                           },
                                                         ],
                                                         {cancelable: false},
@@ -3567,7 +3570,23 @@ const ${ScreenName} = (props) => {
                                         </View>
                                         
                                     </ImageBackground>
-                                    <Text style={{marginVertical: 2, color: "grey", fontWeight: "bold"}}>{item.fileComment}</Text>
+                                    {/*<Text style={{marginVertical: 2, color: "grey", fontWeight: "bold"}}>{item.fileComment}</Text>*/}
+                                    <TextInput
+                                      label="Comments"
+                                      maxLength={50}
+                                      value={item.fileComment != null ? item.fileComment : ""}
+                                      
+                                      onChangeText = {(newValue) => {
+                              
+                                        for(var fileObject of CurrentHybridTableRowObject.files)
+                                        {
+                                          if(fileObject.fileName == item.fileName)
+                                            fileObject.fileComment = newValue
+                                        }
+                                        SetHybridDataObjects({...HybridDataObjects})
+                                      }}
+                                      style={{marginVertical: 5, alignSelf: "center", width: "100%",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
+                                    />
                                         
                                         </View>
                                         
@@ -3577,7 +3596,7 @@ const ${ScreenName} = (props) => {
                         {/*</View>*/} 
                             
                         <TouchableOpacity 
-                            style={{...styles.addbutton, alignSelf: "flex-start", bottom: 10, marginHorizontal: 10}}
+                            style={{alignSelf: "flex-start", bottom: 10, marginHorizontal: 10, backgroundColor: "grey", borderRadius: 10, padding: 7}}
                             onPress={() => {
                                 // openImagePickerAsync(CurrentSelectedDefectObjectForImageInput)
                                 // __startCamera(CurrentSelectedDefectObjectForImageInput)
@@ -3615,7 +3634,7 @@ const ${ScreenName} = (props) => {
 
                             }}
                         >
-                            <Text style={{fontWeight: "bold", fontSize: 20}} numberOfLines={1}>
+                            <Text style={{fontWeight: "bold", fontSize: 20, color: "white"}} numberOfLines={1}>
                             +
                             </Text>
                         </TouchableOpacity>

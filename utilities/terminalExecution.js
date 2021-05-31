@@ -586,6 +586,7 @@ const finalInspectionForm = {
         },
         {
           "type": "radioButton",
+          "title": "Result",
           "name": "result",
           "componentPerRow": 1,
           "fields": [
