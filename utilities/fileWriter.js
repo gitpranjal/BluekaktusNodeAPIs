@@ -2391,8 +2391,8 @@ var code = {
 }
 code["structure"] = 
 `
-import React, { useState, useEffect} from "react";
-import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator, Modal, ImageBackground} from "react-native";
+import React, { useState, useEffect, useRef} from "react";
+import {StyleSheet,Text,View, TouchableOpacity, FlatList, ScrollView, Alert, ActivityIndicator, Modal, ImageBackground, Button} from "react-native";
 import SearchableDropdown from 'react-native-searchable-dropdown'
 import { Dimensions } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native'
@@ -2404,7 +2404,7 @@ import { Icon } from 'react-native-elements'
 import * as ImagePicker from "expo-image-picker"
 import * as ImageManipulator from 'expo-image-manipulator'
 
-import { Audio } from 'expo-av'
+import { Audio, Video, AVPlaybackStatus } from 'expo-av'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -2623,6 +2623,8 @@ const ${ScreenName} = (props) => {
   const [ImageComment, SetImageComment] = useState("")
   const [RecordingVideo, SetRecordingVideo] = useState(false)
   const [CameraMode, SetCameraMode] = useState("photo")
+  const [VideoPlayStatus, SetVideoPlayStatus] = useState({})
+  const VideoReference = useRef(null);
 
   // ######### Global variables/objects ################
   
@@ -2750,7 +2752,7 @@ const ${ScreenName} = (props) => {
     
 
    
-     var video = await cameraReference.recordAsync({mute: true})
+     var video = await cameraReference.recordAsync({mute: true, quality : "480p"})
      console.log("################# Recorded video ##################")
      console.log(video)
 
@@ -3673,82 +3675,97 @@ const ${ScreenName} = (props) => {
                                 renderItem = {({item}) => {
                                     return (
                                         <View style={{marginVertical: 12}}>
-                                        <ImageBackground
-                                        source={{ uri: item.fileUri }}
-                                        style={{
-                                            width: 300,
-                                            height: 250,
-                                            marginVertical: 10,
-                                            borderWidth: 2,
-                                            borderColor: "grey",
-                                            borderRadius: 5,
-                                            alignItems: "flex-end",
-                                            justifyContent: "flex-start"
-                                        }}
-                                        >   
-                                        <View style={{flexDirection: "row", marginTop: 5, marginHorizontal: 7}}>
-                                            <TouchableOpacity
-                                                style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
-                                                onPress={() => {
 
-                                                    Alert.alert(
-                    
-                                                        'Image deletion',
-                                                        'Are you sure you want to delete the image?',
-                                                        [
-                                                          {
-                                                            text: 'No',
-                                                            onPress: () => console.log('####### Image deletion cancelled #######'),
-                                             
-                                                          },
-                                                          {
-                                                            text: 'Confirm', 
-                                                            onPress: () => {
-                                                              CurrentHybridTableRowObject.files = (CurrentHybridTableRowObject.files ).filter((fileObject) => fileObject.fileName != item.fileName)
-                                                              SetHybridDataObjects({...HybridDataObjects})
-                                                            }
-                                                          },
-                                                        ],
-                                                        {cancelable: false},
-                                                      )
-                                                    
-                                                    
+                                        {(() => {
+                                          if(CameraMode == "photo")              // ############## If the camera icon is clicked
+                                            return (
+                                                      <ImageBackground
+                                                source={{ uri: item.fileUri }}
+                                                style={{
+                                                    width: 300,
+                                                    height: 250,
+                                                    marginVertical: 10,
+                                                    borderWidth: 2,
+                                                    borderColor: "grey",
+                                                    borderRadius: 5,
+                                                    alignItems: "flex-end",
+                                                    justifyContent: "flex-start"
                                                 }}
-                                                //disabled={SelectedOrderInfo.inspectionID != 0}
-                                            >
-                                                <Icon
-                                                    reverse
-                                                    name='ios-trash'
-                                                    type='ionicon'
-                                                    color={"red"}
-                                                    size={20}
-                                                />
-                                            </TouchableOpacity>
-                                            {/*<TouchableOpacity
-                                                style={{marginRight: 10, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
-                                                onPress={() => {
-                                                    console.log("pressed")
-                                                    props.navigation.navigate("ImageDrawing")
-                                                    SetFileModalVisibility(false)
-                                                    props.navigation.navigate("ImageDrawing", { BackgroundImageUri: item.uri , BackgroundImageName: item.name, combinedDefectsList: CombinedDefectsList.slice(), 
-                                                                                                defectImageObjectsList: DefectImageObjectsList.slice(), updateCallback: UpdateWithEditedImage })
+                                                >   
+                                                <View style={{flexDirection: "row", marginTop: 5, marginHorizontal: 7}}>
+                                                    <TouchableOpacity
+                                                        style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
+                                                        onPress={() => {
+
+                                                            Alert.alert(
+                            
+                                                                'File deletion',
+                                                                'Are you sure you want to delete the file?',
+                                                                [
+                                                                  {
+                                                                    text: 'No',
+                                                                    onPress: () => console.log('####### Image deletion cancelled #######'),
                                                     
-                                                }}
-                                                disabled={ViewMode}
-                                            >
-                                                <Icon
-                                                    reverse
-                                                    name='ios-brush'
-                                                    type='ionicon'
-                                                    color={"red"}
-                                                    size={20}
-                                                />
-                                            </TouchableOpacity>
-                                            */}
-                                        </View>
+                                                                  },
+                                                                  {
+                                                                    text: 'Confirm', 
+                                                                    onPress: () => {
+                                                                      CurrentHybridTableRowObject.files = (CurrentHybridTableRowObject.files ).filter((fileObject) => fileObject.fileName != item.fileName)
+                                                                      SetHybridDataObjects({...HybridDataObjects})
+                                                                    }
+                                                                  },
+                                                                ],
+                                                                {cancelable: false},
+                                                              )
+                                                            
+                                                            
+                                                        }}
+                                                        //disabled={SelectedOrderInfo.inspectionID != 0}
+                                                    >
+                                                        <Icon
+                                                            reverse
+                                                            name='ios-trash'
+                                                            type='ionicon'
+                                                            color={"red"}
+                                                            size={20}
+                                                        />
+                                                    </TouchableOpacity>
+                                                    
+                                                </View>
+                                                
+                                            </ImageBackground>
+                                            )
+
+                                        if(CameraMode == "video")
+                                          return (
+                                            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'black',}}>
+                                                  <Video
+                                                  style={{alignSelf: 'center', width: 350, height: 200,}}
+                                                    ref={VideoReference}
+                                                    source={{
+                                                      uri: item.fileUri,
+                                                    }}
+                                                    useNativeControls
+                                                    resizeMode="contain"
+                                                    onPlaybackStatusUpdate={status => SetVideoPlayStatus(() => status)}
+                                                  />
+                                                  <View style={{padding: 5}}>
+                                                    {/*
+                                                    <Button
+                                                      title={VideoPlayStatus.isPlaying ? 'Pause' : 'Play'}
+                                                      onPress={() =>
+                                                        VideoPlayStatus.isPlaying ? VideoReference.current.pauseAsync() : VideoReference.current.playAsync()
+                                                        
+                                                      }
+                                                    />
+                                                    */}
+                                                  </View>
+                                                </View>
+                                          )
+
+                                        })()}
                                         
-                                    </ImageBackground>
-                                    {/*<Text style={{marginVertical: 2, color: "grey", fontWeight: "bold"}}>{item.fileComment}</Text>*/}
+                                    
                                     <TextInput
                                       label="Comments"
                                       maxLength={50}
