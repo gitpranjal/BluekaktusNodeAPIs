@@ -850,6 +850,7 @@ const Placeholders = {
 
                 console.log("####################### Form Data created ####################")
                 console.log(formData)
+                {/*
                 const fetchConfig = {
                   method: "POST",
                         body: formData,
@@ -861,7 +862,7 @@ const Placeholders = {
                         },
                   }
 
-                  fetch("https://devsourcingapi.bluekaktus.com/quality/saveInspectionDetails", fetchConfig)
+                  fetch("https://devsourcingapi.bluekaktus.com/Quality/saveInspectionDetails", fetchConfig)
                   .then(response => {
                     console.log("############## Response status ##################### ", response.status)
                     return response.json()
@@ -883,47 +884,39 @@ const Placeholders = {
                     console.log("######## Error in posting inspection data ##############")
                     console.log(error)
                   })
+
+                */}
                 
               
                 
-               {/*
-                axios.post("/quality/saveInspectionDetails", {
-                  "companyID": currentUser.companyID,
-                  "inspectionDetails": resquestObject
-                })
+               
+                axios.post("/quality/saveInspectionDetails", formData)
                 .then(response => {
                   console.log("######### Response after posting inspection data #########")
-                  console.log(response)
-                  Alert.alert(response.result != null ? response.result : "Response has no result key" )
+                  console.log(response.data)
+                  if(result.data == null)
+                  {
+                    Alert.alert("No response from API")
+                    return 
+                  }
+                  if(response.data.result == null && response.data.error != null)
+                  {
+                    Alert.alert(response.data.error)
+                    return  
+                  }
+                  Alert.alert(response.data.result)
+                  if(response.data.result == "Success")
+                      removeValue(CurrentScreenId)
+
+                })
+                .then(() => {
+                  props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
                 })
                 .catch(error => {
+                })
                   Alert.alert("Could not submit inspection!")
                   console.log("######## Error in posting inspection data ##############")
                   console.log(error)
-                })
-                */}
-
-                {/*
-                try {
-                  const response = await axios.post("/quality/saveInspectionDetails", {
-                    "companyID": currentUser.companyID,
-                    "inspectionDetails": resquestObject
-                  });
-            
-                  console.log(response.data, "token");
-                  if (response.status == "200") {
-                    const { data } = response;
-                    Alert.alert(data.result)
-                    }
-                  
-                } 
-                catch (error) {
-                  console.log("############## Error in sending save inspection post request #########")
-                  console.log(error)
-                }
-
-              */}
-              
                   
             `,
     

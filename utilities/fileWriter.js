@@ -1366,11 +1366,15 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                         if(currentRowArray.length > 2)                  // Just a random condition, may be used to set other conditions
                           return (
 
+                          
+                          
                             <TouchableOpacity
-                            id="Camera button"
+                            id="######################################## Camera button ################################"
+
                             //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
                             onPress={() => {
                                 console.log("#### Opening camera #######")
+                                SetCameraMode("photo")
                                 CurrentHybridTableRowObject = currentRowObject
                                 if(ViewMode == true)
                                 {
@@ -1442,8 +1446,32 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                           )
                       })()}
 
+                      
+                      
                       <TouchableOpacity
-                          id="rowDeletion"
+                          id="###################################### videoRecorder ###################################"
+                          style={{marginHorizontal: 5}}
+                          onPress={() => {
+                            SetCameraMode("video")
+                            SetCameraOpen(true)
+                            console.log("############# Would start video recording ###########")
+
+                          }}
+                  
+                      >
+                        <Icon
+                          name='videocam-sharp'
+                          type='ionicon'
+                          color={"blue"}
+                          size={25}
+                        />
+                      </TouchableOpacity> 
+                     
+
+                      
+                      
+                      <TouchableOpacity
+                          id=" ##################################### rowDeletion button ##################################"
                           style={{marginHorizontal: 5}}
                           onPress={() => {
                               if(ViewMode == true)
@@ -2527,6 +2555,8 @@ const ${ScreenName} = (props) => {
   const [CameraPermission, SetCameraPermission] = useState(false)
   const [GalleryPermission, SetGalleryPermission] = useState(false)
   const [ImageComment, SetImageComment] = useState("")
+  const [RecordingVideo, SetRecordingVideo] = useState(false)
+  const [CameraMode, SetCameraMode] = useState("photo")
 
   // ######### Global variables/objects ################
   
@@ -3438,34 +3468,62 @@ const ${ScreenName} = (props) => {
 
         </View>
 
-        {/*
-        <TextInput
-          label="Comments"
-          maxLength={50}
-          value={ImageComment}
-          
-          onChangeText = {(newValue) => {
-            SetImageComment(newValue)
-          }}
-          style={{marginVertical: 5, alignSelf: "center", width: "80%",  ...${JSON.stringify(StylingLibrary.textInputField)}}}
-        />
-        */}
+       
 
         
         <TouchableOpacity
           style={{alignSelf: "center", marginTop: 50 , alignItems: "center", justifyContent: "center"}}
           onPress={() => {
-            takePicture(ImageComment)
-            SetImageComment("")
+            if(CameraMode == "photo")
+            {
+              takePicture(ImageComment)
+              SetImageComment("")
+            }
+            else
+            {
+              if(RecordingVideo)
+              {
+                SetRecordingVideo(false)
+                SetCameraOpen(false)
+              }
+              else
+                SetRecordingVideo(true)
+
+            }
+            
           }}
         >
-            <Icon
+        {(() => {
+          // Condition depending upon the mode of camaera 
+          if(CameraMode == "photo")
+            return ( <Icon
               reverse
               name='ios-camera'
               type='ionicon'
               color={ !CameraPressed ? "blue" : "grey"}
               size={40}
+            />)
+
+          if(RecordingVideo)
+           return (
+              <Icon
+                name='md-stop-circle'
+                type='ionicon'
+                color={"green"}
+                size={80}
+              />
+           )
+
+           return (
+              <Icon
+                name='md-stop-circle-sharp'
+                type='ionicon'
+                color={"red"}
+                size={80}
             />
+           )
+        })()}
+           
         </TouchableOpacity>
     </Camera>)
 
