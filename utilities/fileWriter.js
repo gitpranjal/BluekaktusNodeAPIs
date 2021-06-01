@@ -1373,13 +1373,13 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
                             //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
                             onPress={() => {
-                                console.log("#### Opening camera #######")
+                               
                                 SetCameraMode("photo")
                                 CurrentHybridTableRowObject = currentRowObject
                                 if(ViewMode == true)
                                 {
-                                  if(CurrentHybridTableRowObject.files != null && CurrentHybridTableRowObject.files.length != 0)
-                                    SetImageModalVisibility(true)
+                                  if(CurrentHybridTableRowObject.files != null && (CurrentHybridTableRowObject.files).filter((fileObject) => fileObject.fileType == "image").length != 0)
+                                    SetFileModalVisibility(true)
 
                                 }
                                 else
@@ -1387,7 +1387,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                      //Setting the reference to current row to the global variable to be used in storing image
                                 
                                   
-                                  if(CurrentHybridTableRowObject.files == null || CurrentHybridTableRowObject.files.length == 0)
+                                  if(CurrentHybridTableRowObject.files == null || (CurrentHybridTableRowObject.files).filter((fileObject) => fileObject.fileType == "image").length == 0)
                                     {
 
                                       Alert.alert(
@@ -1419,7 +1419,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
                                     }
                                   else
-                                    SetImageModalVisibility(true)
+                                    SetFileModalVisibility(true)
                                 }
                                 
                             }}
@@ -1433,10 +1433,10 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                   size={25}
                               />
                               {(() => {
-                                  if(currentRowObject.files != null && currentRowObject.files.length!=0)
+                                  if(currentRowObject.files != null && (currentRowObject.files).filter((fileObject)=> fileObject.fileType == "image").length!=0)
                                   return(
                                       <View style={{alignSelf: "flex-start", backgroundColor: "red", borderRadius: 10}}>
-                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{currentRowObject.files.length}</Text>
+                                          <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{(currentRowObject.files).filter((fileObject) => fileObject.fileType == "image").length}</Text>
                                       </View>
                                   )
                               })()}
@@ -1453,18 +1453,82 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                           style={{marginHorizontal: 5}}
                           onPress={() => {
                             SetCameraMode("video")
-                            SetCameraOpen(true)
-                            console.log("############# Would start video recording ###########")
+                            CurrentHybridTableRowObject = currentRowObject
+                            
+                            
+                           
+                            
+                            if(ViewMode == true)
+                            {
+                              if(CurrentHybridTableRowObject.files != null && (CurrentHybridTableRowObject.files).filter((fileObject) => fileObject.fileType == "video").length != 0)
+                                SetFileModalVisibility(true)
+
+                            }
+                            else
+                            {
+                                 //Setting the reference to current row to the global variable to be used in storing image
+                            
+                              
+                              if(CurrentHybridTableRowObject.files == null || (CurrentHybridTableRowObject.files).filter((fileObject) => fileObject.fileType == "video").length == 0)
+                                {
+
+                                  Alert.alert(
+                    
+                                    'Video Source',
+                                    'Select the source of Video',
+                                    [
+                                      {
+                                        text: 'Camera',
+                                        onPress: () => {
+                                          if (!CameraPermission) {
+                                          
+                                            SetCameraOpen(false)
+                                            Alert.alert('Camera Access denied')
+                                            return 
+                                          } 
+                                          else
+                                              SetCameraOpen(true)
+                                            
+                                        },
+                         
+                                      },
+                                      {
+                                        text: 'Gallery', 
+                                        onPress: () => { console.log("######## Would select video from gallery")}
+                                      },
+                                    ],
+                                    {cancelable: true},
+                                  )
+
+                                }
+                              else
+                                SetFileModalVisibility(true)
+                            } 
+
+
 
                           }}
                   
                       >
+                       
+                        <View id="Image icon" style={{flexDirection: "row", justifyContent: "flex-start"}}>
                         <Icon
                           name='videocam-sharp'
                           type='ionicon'
                           color={"blue"}
                           size={25}
                         />
+                        {(() => {
+                            if(currentRowObject.files != null && (currentRowObject.files).filter((fileObject) => fileObject.fileType == "video").length!=0)
+                            return(
+                                <View style={{alignSelf: "flex-start", backgroundColor: "red", borderRadius: 10}}>
+                                    <Text style={{paddingHorizontal:3,  color: "white", fontSize: 10, fontWeight:"bold"}}>{(currentRowObject.files).filter((fileObject) => fileObject.fileType == "video").length}</Text>
+                                </View>
+                            )
+                        })()}
+                    </View>
+
+
                       </TouchableOpacity> 
                      
 
@@ -2340,6 +2404,8 @@ import { Icon } from 'react-native-elements'
 import * as ImagePicker from "expo-image-picker"
 import * as ImageManipulator from 'expo-image-manipulator'
 
+import { Audio } from 'expo-av'
+
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 ${Placeholders.ScreenSpecificImports != null ? Placeholders.ScreenSpecificImports: "//Screen specific imports from placeholder could be here"}
@@ -2551,7 +2617,7 @@ const ${ScreenName} = (props) => {
   const [ViewMode, SetViewMode] = useState(props.route.params.screenInformation.ViewMode)
   const [CameraOpen, SetCameraOpen] = useState(false)
   const [CameraPressed, SetCameraPressed] = useState(false)
-  const [ImageModalVisibility, SetImageModalVisibility] = useState(false)
+  const [FileModalVisibility, SetFileModalVisibility] = useState(false)
   const [CameraPermission, SetCameraPermission] = useState(false)
   const [GalleryPermission, SetGalleryPermission] = useState(false)
   const [ImageComment, SetImageComment] = useState("")
@@ -2647,7 +2713,11 @@ const ${ScreenName} = (props) => {
       }
 
   const takePicture = async (imageComment = "") => {
-    if (!cameraReference) return
+    if (!cameraReference) 
+    {
+      console.log("############# Camera reference couldn't be set ##################")
+      return
+    }
     SetCameraPressed(true)
     const photo = await cameraReference.takePictureAsync()
     console.log("################## Image uri of newly clicked image ############## " )
@@ -2665,6 +2735,33 @@ const ${ScreenName} = (props) => {
     CurrentHybridTableRowObject["files"].push(newImageObject)
 
     SetHybridDataObjects({...HybridDataObjects})
+  }
+
+  const RecordVideo = async () => {
+
+    if (!cameraReference) 
+    {
+      console.log("############# Camera reference couldn't be set ##################")
+      return
+    }
+
+    if(!RecordingVideo)
+      cameraReference.stopRecording()
+    
+
+   
+     var video = await cameraReference.recordAsync({mute: true})
+     console.log("################# Recorded video ##################")
+     console.log(video)
+
+     if(!("files"in CurrentHybridTableRowObject))
+     CurrentHybridTableRowObject["files"] = []
+
+      var newVideoObject = {"fileName": (video.uri).split("/").pop(), "fileUri": video.uri, "fileComment": "", fileType: "video"}
+      CurrentHybridTableRowObject["files"].push(newVideoObject)
+
+      SetHybridDataObjects({...HybridDataObjects})
+
   }
 
 
@@ -3167,11 +3264,24 @@ const ${ScreenName} = (props) => {
       SetCameraPermission(status === 'granted');
 
     }
+
+    
+    const getAudioPermission = async () => {
+
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      }); 
+
+    }
+    
      
     (async () => {
 
       await getGalleryPermission()
       await getCameraPermission()
+      await getAudioPermission()
 
     })()
 
@@ -3487,7 +3597,11 @@ const ${ScreenName} = (props) => {
                 SetCameraOpen(false)
               }
               else
-                SetRecordingVideo(true)
+                {
+                  SetRecordingVideo(true)
+                  RecordVideo()
+                }
+                
 
             }
             
@@ -3516,7 +3630,7 @@ const ${ScreenName} = (props) => {
 
            return (
               <Icon
-                name='md-stop-circle-sharp'
+                name='md-ellipse'
                 type='ionicon'
                 color={"red"}
                 size={80}
@@ -3538,14 +3652,14 @@ const ${ScreenName} = (props) => {
                     animationType="slide"
                     transparent={true}
                    
-                    visible = {ImageModalVisibility}
-                    onRequestClose={() => {SetImageModalVisibility(false)}}
+                    visible = {FileModalVisibility}
+                    onRequestClose={() => {SetFileModalVisibility(false)}}
                 >
                     <View style={{width: "100%", height: "100%", backgroundColor: "white", alignSelf: "center", alignItems: "center"}}>
                         <TouchableOpacity
                             id="ImageModalHeader"
                             style={{backgroundColor: "blue", padding: 10, margin: 5, borderRadius: 5, alignSelf: "flex-start"}}
-                            onPress={() => {SetImageModalVisibility(false)}}
+                            onPress={() => {SetFileModalVisibility(false)}}
                         >
                             <Text style={{color: "white", fontSize: 20}}>Back</Text>
                         </TouchableOpacity>
@@ -3615,7 +3729,7 @@ const ${ScreenName} = (props) => {
                                                 onPress={() => {
                                                     console.log("pressed")
                                                     props.navigation.navigate("ImageDrawing")
-                                                    SetImageModalVisibility(false)
+                                                    SetFileModalVisibility(false)
                                                     props.navigation.navigate("ImageDrawing", { BackgroundImageUri: item.uri , BackgroundImageName: item.name, combinedDefectsList: CombinedDefectsList.slice(), 
                                                                                                 defectImageObjectsList: DefectImageObjectsList.slice(), updateCallback: UpdateWithEditedImage })
                                                     
