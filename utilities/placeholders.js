@@ -840,7 +840,15 @@ const Placeholders = {
                     {
                       for(var fileObject of defectObject["files"])
                       {
-                        formData.append(fileObject.fileName, {"name": fileObject.fileName, "uri": fileObject.fileUri})
+                        const newFileUri =  fileObject.fileUri
+                        var fileType = fileObject.fileType
+                        if(fileType == "image")
+                          fileType = 'image/jpeg'
+                        else if(fileType == "video")
+                            fileType = "video/mp4"
+                        else 
+                          fileType = "please specify"
+                        formData.append(fileObject.fileName, {"name": fileObject.fileName, type: fileType, "uri": newFileUri})
                       }
                     }
                   }
@@ -850,7 +858,8 @@ const Placeholders = {
 
                 console.log("####################### Form Data created ####################")
                 console.log(formData)
-                {/*
+              
+                
                 const fetchConfig = {
                   method: "POST",
                         body: formData,
@@ -885,16 +894,23 @@ const Placeholders = {
                     console.log(error)
                   })
 
-                */}
+                
                 
               
-                
-               
-                axios.post("/quality/saveInspectionDetails", formData)
+                {/*
+                axios({
+                  url: "/quality/saveInspectionDetails",
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                   
+                  },
+                  data: formData,
+                })
                 .then(response => {
                   console.log("######### Response after posting inspection data #########")
-                  console.log(response.data)
-                  if(result.data == null)
+                  console.log()
+                  if(response.data == null)
                   {
                     Alert.alert("No response from API")
                     return 
@@ -913,10 +929,15 @@ const Placeholders = {
                   props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
                 })
                 .catch(error => {
-                })
+
                   Alert.alert("Could not submit inspection!")
                   console.log("######## Error in posting inspection data ##############")
                   console.log(error)
+
+                })
+
+              */}
+                 
                   
             `,
     

@@ -1374,7 +1374,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                             //style={{borderColor: "grey", borderWidth: 2, borderRadius: 5, paddingHorizontal: 5}}
                             onPress={() => {
                                
-                                SetCameraMode("photo")
+                                SetCameraMode("image")
                                 CurrentHybridTableRowObject = currentRowObject
                                 if(ViewMode == true)
                                 {
@@ -1720,40 +1720,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           if(subViewObject.type == "textInputField")
           {
             newComponentCode = `
-         {/*   
-         <View style={{width: "${widthPerCompenent}", height: 45, marginHorizontal: 2, marginVertical: 2}}>  
-         <FloatingLabelInput
-              label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
-              labelStyles={{fontSize: 12, fontWeight: "bold", backgroundColor: "${secondaryColor}", paddingHorizontal: 4, borderRadius: 2, paddingVertical: 1}}
-              containerStyles={{
-                borderWidth: 2,
-                padding: 10,
-                backgroundColor: 'white',
-                borderColor: 'grey',
-                borderRadius: 5,
-              }}
-              staticLabel
-              customLabelStyles={{
-                //colorFocused: 'red',
-                fontSizeFocused: 12,
-              }}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
-              keyboardType=${subViewObject.fields[componentNumber].inputType != null ? `"`+subViewObject.fields[componentNumber].inputType+`"` : `"default"`}
-              maxLength={50}
-              value={FieldList["${subViewObject.fields[componentNumber].name}"]}
-              editable={${subViewObject.fields[componentNumber].editable != null ? subViewObject.fields[componentNumber].editable : true} && !ViewMode}
-              onChangeText = {(newValue) => {
-                var newFieldList = {...FieldList}
-                newFieldList["${subViewObject.fields[componentNumber].name}"] = newValue
-                ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
-                
-                
-                
-                SetFieldList(newFieldList)
-            }}
-          />
-          </View>
-          */}
+        
 
           <TextInput
               label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
@@ -2038,41 +2005,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             newComponentCode = `
 
           {/* ############################################ TEXTINPUT FIELD ${ViewObject.fields[componentNumber].name} ###################################################### */}
-         {/*
-          <View style={{width: "${widthPerCompenent}", marginHorizontal: 5, marginVertical: 2}}>  
-         <FloatingLabelInput
-              label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
-              labelStyles={{fontSize: 12, fontWeight: "bold", backgroundColor: "${secondaryColor}", paddingHorizontal: 4, borderRadius: 2, paddingVertical: 1}}
-              staticLabel
-              customLabelStyles={{
-                //colorFocused: 'red',
-                fontSizeFocused: 12,
-              }}
-              keyboardType=${ViewObject.fields[componentNumber].inputType != null ? `"`+ViewObject.fields[componentNumber].inputType+`"` : `"default"`}
-              containerStyles={{
-                borderWidth: 2,
-                padding: 10,
-                backgroundColor: 'white',
-                borderColor: 'grey',
-                borderRadius: 5,
-              }}
-              inputStyles={{fontWeight: "bold", fontSize: 15, color: "gray"}}
-              maxLength={50}
-              value={FieldList["${ViewObject.fields[componentNumber].name}"]}
-              editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true} && !ViewMode}
-              onChangeText = {(newValue) => {
-                  
-                  var newFieldsObject = {...FieldList}
-                  newFieldsObject["${fieldName}"] = newValue
-                  ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
-                  
-
-                  SetFieldList(newFieldsObject)
-                  storeData("FieldList", newFieldsObject, CurrentScreenId)
-              }}
-          />
-          </View>
-            */}
+         
 
             <TextInput
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
@@ -2622,7 +2555,7 @@ const ${ScreenName} = (props) => {
   const [GalleryPermission, SetGalleryPermission] = useState(false)
   const [ImageComment, SetImageComment] = useState("")
   const [RecordingVideo, SetRecordingVideo] = useState(false)
-  const [CameraMode, SetCameraMode] = useState("photo")
+  const [CameraMode, SetCameraMode] = useState("image")
   const [VideoPlayStatus, SetVideoPlayStatus] = useState({})
   const VideoReference = useRef(null);
 
@@ -3586,7 +3519,7 @@ const ${ScreenName} = (props) => {
         <TouchableOpacity
           style={{alignSelf: "center", marginTop: 50 , alignItems: "center", justifyContent: "center"}}
           onPress={() => {
-            if(CameraMode == "photo")
+            if(CameraMode == "image")
             {
               takePicture(ImageComment)
               SetImageComment("")
@@ -3611,7 +3544,7 @@ const ${ScreenName} = (props) => {
         >
         {(() => {
           // Condition depending upon the mode of camaera 
-          if(CameraMode == "photo")
+          if(CameraMode == "image")
             return ( <Icon
               reverse
               name='ios-camera'
@@ -3645,7 +3578,7 @@ const ${ScreenName} = (props) => {
 
   return (
     <ScrollView 
-    contentContainerStyle={{alignItems: "center"}}
+    contentContainerStyle={{alignItems: "center", backgroundColor: "white"}}
     keyboardShouldPersistTaps="always"
     >
 
@@ -3669,7 +3602,7 @@ const ${ScreenName} = (props) => {
 
                         {/*<View style={{marginHorizontal: 10, marginTop: 20, marginBottom: 10}}>*/}
                             <FlatList
-                                data={CurrentHybridTableRowObject.files}
+                                data={CurrentHybridTableRowObject.files != null ? (CurrentHybridTableRowObject.files).filter((fileObject) => fileObject.fileType == CameraMode) : []}
                                 keyExtractor={(fileObject) => fileObject.fileUri}
                                 style={{marginVertical:5}}
                                 renderItem = {({item}) => {
@@ -3677,7 +3610,7 @@ const ${ScreenName} = (props) => {
                                         <View style={{marginVertical: 12}}>
 
                                         {(() => {
-                                          if(CameraMode == "photo")              // ############## If the camera icon is clicked
+                                          if(CameraMode == "image")              // ############## If the camera icon is clicked
                                             return (
                                                       <ImageBackground
                                                 source={{ uri: item.fileUri }}
@@ -3801,8 +3734,8 @@ const ${ScreenName} = (props) => {
                                 
                                 Alert.alert(
                         
-                                    'Image Source',
-                                    'Select the source of Image',
+                                    CameraMode.toUpperCase() + ' Source',
+                                    'Select the source of '+CameraMode,
                                     [
                                       {
                                         text: 'Camera',
