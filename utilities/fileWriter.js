@@ -1576,7 +1576,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
 
     var newSubViewCode = 
     `
-     <View id="subview${SubViewNumber}" style={{marginVertical: 5, borderWidth: 0, borderColor: "grey", justifyContent: "center", alignItems: "center"}}>
+     <View pointerEvents={ViewMode == true ? "none" : "auto"} id="subview${SubViewNumber}" style={{marginVertical: 5, borderWidth: 0, borderColor: "grey", justifyContent: "center", alignItems: "center"}}>
     `
 
     for(var subViewObject of ViewObject.groups)
@@ -1876,7 +1876,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
     {
 
       var newRowCode = `
-      <View style={{flexDirection: "row"}}>
+      <View pointerEvents={ViewMode == true ? "none" : "auto"} style={{flexDirection: "row"}}>
       `
 
       for (var j = 0; j <ViewObject.componentPerRow; j++)
@@ -2033,7 +2033,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           {
             newComponentCode = `
           {/* ################################################## RADIO BUTTON ${ViewObject.name} ########################################## */}
-            <View style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%", backgroundColor: "${tertiaryColor}"}}>
+            <View pointerEvents={ViewMode == true ? "none" : "auto"} style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%", backgroundColor: "${tertiaryColor}"}}>
                 <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.title != null ? ViewObject.title : ViewObject.name}</Text>
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15, }}
