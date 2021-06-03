@@ -1104,8 +1104,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                continue
               ColumnHeadings.push(sampleObjectWithIdNegative1[key])
             }
-            console.log("############### Column headings #########")
-            console.log(ColumnHeadings)
+            //console.log("############### Column headings #########")
+            //console.log(ColumnHeadings)
             return ColumnHeadings
           })() }
           keyExtractor={(columnNameObject) => columnNameObject.title}
@@ -1317,7 +1317,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   if(obj["id"] == "-1")
                     sampleObjectWithIdNegative1 = obj
                 }
-                return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1")
+                // Ignoring current hybrid block's blueprint object's (having id "-1" ) keys which are not strings and assumed to be not for Title (like files key, whose value is list)
+                return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1" && (typeof columnName == "string"))  
               })() }
               keyExtractor={(columnName) => columnName}
               contentContainerStyle = {{flexDirection: "row"}}
@@ -1341,9 +1342,11 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           var i = 0
           for(var key of Object.keys(item))
           {
-            if(key == "files")                      // Ignoring anything accept texts. Add such conditions to ignore the display of certain keys in the table
+            if(typeof item[key] != "string")                      // Ignoring anything accept texts/strings. Add such conditions to ignore the display of certain keys in the table
               continue
-
+            
+              //Creating currentRowArray list to have a list of objects with each object representing a text on the table row 
+            // id is to be used for flatlist id, value contains the text value which will be visible, type is the keyname of the text, 
             currentRowArray.push({"id": i.toString(), value: item[key], type: key})    //Modifying the current row object's data (key , value pairs) into an array to be used further by a flatlist
             i += 1
           }
@@ -2165,7 +2168,12 @@ for(var viewObj of ObjectFromAPI.viewObjects)
   if(viewObj.type == "hybrid")
   {
     HybridDataObjects[viewObj.name] = []
-    var newFieldCollectionForHybridObject = {"id": "-1"}
+
+    // newFieldCollectionForHybridObject is a blueprint object which stores all the filednames mapped to their titles
+    // The field names are control(key) names and in this abject their vlue is the Title, wjich becomes heading in the table for hybrid bloc
+    // If there is some extra data which is not to be shown in table contents like files. its value must not be a string in this blueprint object
+    // id is an exception for above rule and is explicitly handles in the flatlist for hybrid table heading
+    var newFieldCollectionForHybridObject = {"id": "-1", "files": []}
     for(var subViewObject of viewObj.groups)
     {
       if(subViewObject.type == "textInputField")
@@ -2820,8 +2828,8 @@ const ${ScreenName} = (props) => {
             newCurrentHybridList.push(newObj)
         }
         newHybridDataObjects[key] = newCurrentHybridList
-        //console.log("############### new hybrid list for "+key+" ################")
-        //console.log(newHybridDataObjects)
+        console.log("############### new hybrid list for "+key+" ################")
+        console.log(newHybridDataObjects)
         return
       }
 
@@ -3399,8 +3407,8 @@ const ${ScreenName} = (props) => {
               const body = await response.json();
         
               const newRowlist = body.result != null ? body.result : body;
-              console.log("############# new rowlist for checklist named " +checklistEntity +" from api ##############");
-              console.log(newRowlist);
+              //console.log("############# new rowlist for checklist named " +checklistEntity +" from api ##############");
+              //console.log(newRowlist);
         
               rowList = rowList.concat(newRowlist);
         
