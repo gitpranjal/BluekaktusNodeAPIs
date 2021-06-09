@@ -339,7 +339,7 @@ const Placeholders = {
                     "PROCESS_DEVIATION": "",
                     "MEASUREMENT_DEVIATION": cleanDataFromScreen.measurementDeviation,
                     "RE_INSPECTION": "N",
-                    "CARTON_SAMPLE_SIZE": "1",
+                    "CARTON_SAMPLE_SIZE": cleanDataFromScreen.cartonsamplesize,
                     "CUT_QTY": "0.000",
                     "SELF_AUDIT": "0",
                     "MOBILE_REF_NO": "21032012220737641686118466",
@@ -348,7 +348,7 @@ const Placeholders = {
                     "COMMENT": cleanDataFromScreen.finalRemarks,
                     "FG1_QTY": cleanDataFromScreen.fg1qty,
                     "FG2_QTY": cleanDataFromScreen.fg2qty,
-                    "CARTON_SELECTED": "1",
+                    "CARTON_SELECTED": cleanDataFromScreen.cartonselected,
                     "FACTORY_REPRESENTATIVE": cleanDataFromScreen.factoryrepresentative,
                     "FINAL_SAMPLE_SIZE": "",
                     "TOTAL_CARTONS_GOH": "2",
@@ -762,8 +762,8 @@ const Placeholders = {
  
                     ////
                     var newFieldList = {...FieldList}
-                    newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["prQty"].toString()
-                    newFieldList["doneqty_val"] = "0"
+                    newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR Quantity"] != null ? CurrentScreenBackgroundInfo["PR Quantity"].toString() : ""
+                    newFieldList["doneqty_val"] = CurrentScreenBackgroundInfo["Done Quantity"] != null ? CurrentScreenBackgroundInfo["Done Quantity"].toString() : ""
                     SetFieldList(newFieldList)
                     ////
 

@@ -1069,7 +1069,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
   `
    <View id="view${ViewNumber}" 
     style={{marginVertical: 5, 
-            borderWidth: ${ViewObject.type == "radioButton" || ViewObject.type == "hybrid" ? 2 : 0}, 
+            borderWidth: ${ ViewObject.type == "hybrid" ? 2 : 0}, 
             borderColor: "grey", justifyContent: "center", 
             alignItems: "center", borderRadius: 7,
             backgroundColor: ${ViewObject.type == "radioButton" || ViewObject.type == "textInputField" || ViewObject.type == "dropdown"? `'${secondaryColor}'` : `'${tertiaryColor}'`},
@@ -1317,7 +1317,9 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   if(obj["id"] == "-1")
                     sampleObjectWithIdNegative1 = obj
                 }
+                
                 // Ignoring current hybrid block's blueprint object's (having id "-1" ) keys which are not strings and assumed to be not for Title (like files key, whose value is list)
+
                 return Object.values(sampleObjectWithIdNegative1).filter((columnName) => columnName != "-1" && (typeof columnName == "string"))  
               })() }
               keyExtractor={(columnName) => columnName}
@@ -2036,7 +2038,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
           {
             newComponentCode = `
           {/* ################################################## RADIO BUTTON ${ViewObject.name} ########################################## */}
-            <View pointerEvents={ViewMode == true ? "none" : "auto"} style={{borderColor: "grey", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%", backgroundColor: "${tertiaryColor}"}}>
+            <View pointerEvents={ViewMode == true ? "none" : "auto"} style={{marginTop: 10, width: "80%", backgroundColor: "${tertiaryColor}"}}>
                 <Text style={{color: "red", fontSize: 15, marginHorizontal: 10, marginTop: 10}}>${ViewObject.title != null ? ViewObject.title : ViewObject.name}</Text>
                 <RadioButtonRN
                     style={{width: "80%", marginHorizontal: 25, marginBottom: 15, }}
@@ -3626,9 +3628,7 @@ const ${ScreenName} = (props) => {
                                                     width: 300,
                                                     height: 250,
                                                     marginVertical: 10,
-                                                    borderWidth: 2,
-                                                    borderColor: "grey",
-                                                    borderRadius: 5,
+                                          
                                                     alignItems: "flex-end",
                                                     justifyContent: "flex-start"
                                                 }}
@@ -3638,6 +3638,8 @@ const ${ScreenName} = (props) => {
                                                         style={{marginRight: 25, width: 20, alignItems: "center", borderRadius: 10, justifyContent: "center"}}
                                                         onPress={() => {
 
+                                                            if(ViewMode == true)
+                                                              return
                                                             Alert.alert(
                             
                                                                 'File deletion',
@@ -3711,7 +3713,7 @@ const ${ScreenName} = (props) => {
                                       label="Comments"
                                       maxLength={50}
                                       value={item.fileComment != null ? item.fileComment : ""}
-                                      
+                                      editable={!ViewMode}
                                       onChangeText = {(newValue) => {
                               
                                         for(var fileObject of CurrentHybridTableRowObject.files)
