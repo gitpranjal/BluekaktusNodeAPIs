@@ -1999,7 +1999,7 @@ var ScreenName = `GeneratedCode1`
 codeGenerator(ObjectFromAPI, Placeholders, ScreenName, colorScheme = "appSpecific")
 .then(code => {
   // write to a new file named 2pac.txt
-  fs.writeFile(`/Users/geuser/Desktop/bk-sourcing/screens/${ScreenName}.js`, code["structure"], (err) => {
+  fs.writeFile(`/Users/geuser/Desktop/bk-sourcing/forms/landmark/FinalInspection/index.js`, code["structure"], (err) => {
     // throws an error, you could also catch it here
     if (err) throw err;
 

@@ -3,7 +3,12 @@ const Placeholders = {
     "ScreenSpecificImports": `
       import axios from "@networkConfig";
       import { useSelector, useDispatch } from "react-redux"
-      import { selectUser } from "../slices/authSlice";
+      import { selectUser } from "../../../slices/authSlice";
+      import * as SQLite from "expo-sqlite"
+      import { InspectionDataTable } from "../../../DB/tables"
+      import jwt_decode from "jwt-decode"
+
+      //Chut ka basera
     `,
     "ApiUrls": {
         //"ApiUrl1": "",
@@ -15,6 +20,7 @@ const Placeholders = {
         "ViewDataApi": "https://devsourcingapi.bluekaktus.com/quality/getInspectionDetails"
         
     },
+    
     "FetchConfigs": {
       "auditchecklist": {
             method: "POST",
@@ -78,6 +84,173 @@ const Placeholders = {
             "totalMinor": "0"
         },
     },
+
+    "currentScreenBackgroundInfo": `
+
+                CurrentScreenBackgroundInfo = props.route.params.screenInformation
+                CurrentScreenId = CurrentScreenBackgroundInfo["formId"]
+
+                console.log("############ Current screen Id ################")
+                console.log(CurrentScreenId)
+
+                console.log("############## Current screen background information #############")
+                console.log(CurrentScreenBackgroundInfo)
+
+                //const currentUser = useSelector(selectUser)
+                //console.log("########### Current user ##################")
+                //console.log(currentUser)
+                
+                const { companyId, authToken } = useSelector(selectUser);
+                
+
+            `,
+
+    "DatabaseFetch": `
+    
+                
+    
+    `,
+    "DatabaseIntegration": `
+
+      const userId = jwt_decode(authToken).userID;
+      const db = SQLite.openDatabase("sourcingDB")
+
+      const DeleteAllRows = async (tableName) => {
+        let query = "delete from "+tableName
+        await db.transaction((tx) => {
+        tx.executeSql(
+          query,
+          [],
+          (txObj, resultSet) => {
+            
+            console.log("Deleted all rows from "+tableName);
+            console.log(resultSet)
+          },
+          (txObj, error) => {
+            console.log("Error in deleting data from "+tableName, error);
+          }
+        )
+
+        })
+      }
+
+      const ViewTable = async (tableName) => {
+        let query = "select * from "+tableName
+        let result = []
+       
+        await  db.transaction(async (tx) => {
+        await  tx.executeSql(
+          query,
+          [],
+          async (txObj, resultSet) => {
+            
+            console.log("Selected all rows from "+tableName);
+            console.log(resultSet["rows"]["_array"])
+            //return resultSet["rows"]["_array"]
+            //SetRowsDatabaseViewMode(resultSet["rows"]["_array"])
+          
+          },
+          async (txObj, error) => {
+            console.log("Error in fetching data from "+tableName, error);
+          }
+        )
+
+        })
+
+      }
+
+     
+
+      const SaveInspectionDataOfflineSQL = async (data) => {
+        await db.transaction((tx) => {
+          let query = "REPLACE INTO  "+InspectionDataTable.tableName+" ("
+          +InspectionDataTable.userId+"," 
+          +InspectionDataTable.companyId+"," 
+          +InspectionDataTable.date+"," 
+          +InspectionDataTable.formId+","
+          +InspectionDataTable.status+","
+          +InspectionDataTable.tnaActivityId+"," 
+          +InspectionDataTable.files+","
+          +InspectionDataTable.formData+ ") values (?, ?, ?, ?, ?, ?, ?, ?)"
+
+          console.log("############ inspection data insertion query #################")
+          console.log(query)
+        
+          let inputArray = [
+            userId,
+            data.screenBackgroundInfo.companyId,
+            moment().format("DD-MM-YYYY"),
+            CurrentScreenId,
+            data.result,
+            1000,
+            "TestStringifiedFilesArray", 
+            JSON.stringify(data),
+           
+          ]
+        
+          //let testDataArray = [userId, 1, moment().format("DD-MM-YYYY"), "testFormId", "testSatus", 12, "testFiles", "testFormData"]
+    
+          console.log("#######Final Query : ", query);
+          //console.log("########Input Array : ", testDataArray);
+          tx.executeSql(
+            query,
+            inputArray,
+            //testDataArray,
+            (txObj, resultSet) => {
+              
+              console.log("Inserted Date data successfully in database");
+            },
+            (txObj, error) => {
+              
+              console.log("Error in inserting  new data", error);
+            }
+          );
+        });
+      };
+
+
+
+
+      React.useEffect(() => {
+        
+  
+        db.transaction((tx) => {
+          let query = "create table if not exists "+InspectionDataTable.tableName+" ("
+          +InspectionDataTable.userId+" integer," 
+          +InspectionDataTable.companyId+" integer," 
+          +InspectionDataTable.date+" text," 
+          +InspectionDataTable.formId+" text,"
+          +InspectionDataTable.status+" text,"
+          +InspectionDataTable.tnaActivityId+" integer," 
+          +InspectionDataTable.files+" text,"
+          +InspectionDataTable.formData+" text, primary key("
+            +InspectionDataTable.date+","
+            +InspectionDataTable.companyId+","
+            +InspectionDataTable.userId+","
+            +InspectionDataTable.tnaActivityId+"))"
+
+            console.log("Table creation query : ",query)
+          tx.executeSql(
+              query,
+              [],
+              (txObj, resultSet) => {
+                //fetchInspectionDetailDateData(userId, companyId, currentSelectedDate);
+                //setFetchingData(false);
+                console.log("############ Successfully created final inspection table #########");
+              },
+              (txObj, error) => {
+                //setFetchingData(false);
+                console.log("########### Error in creating final inspection table ############", error);
+              }
+          );
+        });
+      }, []);
+                
+    
+    `,
+
+
+
     "CodeSnippets": {
 
         "CustomDataModifierFunction": `
@@ -743,37 +916,7 @@ const Placeholders = {
                     
             `,
 
-            "currentScreenBackgroundInfo": `
-
-                CurrentScreenBackgroundInfo = props.route.params.screenInformation
-                CurrentScreenId = CurrentScreenBackgroundInfo["screenId"]
-
-
-                //const currentUser = useSelector(selectUser)
-                //console.log("########### Current user ##################")
-                //console.log(currentUser)
-                
-
-
-                useEffect(() => {
-
-                    console.log("############# Current screen background information ##############")
-                    console.log(CurrentScreenBackgroundInfo)
- 
-                    ////
-                    var newFieldList = {...FieldList}
-                    newFieldList["pqqty_val"] = CurrentScreenBackgroundInfo["PR Quantity"] != null ? CurrentScreenBackgroundInfo["PR Quantity"].toString() : ""
-                    newFieldList["doneqty_val"] = CurrentScreenBackgroundInfo["Done Quantity"] != null ? CurrentScreenBackgroundInfo["Done Quantity"].toString() : ""
-                    SetFieldList(newFieldList)
-                    ////
-
-                    //SetViewMode(CurrentScreenBackgroundInfo["ViewMode"])
-                    
-
-                }, [])
-
-              
-            `,
+            
             "InspectionResult": `
                 
                //Some placeholder code
@@ -788,8 +931,8 @@ const Placeholders = {
                 
                 
                 var cleanData = getCleanData({...CompleteCurrentScreenData}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
-                console.log("############################ Cleaned data for current screen ##########################")
-                console.log(cleanData)
+                //console.log("############################ Cleaned data for current screen ##########################")
+                //console.log(cleanData)
             
 
 
@@ -813,16 +956,27 @@ const Placeholders = {
                   }
                 }
                 
-                console.log("############################### Request object to be sent #########################")
-                console.log(nestedRequestObject)
+                //console.log("############################### Request object to be sent #########################")
+                //console.log(nestedRequestObject)
 
 
 
                 if(cleanData.result == "onhold")
                 {
+
                   
-                    await SaveOffline(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
-                    props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                    //await SaveOfflineAsyncStorage(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
+                    
+                    await SaveInspectionDataOfflineSQL(cleanData)
+                    //await DeleteAllRows("inspection_data_table")
+
+                    //let currentTableRows = await ViewTable("inspection_data_table")
+                    //console.log("############ Current rows in inspection data table ############")
+                    //console.log(currentTableRows)
+
+
+                    //props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                    props.navigation.goBack()
                     Alert.alert("Data saved to phone!")
                     return
                     
@@ -886,8 +1040,9 @@ const Placeholders = {
 
                   })
                   .then(() => {
-                    props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                    props.navigation.navigate("Quality")
                   })
+                  
                   .catch(error => {
                     Alert.alert("Could not submit inspection!")
                     console.log("######## Error in posting inspection data ##############")
