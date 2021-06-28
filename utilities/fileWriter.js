@@ -2959,9 +2959,10 @@ const ${ScreenName} = (props) => {
       }) )
     
     }
-// #####################################Function to populate form's components (checklists and dropdowns) from database ########################################
+// ##################################### Function to populate form's components (checklists and dropdowns) from database ########################################
 
 const populateComponentsFromDB = async (componentsDataTableName) => {
+
 
   const componentsDataObjectList = await getAllRows(componentsDataTableName)
   console.log("############### All rows in components data table ###############")
@@ -2969,22 +2970,26 @@ const populateComponentsFromDB = async (componentsDataTableName) => {
 
   let newChecklistDataObjects = {...ChecklistDataObjects}
   let newDropdownsListObject = {...DropdownList}
-
+  let componentsTraversed = []
   for (let componentDataObject of componentsDataObjectList)
   {
+    if(componentsTraversed.includes(componentDataObject.componentName))
+      continue
+
+    componentsTraversed.push(componentDataObject.componentName)
     if(componentDataObject.componentType == "checklist")
     {
 
-      var ChecklistStructureInfoObject = ChecklistDataObjects[
+      let ChecklistStructureInfoObject = ChecklistDataObjects[
         componentDataObject.componentName
       ].filter((obj) => obj.id == "-1")[0]
 
-      var rowList = JSON.parse(componentDataObject.componentData)
+      let rowList = JSON.parse(componentDataObject.componentData)
 
       for (var i = 0; i < rowList.length; i++) {
-        var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
+        let newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
 
-        for (var column of Object.keys(ChecklistStructureInfoObject)) {
+        for (let column of Object.keys(ChecklistStructureInfoObject)) {
           if (column == "id" || column == "ApiUrl" || column == "FetchConfig") continue;
           //console.log("################ row list object ##############")
           //console.log(rowList[i])
