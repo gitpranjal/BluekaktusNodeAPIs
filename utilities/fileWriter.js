@@ -2631,6 +2631,12 @@ const ${ScreenName} = (props) => {
   }
 
   const getAllRows = async (tableName) => {
+
+    if(db == null)
+    {
+      console.log("########## couldn't populate the components from database as db reference is null ###########")
+      return []
+    }
     let query = "select * from "+tableName
     return new Promise((resolve, reject) => {
       db.transaction(async (tx) => {
@@ -2647,7 +2653,7 @@ const ${ScreenName} = (props) => {
           },
           (txObj, error) => {
             console.log("Error in fetching data from "+tableName, error);
-            reject([])
+            resolve([])
           }
         )
   
@@ -2684,6 +2690,11 @@ const ${ScreenName} = (props) => {
 
   const SaveInspectionDataOfflineSQL = async (data) => {
 
+    if(db == null)
+    {
+      console.log("database reference found to be null. Couldn't save to database")
+      return
+    }
     if(formDataTable == null)
     {
       console.log("############### Couldn't save data in database: formDataTable object coming out null ##############")
@@ -2747,6 +2758,8 @@ const ${ScreenName} = (props) => {
 
   React.useEffect(() => {
     
+    if(db == null)
+      return 
     if(formDataTable == null)
     {
       console.log("############### Couldn't save data in database: formDataTable object coming out null ##############")
@@ -2928,6 +2941,11 @@ const ${ScreenName} = (props) => {
   
   const getFormDataFromDb = async (tableName, formId) => {
 
+    if(db == null)
+    {
+      console.log("######## database reference found to be null #############")
+      return []
+    }
     if(tableName == null)
     {
       console.log("########## undefined table name recieved in getFormDataFromDb function ##############")
@@ -2952,7 +2970,7 @@ const ${ScreenName} = (props) => {
         },
         (txObj, error) => {
           console.log("Error in fetching data from "+tableName+" with formId "+formId, error);
-          reject("########## Promise to fetch db rows with formId "+ formId+" rejected #########")
+          resolve([])
         }
       )
 
@@ -2961,12 +2979,10 @@ const ${ScreenName} = (props) => {
     }
 // ##################################### Function to populate form's components (checklists and dropdowns) from database ########################################
 
-const populateComponentsFromDB = async (componentsDataTableName) => {
+const populateComponentsFromDB = async (componentsDataObjectList) => {
 
 
-  const componentsDataObjectList = await getAllRows(componentsDataTableName)
-  console.log("############### All rows in components data table ###############")
-  console.log(componentsDataObjectList)
+  console.log("############### Seraching components' data from database  ##############")
 
   let newChecklistDataObjects = {...ChecklistDataObjects}
   let newDropdownsListObject = {...DropdownList}
@@ -3085,6 +3101,9 @@ const populateComponentsFromDB = async (componentsDataTableName) => {
 
   // ##################################################### Function to populate form's dropdowns and checklists  with data from api or async storage ##################################
   const populateFormWithApiAsyncStorate = async (data) => {
+
+    
+
     console.log("################ Data for screen code "+ CurrentScreenId + " in async storage ###################")
     console.log(data)
 
@@ -3345,7 +3364,7 @@ const populateComponentsFromDB = async (componentsDataTableName) => {
   }
 
 
-// ######################################### Function to populate the form from a json object which may come from API or database ##########
+// ######################################### Function to populate the form from a json object which may come from API or database (in View Mode) ##########
 
   const populateForm = async (screenData) => {
     //SetDataLoaded(true)
@@ -3922,20 +3941,35 @@ const populateComponentsFromDB = async (componentsDataTableName) => {
       }
     */}
     
-      let dataFromDatabase = await getFormDataFromDb(formDataTable.tableName, CurrentScreenId)
+    let dataFromDatabase = {}
+    if(formDataTable != null)
+    {
+      dataFromDatabase = await getFormDataFromDb(formDataTable.tableName, CurrentScreenId)
       console.log("########### Data recieved from database ###################")
       console.log(dataFromDatabase)
+    }
+     
 
       if(formDataTable == null || dataFromDatabase.length == 0)
       {
-        console.log("############### Seraching component data from database since none provided ##############")
+        
         try{
-          //let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
-          //await populateFormWithApiAsyncStorate(data)
-          await populateComponentsFromDB(componentsDataTableName)
+          
+          const componentsDataObjectList = await getAllRows(componentsDataTableName)
+          if(componentsDataObjectList == null || componentsDataObjectList.length == 0 )
+          {
+            console.log("############### Seraching component data from Apis and async storage since none provided from db##############")
+            let dataFromApisAndAsyncStorage = await getScreenDataFromAsyncStorage(CurrentScreenId)
+            await populateFormWithApiAsyncStorate(dataFromApisAndAsyncStorage)
+          }
+          else
+            {
+              console.log("############### Seraching component data from db ##############")
+              await populateComponentsFromDB(componentsDataObjectList)
+            }
           
         }catch(e){
-          //console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
+          
           console.log("####### Error in fetching and populating components data from database ########")
           console.log(e)
         }

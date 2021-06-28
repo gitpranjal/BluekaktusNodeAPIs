@@ -95,8 +95,8 @@ const Placeholders = {
                 console.log("############ Current screen Id ################")
                 console.log(CurrentScreenId)
 
-                console.log("############## Current screen background information #############")
-                console.log(CurrentScreenBackgroundInfo)
+                //console.log("############## Current screen background information #############")
+                //console.log(CurrentScreenBackgroundInfo)
 
                 //const currentUser = useSelector(selectUser)
                 //console.log("########### Current user ##################")
