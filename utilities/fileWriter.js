@@ -2973,10 +2973,10 @@ const populateComponentsFromDB = async (componentsDataTableName) => {
   let componentsTraversed = []
   for (let componentDataObject of componentsDataObjectList)
   {
-    if(componentsTraversed.includes(componentDataObject.componentName))
+    if(componentsTraversed.includes(componentDataObject.componentName + " " +componentDataObject.componentType))
       continue
 
-    componentsTraversed.push(componentDataObject.componentName)
+    componentsTraversed.push(componentDataObject.componentName +" "+ componentDataObject.componentType)
     if(componentDataObject.componentType == "checklist")
     {
 
