@@ -114,7 +114,9 @@ const Placeholders = {
   //const db = SQLite.openDatabase("sourcingDB")
   const db = props.route.params.databaseReference
   const formDataTable = props.route.params.formDataTable
+  const componentsDataTableName = props.route.params.componentsDataTableName
 
+  
      
     `,
 

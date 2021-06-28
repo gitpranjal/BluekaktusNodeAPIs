@@ -2605,8 +2605,8 @@ const ${ScreenName} = (props) => {
     })
   }
 
-  const ViewTable = async (tableName) => {
-    let query = "select * from "+tableName
+  const ViewTableList = async () => {
+    let query = "SELECT * FROM sqlite_master where type='table'"
     let result = []
    
     await  db.transaction(async (tx) => {
@@ -2615,14 +2615,14 @@ const ${ScreenName} = (props) => {
       [],
       async (txObj, resultSet) => {
         
-        console.log("Selected all rows from "+tableName);
+        console.log("Selected all tables from the current database");
         console.log(resultSet["rows"]["_array"])
         //return resultSet["rows"]["_array"]
         //SetRowsDatabaseViewMode(resultSet["rows"]["_array"])
       
       },
       async (txObj, error) => {
-        console.log("Error in fetching data from "+tableName, error);
+        console.log("Error in fetching tables list ", error);
       }
     )
 
@@ -2630,7 +2630,57 @@ const ${ScreenName} = (props) => {
 
   }
 
- 
+  const getAllRows = async (tableName) => {
+    let query = "select * from "+tableName
+    return new Promise((resolve, reject) => {
+      db.transaction(async (tx) => {
+        tx.executeSql(
+          query,
+          [],
+          (txObj, resultSet) => {
+            
+            console.log("Selected all rows from "+tableName);
+            //console.log(resultSet["rows"]["_array"])
+            resolve(resultSet["rows"]["_array"])
+            
+          
+          },
+          (txObj, error) => {
+            console.log("Error in fetching data from "+tableName, error);
+            reject([])
+          }
+        )
+  
+      })
+    })
+  }
+  const ViewTable = async (tableName) => {
+    let query = "select * from "+tableName
+    let result = []
+   
+    db.transaction(async (tx) => {
+      tx.executeSql(
+        query,
+        [],
+        (txObj, resultSet) => {
+          
+          console.log("Selected all rows from "+tableName);
+          console.log(resultSet["rows"]["_array"])
+          //return resultSet["rows"]["_array"]
+          //SetRowsDatabaseViewMode(resultSet["rows"]["_array"])
+        
+        },
+        (txObj, error) => {
+          console.log("Error in fetching data from "+tableName, error);
+        }
+      )
+
+    })
+
+  }
+
+  //ViewTable(componentsDataTableName)
+  //ViewTableList()
 
   const SaveInspectionDataOfflineSQL = async (data) => {
 
@@ -2877,6 +2927,12 @@ const ${ScreenName} = (props) => {
   // ############################################# function to get data from database with current form ID ##############################
   
   const getFormDataFromDb = async (tableName, formId) => {
+
+    if(tableName == null)
+    {
+      console.log("########## undefined table name recieved in getFormDataFromDb function ##############")
+      return []
+    }
     let query = "select * from "+tableName+" where formId='"+formId+"'"
     console.log("### Query to fetch data with form ID "+formId+" ####")
     console.log(query)
@@ -2903,7 +2959,124 @@ const ${ScreenName} = (props) => {
       }) )
     
     }
+// #####################################Function to populate form's components (checklists and dropdowns) from database ########################################
 
+const populateComponentsFromDB = async (componentsDataTableName) => {
+
+  const componentsDataObjectList = await getAllRows(componentsDataTableName)
+  console.log("############### All rows in components data table ###############")
+  console.log(componentsDataObjectList)
+
+  let newChecklistDataObjects = {...ChecklistDataObjects}
+  let newDropdownsListObject = {...DropdownList}
+
+  for (let componentDataObject of componentsDataObjectList)
+  {
+    if(componentDataObject.componentType == "checklist")
+    {
+
+      var ChecklistStructureInfoObject = ChecklistDataObjects[
+        componentDataObject.componentName
+      ].filter((obj) => obj.id == "-1")[0]
+
+      var rowList = JSON.parse(componentDataObject.componentData)
+
+      for (var i = 0; i < rowList.length; i++) {
+        var newRowObject = { id: rowList[i].id != null ? rowList[i]["id"].toString() : i.toString() }; //if id is coming from the api, use that
+
+        for (var column of Object.keys(ChecklistStructureInfoObject)) {
+          if (column == "id" || column == "ApiUrl" || column == "FetchConfig") continue;
+          //console.log("################ row list object ##############")
+          //console.log(rowList[i])
+          if (ChecklistStructureInfoObject[column]["type"] == "textField") {
+            newRowObject[column] = {
+              type: "textField",
+              value: rowList[i][column],
+            };
+          }
+          if (
+            ChecklistStructureInfoObject[column]["type"] == "textInputField"
+          ) {
+            newRowObject[column] = {
+              type: ChecklistStructureInfoObject[column]["type"],
+              variableName: column + "_" + i,
+              value: ""
+            };
+          }
+          if (ChecklistStructureInfoObject[column]["type"] == "radioButton") {
+            newRowObject[column] = {
+              type: ChecklistStructureInfoObject[column]["type"],
+              variableName: column + "_" + i,
+              options: ChecklistStructureInfoObject[column]["options"],
+              value: ""
+            };
+          }
+          if (ChecklistStructureInfoObject[column]["type"] == "dropdown") {
+            newRowObject[column] = {
+              type: ChecklistStructureInfoObject[column]["type"],
+              variableName: column + "_" + i,
+              SelectedValue: "",
+              ValueListUrl: "",
+              ValuesList: ChecklistStructureInfoObject[column]["options"] ,
+            };
+          }
+        }
+
+        newChecklistDataObjects[componentDataObject.componentName].push(newRowObject);
+      
+      }
+      
+    }
+    else if(componentDataObject.componentType == "dropdown")
+      { // ############################# if dropdown type component #########################
+
+        
+        let dropdownValueList = JSON.parse(componentDataObject.componentData)
+        let modifiedList = []
+        if(dropdownValueList.length != 0)
+        {
+          var idKey = ""
+          var valueKey = ""
+          for(var key of Object.keys(dropdownValueList[0]))
+          { 
+            {/*
+            ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets["AQLObjectModifier"] != null ? Placeholders.CodeSnippets["AQLObjectModifier"] : `//Could be Some Code from placeholder`}
+            */}
+            if(key.toString().toLowerCase().includes("id"))
+            {
+              idKey = key
+              continue
+            }
+            if(key.toString().toLowerCase().includes("name") || key.toString().toLowerCase().includes("value"))
+            {
+              valueKey = key
+              continue
+            }
+          }
+          if(dropdownValueList[0][idKey] != null && dropdownValueList[0][valueKey] != null)
+          {
+            for( let obj of dropdownValueList)
+            {
+
+              var modifiedObject = {...obj}
+              modifiedObject["id"] = obj[idKey].toString()
+              modifiedObject["value"] = obj[valueKey].toString()
+              modifiedObject["name"] = obj[valueKey].toString()
+
+              modifiedList.push(modifiedObject)
+            }
+          }
+        }
+
+        newDropdownsListObject[componentDataObject.componentName]["ValuesList"] = modifiedList
+      }
+      
+    }
+
+  SetChecklistDataObjects(newChecklistDataObjects)
+  SetDropdownList(newDropdownsListObject)
+
+}
 
   // ##################################################### Function to populate form's dropdowns and checklists  with data from api or async storage ##################################
   const populateFormWithApiAsyncStorate = async (data) => {
@@ -3125,6 +3298,7 @@ const ${ScreenName} = (props) => {
               // SetChecklistDataObjects(newChecklistDataObjects)
               //ChecklistDataObjects[checklistEntity].push(newRowObject)
             }
+
           })(checklistEntity)
         );
       
@@ -3720,42 +3894,44 @@ const ${ScreenName} = (props) => {
       return
     //fetching data from database if available
 
-  
+    
     (async () => {
 
-      //await getFormDataFromDb("inspection_data_table", CurrentScreenBackgroundInfo["formId"].toString())
-
-      //################
-
+      {/*
       if(formDataTable == null || formDataTable.tableName == null)
       {
         console.log("################# Coouldn't fetch from formDataTable as either it is null or has no tableName key ###############")
+        
         try{
           let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
           await populateFormWithApiAsyncStorate(data)
           
+          
         }catch(e){
-          console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
+          //console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
+          console.log("####### Error in fetching and populating components data from database ########")
           console.log(e)
         }
 
         return
       }
-      
+    */}
     
       let dataFromDatabase = await getFormDataFromDb(formDataTable.tableName, CurrentScreenId)
       console.log("########### Data recieved from database ###################")
       console.log(dataFromDatabase)
 
-      if(dataFromDatabase == null || dataFromDatabase.length == 0)
+      if(formDataTable == null || dataFromDatabase.length == 0)
       {
-        console.log("############### Seraching data in async storage and from apis since none provided from database ##############")
+        console.log("############### Seraching component data from database since none provided ##############")
         try{
-          let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
-          await populateFormWithApiAsyncStorate(data)
+          //let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
+          //await populateFormWithApiAsyncStorate(data)
+          await populateComponentsFromDB(componentsDataTableName)
           
         }catch(e){
-          console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
+          //console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
+          console.log("####### Error in fetching and populating components data from database ########")
           console.log(e)
         }
       }
