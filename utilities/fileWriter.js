@@ -2577,10 +2577,172 @@ const ${ScreenName} = (props) => {
   var CurrentScreenBackgroundInfo = {}
   var cameraReference = null
 
+
+
   ${Placeholders["currentScreenBackgroundInfo"] != null ? Placeholders["currentScreenBackgroundInfo"]: `// Code to set screen background information to come from Placeholder`}
   
   ${Placeholders["DatabaseIntegration"] != null && Placeholders["DatabaseIntegration"] != null ? Placeholders["DatabaseIntegration"]: `// Code to set database configuration from Placeholder`}
   
+  //###################################################### database integration ############################################
+
+
+  const DeleteAllRows = async (tableName) => {
+    let query = "delete from "+tableName
+    await db.transaction((tx) => {
+    tx.executeSql(
+      query,
+      [],
+      (txObj, resultSet) => {
+        
+        console.log("Deleted all rows from "+tableName);
+        console.log(resultSet)
+      },
+      (txObj, error) => {
+        console.log("Error in deleting data from "+tableName, error);
+      }
+    )
+
+    })
+  }
+
+  const ViewTable = async (tableName) => {
+    let query = "select * from "+tableName
+    let result = []
+   
+    await  db.transaction(async (tx) => {
+    await  tx.executeSql(
+      query,
+      [],
+      async (txObj, resultSet) => {
+        
+        console.log("Selected all rows from "+tableName);
+        console.log(resultSet["rows"]["_array"])
+        //return resultSet["rows"]["_array"]
+        //SetRowsDatabaseViewMode(resultSet["rows"]["_array"])
+      
+      },
+      async (txObj, error) => {
+        console.log("Error in fetching data from "+tableName, error);
+      }
+    )
+
+    })
+
+  }
+
+ 
+
+  const SaveInspectionDataOfflineSQL = async (data) => {
+
+    if(formDataTable == null)
+    {
+      console.log("############### Couldn't save data in database: formDataTable object coming out null ##############")
+      return
+    }
+    for (let keyName of ["userId", "companyId", "date", "formId", "status", "files", "formData"])
+    {
+        if(formDataTable[keyName] == null)
+        {
+          console.log("################# Couldn't save data in database: formdataTable needs to have "+keyName+" key ##############")
+          return
+        }
+    }
+   
+    await db.transaction((tx) => {
+      let query = "REPLACE INTO  "+formDataTable.tableName+" ("
+      +formDataTable.userId+"," 
+      +formDataTable.companyId+"," 
+      +formDataTable.date+"," 
+      +formDataTable.formId+","
+      +formDataTable.status+","
+      +formDataTable.files+","
+      +formDataTable.formData+ ") values (?, ?, ?, ?, ?, ?, ?)"
+
+      console.log("############ formDataTable insertion query #################")
+      console.log(query)
+    
+      let inputArray = [
+        data.screenBackgroundInfo.userId,
+        data.screenBackgroundInfo.companyId,
+        moment().format("DD-MM-YYYY"),
+        CurrentScreenId,
+        data.result,
+        "TestStringifiedFilesArray", 
+        JSON.stringify(data),
+       
+      ]
+    
+      //let testDataArray = [userId, 1, moment().format("DD-MM-YYYY"), "testFormId", "testSatus", 12, "testFiles", "testFormData"]
+
+      console.log("#######Final Query : ", query);
+      //console.log("########Input Array : ", testDataArray);
+      tx.executeSql(
+        query,
+        inputArray,
+        //testDataArray,
+        (txObj, resultSet) => {
+          
+          console.log(" ################ Inserted Date data successfully in database #################");
+        },
+        (txObj, error) => {
+          
+          console.log("Error in inserting  new data", error);
+        }
+      );
+    });
+  };
+
+
+
+
+  React.useEffect(() => {
+    
+    if(formDataTable == null)
+    {
+      console.log("############### Couldn't save data in database: formDataTable object coming out null ##############")
+      return
+    }
+    for (let keyName of ["userId", "companyId", "date", "formId", "status", "files", "formData"])
+    {
+        if(formDataTable[keyName] == null)
+        {
+          console.log("################# Couldn't save data in database: formdataTable needs to have "+keyName+" key ##############")
+          return
+        }
+    }
+    
+    db.transaction((tx) => {
+      let query = "create table if not exists "+formDataTable.tableName+" ("
+      +formDataTable.userId+" integer," 
+      +formDataTable.companyId+" integer," 
+      +formDataTable.date+" text," 
+      +formDataTable.formId+" text,"
+      +formDataTable.status+" text,"
+      +formDataTable.files+" text,"
+      +formDataTable.formData+" text, primary key("
+        +formDataTable.date+","
+        +formDataTable.companyId+","
+        +formDataTable.userId+"))"
+
+        console.log("Table creation query : ",query)
+      tx.executeSql(
+          query,
+          [],
+          (txObj, resultSet) => {
+           
+            console.log("############ Successfully created formData table #########");
+          },
+          (txObj, error) => {
+            console.log("########### Error in creating formData table ############", error);
+          }
+      );
+    });
+  }, []);
+
+
+  // ######################################################## database integration end ######################################
+
+
   const ModifyFetchConfig = (FetchConfig) => {
 
         if(FetchConfig.method != null && FetchConfig.method.toLowerCase() == "get")
@@ -2743,8 +2905,8 @@ const ${ScreenName} = (props) => {
     }
 
 
-  // ##################################################### Function to populate form from async storage ##################################
-  const populateFormWithAsyncStorate = async (data) => {
+  // ##################################################### Function to populate form's dropdowns and checklists  with data from api or async storage ##################################
+  const populateFormWithApiAsyncStorate = async (data) => {
     console.log("################ Data for screen code "+ CurrentScreenId + " in async storage ###################")
     console.log(data)
 
@@ -3562,8 +3724,26 @@ const ${ScreenName} = (props) => {
     (async () => {
 
       //await getFormDataFromDb("inspection_data_table", CurrentScreenBackgroundInfo["formId"].toString())
+
+      //################
+
+      if(formDataTable == null || formDataTable.tableName == null)
+      {
+        console.log("################# Coouldn't fetch from formDataTable as either it is null or has no tableName key ###############")
+        try{
+          let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
+          await populateFormWithApiAsyncStorate(data)
+          
+        }catch(e){
+          console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
+          console.log(e)
+        }
+
+        return
+      }
+      
     
-      let dataFromDatabase = await getFormDataFromDb("inspection_data_table", CurrentScreenId)
+      let dataFromDatabase = await getFormDataFromDb(formDataTable.tableName, CurrentScreenId)
       console.log("########### Data recieved from database ###################")
       console.log(dataFromDatabase)
 
@@ -3572,7 +3752,7 @@ const ${ScreenName} = (props) => {
         console.log("############### Seraching data in async storage and from apis since none provided from database ##############")
         try{
           let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
-          await populateFormWithAsyncStorate(data)
+          await populateFormWithApiAsyncStorate(data)
           
         }catch(e){
           console.log("####### Error in fetching and populating data from async storage/APIs for current screen ########")
