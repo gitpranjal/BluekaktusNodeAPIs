@@ -2204,6 +2204,7 @@ for(var viewObj of ObjectFromAPI.viewObjects)
       }
       
     }
+    newFieldCollectionForHybridObject["files"] = []
     HybridDataObjects[viewObj.name].push(newFieldCollectionForHybridObject)
   }              // block of hybrid ends here
 
@@ -2630,6 +2631,37 @@ const ${ScreenName} = (props) => {
 
   }
 
+  const updateTable = async (tableName, query) => {
+
+    if(db == null)
+    {
+      console.log("########## couldn't update the table "+ tableName+" as db reference is null ###########")
+      return []
+    }
+    
+    return new Promise((resolve, reject) => {
+      db.transaction(async (tx) => {
+        tx.executeSql(
+          query,
+          [],
+          (txObj, resultSet) => {
+            
+            console.log("Updated "+tableName);
+            console.log(resultSet["rows"]["_array"])
+            resolve(resultSet["rows"]["_array"])
+            
+          
+          },
+          (txObj, error) => {
+            reject("Error in updating data in "+tableName, error);
+            
+          }
+        )
+  
+      })
+    })
+
+  }
   const getAllRows = async (tableName) => {
 
     if(db == null)
@@ -2646,7 +2678,7 @@ const ${ScreenName} = (props) => {
           (txObj, resultSet) => {
             
             console.log("Selected all rows from "+tableName);
-            //console.log(resultSet["rows"]["_array"])
+            console.log(resultSet["rows"]["_array"])
             resolve(resultSet["rows"]["_array"])
             
           
@@ -2710,27 +2742,19 @@ const ${ScreenName} = (props) => {
     }
    
     await db.transaction((tx) => {
-      let query = "REPLACE INTO  "+formDataTable.tableName+" ("
-      +formDataTable.userId+"," 
-      +formDataTable.companyId+"," 
-      +formDataTable.date+"," 
-      +formDataTable.formId+","
-      +formDataTable.status+","
-      +formDataTable.files+","
-      +formDataTable.formData+ ") values (?, ?, ?, ?, ?, ?, ?)"
+      let query = "UPDATE "+formDataTable.tableName+" SET "
+      + formDataTable.formData + " = ?, "
+      + formDataTable.files + " = ? "
+      + "WHERE " 
+      + formDataTable.formId + " = ?" 
 
       console.log("############ formDataTable insertion query #################")
       console.log(query)
     
       let inputArray = [
-        data.screenBackgroundInfo.userId,
-        data.screenBackgroundInfo.companyId,
-        moment().format("DD-MM-YYYY"),
-        CurrentScreenId,
-        data.result,
-        "TestStringifiedFilesArray", 
         JSON.stringify(data),
-       
+        "TestStringifiedFilesArray", 
+        CurrentScreenId,
       ]
     
       //let testDataArray = [userId, 1, moment().format("DD-MM-YYYY"), "testFormId", "testSatus", 12, "testFiles", "testFormData"]
@@ -2755,7 +2779,8 @@ const ${ScreenName} = (props) => {
 
 
 
-
+  // Code to create table if it doesn't exist
+  {/*
   React.useEffect(() => {
     
     if(db == null)
@@ -2801,6 +2826,8 @@ const ${ScreenName} = (props) => {
       );
     });
   }, []);
+
+*/}
 
 
   // ######################################################## database integration end ######################################
@@ -2979,7 +3006,7 @@ const ${ScreenName} = (props) => {
     }
 // ##################################### Function to populate form's components (checklists and dropdowns) from database ########################################
 
-const populateComponentsFromDB = async (componentsDataObjectList) => {
+const populateComponentsFromDB = async (componentsDataObjectList, notTobePopulatedComponentTypes = []) => {
 
 
   console.log("############### Seraching components' data from database  ##############")
@@ -2989,6 +3016,8 @@ const populateComponentsFromDB = async (componentsDataObjectList) => {
   let componentsTraversed = []
   for (let componentDataObject of componentsDataObjectList)
   {
+    if(notTobePopulatedComponentTypes.includes(componentDataObject.componentType))
+      continue
     if(componentsTraversed.includes(componentDataObject.componentName + " " +componentDataObject.componentType))
       continue
 
@@ -3369,7 +3398,8 @@ const populateComponentsFromDB = async (componentsDataObjectList) => {
   const populateForm = async (screenData) => {
     //SetDataLoaded(true)
 
-  
+  console.log("############## screen data recieved in populateForm function ####################")
+  console.log(screenData)
 
   var newFieldList = {...FieldList}
   var newDropdownList = {...DropdownList}
@@ -3456,7 +3486,9 @@ const populateComponentsFromDB = async (componentsDataObjectList) => {
           newObj[keyName] = obj[keyName]
         }
         newObj["id"] = obj["id"]
-          newCurrentHybridList.push(newObj)
+        if(newObj["files"] ==  null)
+          newObj["files"] = []
+        newCurrentHybridList.push(newObj)
       }
       newHybridDataObjects[key] = newCurrentHybridList
       console.log("############### new hybrid list for "+key+" ################")
@@ -3942,6 +3974,8 @@ const populateComponentsFromDB = async (componentsDataObjectList) => {
     */}
     
     let dataFromDatabase = {}
+    const componentsDataObjectList = await getAllRows(componentsDataTableName)
+
     if(formDataTable != null)
     {
       dataFromDatabase = await getFormDataFromDb(formDataTable.tableName, CurrentScreenId)
@@ -3950,12 +3984,12 @@ const populateComponentsFromDB = async (componentsDataObjectList) => {
     }
      
 
-      if(formDataTable == null || dataFromDatabase.length == 0)
+      if(formDataTable == null || dataFromDatabase.length == 0 || dataFromDatabase[0]["formData"] == null)
       {
         
         try{
           
-          const componentsDataObjectList = await getAllRows(componentsDataTableName)
+          
           if(componentsDataObjectList == null || componentsDataObjectList.length == 0 )
           {
             console.log("############### Seraching component data from Apis and async storage since none provided from db##############")
@@ -3975,7 +4009,15 @@ const populateComponentsFromDB = async (componentsDataObjectList) => {
         }
       }
       else
-        populateForm(JSON.parse(dataFromDatabase[0]["formData"]))
+        {
+    
+            console.log("############## database data for current form ID ###############")
+            console.log(dataFromDatabase[0])
+            await populateComponentsFromDB(componentsDataObjectList, ["checklist"])
+            populateForm(JSON.parse(dataFromDatabase[0]["formData"]))
+        
+        }
+        
 
       SetDataLoaded(true)
       

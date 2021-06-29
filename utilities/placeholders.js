@@ -5,17 +5,20 @@ const Placeholders = {
       import { useSelector, useDispatch } from "react-redux"
       import { selectUser } from "../../../slices/authSlice";
       import * as SQLite from "expo-sqlite"
-      import { InspectionDataTable } from "../../../DB/tables"
+      import { InspectionDataTable as formDataTable} from "../../../DB/tables"
       
+    //import { InspectionDataTable  as formDataTable} from "../DB/tables"
+     import db from "@dbUtils"
+  
       //Chut ka basera
     `,
     "ApiUrls": {
         //"ApiUrl1": "",
         //"auditchecklist": "http://866400e0773e.ngrok.io/quality/getFormattedChecklistRows",
-        "auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
+        //"auditchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
         "millfabricchecklist": "https://devsourcingapi.bluekaktus.com/quality/getFormattedChecklistRows",
-        "aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
-        "maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
+        //"aqllevel": "https://qualitylite.bluekaktus.com/api/bkQuality/auditing/getNestedAQLDetails",
+        //"maindefect": "http://125.63.109.206:112/api/reactScreenTool/controls/getFormattedDefectsList",
         "ViewDataApi": "https://devsourcingapi.bluekaktus.com/quality/getInspectionDetails"
         
     },
@@ -111,10 +114,11 @@ const Placeholders = {
     "DatabaseIntegration": `
 
 
-  //const db = SQLite.openDatabase("sourcingDB")
-  const db = props.route.params.databaseReference
-  const formDataTable = props.route.params.formDataTable
+  
+  //const db = props.route.params.databaseReference
+  //const formDataTable = props.route.params.formDataTable
   const componentsDataTableName = props.route.params.componentsDataTableName
+  
 
   
      
@@ -801,12 +805,40 @@ const Placeholders = {
 
                 
                 
-                var cleanData = getCleanData({...CompleteCurrentScreenData}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
+                var cleanData = getCleanData({screenBackgroundInfo: CurrentScreenBackgroundInfo}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
                 //console.log("############################ Cleaned data for current screen ##########################")
                 //console.log(cleanData)
             
 
 
+               
+
+
+
+                if(cleanData.result == "onhold")
+                {
+
+                  
+                    //await SaveOfflineAsyncStorage(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
+                    
+                    const statusUpdationQuery = "update "+formDataTable.tableName+" set status = 'onhold' where formId = "+CurrentScreenId
+                    await updateTable(formDataTable.tableName, statusUpdationQuery)
+                    await SaveInspectionDataOfflineSQL(cleanData)
+                    //await DeleteAllRows("inspection_data_table")
+
+                    //let currentTableRows = await ViewTable("inspection_data_table")
+                    //console.log("############ Current rows in inspection data table ############")
+                    //console.log(currentTableRows)
+
+
+                    //props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                    props.navigation.goBack()
+                    Alert.alert("Data saved to phone!")
+                    return
+                    
+                }
+                
+            
                 var resquestObject = CustomDataModifierFunction(cleanData)
 
                 const nestedRequestObject = {
@@ -829,31 +861,6 @@ const Placeholders = {
                 
                 //console.log("############################### Request object to be sent #########################")
                 //console.log(nestedRequestObject)
-
-
-
-                if(cleanData.result == "onhold")
-                {
-
-                  
-                    //await SaveOfflineAsyncStorage(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
-                    
-                    await SaveInspectionDataOfflineSQL(cleanData)
-                    //await DeleteAllRows("inspection_data_table")
-
-                    //let currentTableRows = await ViewTable("inspection_data_table")
-                    //console.log("############ Current rows in inspection data table ############")
-                    //console.log(currentTableRows)
-
-
-                    //props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
-                    props.navigation.goBack()
-                    Alert.alert("Data saved to phone!")
-                    return
-                    
-                }
-                
-            
                 
                 var formData  = new FormData()
                 formData.append("json", JSON.stringify(nestedRequestObject))
