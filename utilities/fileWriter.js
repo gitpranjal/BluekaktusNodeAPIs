@@ -2099,7 +2099,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
             <View style={{borderColor: "green", borderRadius: 5, marginTop: 10, borderWidth: 0, width: "80%"}}>
               <TouchableOpacity
                 style={{ ...styles.openButton, marginHorizontal: 10, marginVertical: 10, alignSelf: "center"}}
-                onPress={async () => {
+                onPress={ async () => {
                   if(ViewMode == true)
                     return
 
@@ -2720,7 +2720,7 @@ const ${ScreenName} = (props) => {
   //ViewTable(componentsDataTableName)
   //ViewTableList()
 
-  const SaveInspectionDataOfflineSQL = async (data) => {
+  const SaveInspectionDataOfflineSQL = async (data, stringifiedFilesList = "stringifiedFilesList", stringifiedRequestObject = "someRequestObject") => {
 
     if(db == null)
     {
@@ -2744,7 +2744,8 @@ const ${ScreenName} = (props) => {
     await db.transaction((tx) => {
       let query = "UPDATE "+formDataTable.tableName+" SET "
       + formDataTable.formData + " = ?, "
-      + formDataTable.files + " = ? "
+      + formDataTable.files + " = ?, "
+      + formDataTable.requestJSON + " = ? "
       + "WHERE " 
       + formDataTable.formId + " = ?" 
 
@@ -2753,8 +2754,9 @@ const ${ScreenName} = (props) => {
     
       let inputArray = [
         JSON.stringify(data),
-        "TestStringifiedFilesArray", 
-        CurrentScreenId,
+        stringifiedFilesList, 
+        stringifiedRequestObject,
+        CurrentScreenId
       ]
     
       //let testDataArray = [userId, 1, moment().format("DD-MM-YYYY"), "testFormId", "testSatus", 12, "testFiles", "testFormData"]

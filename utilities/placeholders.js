@@ -581,6 +581,7 @@ const Placeholders = {
         `,
         "packedqty": `
 
+        {/*
             var NestedAqlObject = DropdownList["aqllevel"].SelectedValue
             var currentPackedQty = parseInt(newValue)
             var sampleSize = ""
@@ -616,6 +617,9 @@ const Placeholders = {
 
             newFieldsObject["samplesize"] = currentPackedQty != "" ? sampleSize.toString() : ""    
 
+          */}
+          
+            newFieldsObject["samplesize"] = "5"
 
         `,
 
@@ -799,178 +803,143 @@ const Placeholders = {
             `,
 
             "finalSubmission": `
-                //clearAll()
-                //return 
-
-
                 
                 
-                var cleanData = getCleanData({screenBackgroundInfo: CurrentScreenBackgroundInfo}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
-                //console.log("############################ Cleaned data for current screen ##########################")
-                //console.log(cleanData)
-            
+                
+            var cleanData = getCleanData({screenBackgroundInfo: CurrentScreenBackgroundInfo}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
+            //console.log("############################ Cleaned data for current screen ##########################")
+            //console.log(cleanData)
+        
 
 
-               
+            var resquestObject = CustomDataModifierFunction(cleanData)
 
+            const nestedRequestObject = {
+              "companyID": CurrentScreenBackgroundInfo.companyId,
+              "inspectionDetails": {
+                "saveInspList1": {
+                  "INSPECTION_MT": resquestObject["saveInspList"],
+                  "INSPECTION_ORDER_DT": [{
+                    "ORDER_ID":resquestObject["saveInspList"][0]["ORDER_ID"],
+                    "PACKED_QTY": resquestObject["saveInspList"][0]["PACKED_QTY"],
+                    "SAMPLE_SIZE": resquestObject["saveInspList"][0]["SAMPLE_SIZE"],
+                    "FG1_QTY": resquestObject["saveInspList"][0]["FG1_QTY"],
+                    "FG2_QTY": resquestObject["saveInspList"][0]["FG2_QTY"]
+                }],
+                  "INSPECTION_DEFECT_DT": resquestObject["saveInspList"][0]["DEFECT_LIST"],
+                  "INSPECTION_CHECK_LIST": resquestObject["saveInspList"][0]["CHECK_LIST"]
+                }
+              }
+            }
 
+            //var formData  = new FormData()
+            //formData.append("json", JSON.stringify(nestedRequestObject))
 
-                if(cleanData.result == "onhold")
+            let filesUriList = []
+            Object.keys(HybridDataObjects).forEach(hybridObjectName => {
+              for(var defectObject of HybridDataObjects[hybridObjectName])
+              {
+                if("files" in defectObject)
                 {
-
-                  
-                    //await SaveOfflineAsyncStorage(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
-                    
-                    const statusUpdationQuery = "update "+formDataTable.tableName+" set status = 'onhold' where formId = "+CurrentScreenId
-                    await updateTable(formDataTable.tableName, statusUpdationQuery)
-                    await SaveInspectionDataOfflineSQL(cleanData)
-                    //await DeleteAllRows("inspection_data_table")
-
-                    //let currentTableRows = await ViewTable("inspection_data_table")
-                    //console.log("############ Current rows in inspection data table ############")
-                    //console.log(currentTableRows)
-
-
-                    //props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
-                    props.navigation.goBack()
-                    Alert.alert("Data saved to phone!")
-                    return
-                    
+                  for(var fileObject of defectObject["files"])
+                  {
+                    const newFileUri =  fileObject.fileUri
+                    var fileType = fileObject.fileType
+                    if(fileType == "image")
+                      fileType = 'image/jpeg'
+                    else if(fileType == "video")
+                        fileType = "video/mp4"
+                    else 
+                      fileType = "please specify"
+                    //formData.append(fileObject.fileName, {"name": fileObject.fileName, type: fileType, "uri": newFileUri})
+                    filesUriList.push(newFileUri)
+                  }
                 }
-                
+              }
+
             
-                var resquestObject = CustomDataModifierFunction(cleanData)
+            })
 
-                const nestedRequestObject = {
-                  "companyID": CurrentScreenBackgroundInfo.companyId,
-                  "inspectionDetails": {
-                    "saveInspList1": {
-                      "INSPECTION_MT": resquestObject["saveInspList"],
-                      "INSPECTION_ORDER_DT": [{
-                        "ORDER_ID":resquestObject["saveInspList"][0]["ORDER_ID"],
-                        "PACKED_QTY": resquestObject["saveInspList"][0]["PACKED_QTY"],
-                        "SAMPLE_SIZE": resquestObject["saveInspList"][0]["SAMPLE_SIZE"],
-                        "FG1_QTY": resquestObject["saveInspList"][0]["FG1_QTY"],
-                        "FG2_QTY": resquestObject["saveInspList"][0]["FG2_QTY"]
-                    }],
-                      "INSPECTION_DEFECT_DT": resquestObject["saveInspList"][0]["DEFECT_LIST"],
-                      "INSPECTION_CHECK_LIST": resquestObject["saveInspList"][0]["CHECK_LIST"]
-                    }
-                  }
+            let statusUpdationQuery = ""
+
+              if(cleanData.result == "onhold")
+
+                  statusUpdationQuery = "update "+formDataTable.tableName+" set status = 'onhold' where formId = "+CurrentScreenId
+                  
+              else
+
+                statusUpdationQuery = "update "+formDataTable.tableName+" set status = 'complete' where formId = "+CurrentScreenId
+
+
+              let stringifiedFilesList =  JSON.stringify(filesUriList)
+              let stringifiedRequestObject = JSON.stringify(nestedRequestObject)
+               //await SaveOfflineAsyncStorage(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
+
+              await updateTable(formDataTable.tableName, statusUpdationQuery)
+              
+              await SaveInspectionDataOfflineSQL(cleanData, stringifiedFilesList, stringifiedRequestObject)
+              //await DeleteAllRows("inspection_data_table")
+
+              //let currentTableRows = await ViewTable("inspection_data_table")
+              //console.log("############ Current rows in inspection data table ############")
+              //console.log(currentTableRows)
+
+
+              //props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+              props.navigation.goBack()
+              Alert.alert("Data saved to phone!")
+              
+      
+              return
+              
+              //console.log("############################### Request object to be sent #########################")
+              //console.log(nestedRequestObject)
+              
+             
+                
+
+
+              console.log("####################### Form Data created ####################")
+              console.log(formData)
+            
+              
+              const fetchConfig = {
+                method: "POST",
+                      body: formData,
+                      headers: {
+                        "Content-Type": "multipart/form-data",
+                        Accept: "application/json",
+                        Authorization: "Bearer " + CurrentScreenBackgroundInfo.authToken,
+                        "companyID": CurrentScreenBackgroundInfo["companyId"]
+                      },
                 }
-                
-                //console.log("############################### Request object to be sent #########################")
-                //console.log(nestedRequestObject)
-                
-                var formData  = new FormData()
-                formData.append("json", JSON.stringify(nestedRequestObject))
 
-                Object.keys(HybridDataObjects).forEach(hybridObjectName => {
-                  for(var defectObject of HybridDataObjects[hybridObjectName])
-                  {
-                    if("files" in defectObject)
-                    {
-                      for(var fileObject of defectObject["files"])
-                      {
-                        const newFileUri =  fileObject.fileUri
-                        var fileType = fileObject.fileType
-                        if(fileType == "image")
-                          fileType = 'image/jpeg'
-                        else if(fileType == "video")
-                            fileType = "video/mp4"
-                        else 
-                          fileType = "please specify"
-                        formData.append(fileObject.fileName, {"name": fileObject.fileName, type: fileType, "uri": newFileUri})
-                      }
-                    }
-                  }
-                  
-
-                })
-
-                console.log("####################### Form Data created ####################")
-                console.log(formData)
-              
-                
-                const fetchConfig = {
-                  method: "POST",
-                        body: formData,
-                        headers: {
-                          "Content-Type": "multipart/form-data",
-                          Accept: "application/json",
-                          Authorization: "Bearer " + CurrentScreenBackgroundInfo.authToken,
-                          "companyID": CurrentScreenBackgroundInfo["companyId"]
-                        },
-                  }
-
-                  fetch("https://devsourcingapi.bluekaktus.com/Quality/saveInspectionDetails", fetchConfig)
-                  .then(response => {
-                    console.log("############## Response status ##################### ", response.status)
-                    return response.json()
-                  })
-                  .then(body => {
-                    console.log("$$$$$$$$$$$$$$$$", body)
-                    Alert.alert(body.result)
-                    //removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
-                    //removeValue(CurrentScreenId)
-                    if(body.result == "Success")
-                      removeValue(CurrentScreenId)
-
-                  })
-                  .then(() => {
-                    props.navigation.navigate("Quality")
-                  })
-                  
-                  .catch(error => {
-                    Alert.alert("Could not submit inspection!")
-                    console.log("######## Error in posting inspection data ##############")
-                    console.log(error)
-                  })
-
-                
-                
-              
-                {/*
-                axios({
-                  url: "/quality/saveInspectionDetails",
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "multipart/form-data",
-                   
-                  },
-                  data: formData,
-                })
+                fetch("https://devsourcingapi.bluekaktus.com/Quality/saveInspectionDetails", fetchConfig)
                 .then(response => {
-                  console.log("######### Response after posting inspection data #########")
-                  console.log()
-                  if(response.data == null)
-                  {
-                    Alert.alert("No response from API")
-                    return 
-                  }
-                  if(response.data.result == null && response.data.error != null)
-                  {
-                    Alert.alert(response.data.error)
-                    return  
-                  }
-                  Alert.alert(response.data.result)
-                  if(response.data.result == "Success")
-                      removeValue(CurrentScreenId)
+                  console.log("############## Response status ##################### ", response.status)
+                  return response.json()
+                })
+                .then(body => {
+                  console.log("$$$$$$$$$$$$$$$$", body)
+                  Alert.alert(body.result)
+                  //removeValue(cleanData.screenBackgroundInfo["TNA_ACTIVITY_ID"])
+                  //removeValue(CurrentScreenId)
+                  if(body.result == "Success")
+                    removeValue(CurrentScreenId)
 
                 })
                 .then(() => {
-                  props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+                  props.navigation.navigate("Quality")
                 })
+                
                 .catch(error => {
-
                   Alert.alert("Could not submit inspection!")
                   console.log("######## Error in posting inspection data ##############")
                   console.log(error)
-
                 })
 
-              */}
-                 
+
+
                   
             `,
     
