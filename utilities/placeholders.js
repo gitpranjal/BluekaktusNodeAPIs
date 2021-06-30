@@ -821,7 +821,7 @@ const Placeholders = {
 
             "finalSubmission": `
                 
-                
+            SetDataLoaded(false)
                 
             var cleanData = getCleanData({screenBackgroundInfo: CurrentScreenBackgroundInfo}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
             console.log("############################ Cleaned data for current screen ##########################")
@@ -890,7 +890,7 @@ const Placeholders = {
 
               let stringifiedFilesList =  JSON.stringify(filesUriList)
               let stringifiedRequestObject = JSON.stringify(nestedRequestObject)
-               //await SaveOfflineAsyncStorage(CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
+               //await SaveOfflineAsyncStorage(CurrentScreenId.toString(), FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList)
 
               await updateTable(formDataTable.tableName, statusUpdationQuery)
               
@@ -925,11 +925,11 @@ const Placeholders = {
              
 
 
-              //props.navigation.navigate("Quality", {"screenInformation": {}})
-              props.navigation.goBack()
+              props.navigation.navigate("Quality", {"screenInformation": {}})
+              //props.navigation.goBack()
               
               
-      
+              SetDataLoaded(true)
               return
               
               //console.log("############################### Request object to be sent #########################")

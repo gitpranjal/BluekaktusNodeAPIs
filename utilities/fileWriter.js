@@ -2375,7 +2375,7 @@ const storeData = async (key, value, CurrentScreenId, autoSave = true, explicitS
   }
 
   try {
-    const currentCodeData = await getScreenDataFromAsyncStorage(CurrentScreenId) 
+    const currentCodeData = await getScreenDataFromAsyncStorage(CurrentScreenId.toString()) 
     var newScreenData = currentCodeData != null ? {...currentCodeData} : null
     //const jsonValue = JSON.stringify(value)
     if(newScreenData != null)
@@ -2532,7 +2532,7 @@ const getCleanData = (currentScreenDataObject, FieldList = {}, DropdownList = {}
 
 
 const SaveOfflineAsyncStorage = async (CurrentScreenId, FieldList, DropdownList, HybridDataObjects, ChecklistDataObjects, RadioButtonList) => {
-
+  CurrentScreenId = CurrentScreenId.toString()
   await storeData("RadioButtonList", RadioButtonList, CurrentScreenId, true, true)
   await storeData("ChecklistDataObjects", ChecklistDataObjects, CurrentScreenId, true, true)
   await storeData("HybridDataObjects", HybridDataObjects, CurrentScreenId, true, true)
@@ -3962,7 +3962,7 @@ const populateComponentsFromDB = async (componentsDataObjectList, notTobePopulat
         console.log("################# Coouldn't fetch from formDataTable as either it is null or has no tableName key ###############")
         
         try{
-          let data = await getScreenDataFromAsyncStorage(CurrentScreenId)
+          let data = await getScreenDataFromAsyncStorage(CurrentScreenId.toString())
           await populateFormWithApiAsyncStorate(data)
           
           
@@ -3996,7 +3996,7 @@ const populateComponentsFromDB = async (componentsDataObjectList, notTobePopulat
           if(componentsDataObjectList == null || componentsDataObjectList.length == 0 )
           {
             console.log("############### Seraching component data from Apis and async storage since none provided from db##############")
-            let dataFromApisAndAsyncStorage = await getScreenDataFromAsyncStorage(CurrentScreenId)
+            let dataFromApisAndAsyncStorage = await getScreenDataFromAsyncStorage(CurrentScreenId.toString())
             await populateFormWithApiAsyncStorate(dataFromApisAndAsyncStorage)
           }
           else
@@ -4308,7 +4308,10 @@ const populateComponentsFromDB = async (componentsDataObjectList, notTobePopulat
 
        ${mainCode}
 
-        <Text style={{color: "grey", fontSize: 20, fontWeight: "bold", marginVertical: 10}}>{Sentence}</Text>
+       {(() => {
+        if(! DataLoaded)
+            return (<View style = {{alignSelf: "center", alignItems: "center"}}><ActivityIndicator size="large" color={"green"} /></View>)
+        })()}
     
     </ScrollView>
   );
