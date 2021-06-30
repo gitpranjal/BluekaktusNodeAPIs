@@ -6,9 +6,11 @@ const Placeholders = {
       import { selectUser } from "../../../slices/authSlice";
       import * as SQLite from "expo-sqlite"
       import { InspectionDataTable as formDataTable} from "../../../DB/tables"
+      import { connection } from "../../../components/NetworkConnection"
       
     //import { InspectionDataTable  as formDataTable} from "../DB/tables"
      import db from "@dbUtils"
+     import { sendFormData } from "@utils"
   
       //Chut ka basera
     `,
@@ -106,6 +108,21 @@ const Placeholders = {
                 //console.log(currentUser)
                 
                 const { companyId, authToken } = useSelector(selectUser);
+
+                useEffect(() => {
+                  // ######### Effect hook to pre fill text fields #############
+                  let prQty = CurrentScreenBackgroundInfo["prQty"] != null ? CurrentScreenBackgroundInfo["prQty"].toString() : ""
+                  let doneQty = CurrentScreenBackgroundInfo["Done Quantity"] != null ? CurrentScreenBackgroundInfo["Done Quantity"].toString() : ""
+                  let cutQty = "0"
+
+                  let newFieldList = {...FieldList}
+                  newFieldList["pqqty_val"] = prQty
+                  newFieldList["doneqty_val"] = doneQty
+                  newFieldList["cutqty_val"] = cutQty
+
+                  SetFieldList(newFieldList)
+
+                }, [])
                 
 
             `,
@@ -878,16 +895,39 @@ const Placeholders = {
               await updateTable(formDataTable.tableName, statusUpdationQuery)
               
               await SaveInspectionDataOfflineSQL(cleanData, stringifiedFilesList, stringifiedRequestObject)
-              //await DeleteAllRows("inspection_data_table")
+              
+              if(connection == true && cleanData.result != "onhold")
+              {
+                console.log("############################# sending form data to the database as connection is available and inspection result is not onhold ###############")
+                let statusObject = await sendFormData(CurrentScreenId)
 
-              //let currentTableRows = await ViewTable("inspection_data_table")
-              //console.log("############ Current rows in inspection data table ############")
-              //console.log(currentTableRows)
+                if(statusObject.status == true)
+                {
+                  try{
+                    let currentFormRowDeletionQuery = "delete from "+formDataTable.tableName+" where formId = "+CurrentScreenId
+                    await updateTable(formDataTable.tableName, currentFormRowDeletionQuery )
+                    Alert.alert("Data sent successfully to API")
+                  }
+                  catch(e){
+                    console.log("###################### Error in sending data to api ##############")
+                    console.log(e)
+                    Alert.alert("An error has occured")
+                  }
+                }
+                else
+                {
+                  Alert.alert("Data couldn't be sent to API")
+                }
+                
+              }
+             else
+              Alert.alert("Data saved offline")
+             
 
 
-              //props.navigation.navigate("AdhocInspection", {"screenInformation": {}})
+              //props.navigation.navigate("Quality", {"screenInformation": {}})
               props.navigation.goBack()
-              Alert.alert("Data saved to phone!")
+              
               
       
               return

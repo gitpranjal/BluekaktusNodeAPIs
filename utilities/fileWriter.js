@@ -2653,7 +2653,8 @@ const ${ScreenName} = (props) => {
           
           },
           (txObj, error) => {
-            reject("Error in updating data in "+tableName, error);
+            console.log("Error in updating data in "+tableName, error)
+            reject("Error in updating data in "+tableName);
             
           }
         )
