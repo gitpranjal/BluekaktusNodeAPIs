@@ -2905,7 +2905,7 @@ const ${ScreenName} = (props) => {
         if(!("files"in CurrentHybridTableRowObject))
           CurrentHybridTableRowObject["files"] = []
 
-        var newImageObject = {"fileName": pickerResult.uri.split("/").pop(), "fileUri": resizedPhoto.uri, "fileComment": fileComment, fileType: "image"}
+        var newImageObject = {"fileName": resizedPhoto.uri, "fileUri": resizedPhoto.uri, "fileComment": fileComment, fileType: "image"}
         CurrentHybridTableRowObject["files"].push(newImageObject)
 
         SetHybridDataObjects({...HybridDataObjects})
@@ -2932,7 +2932,7 @@ const ${ScreenName} = (props) => {
     if(!("files"in CurrentHybridTableRowObject))
      CurrentHybridTableRowObject["files"] = []
 
-    var newImageObject = {"fileName": (photo.uri).split("/")[(photo.uri).split("/").length -1], "fileUri": photo.uri, "fileComment": imageComment, fileType: "image"}
+    var newImageObject = {"fileName": photo.uri, "fileUri": photo.uri, "fileComment": imageComment, fileType: "image"}
     CurrentHybridTableRowObject["files"].push(newImageObject)
 
     SetHybridDataObjects({...HybridDataObjects})

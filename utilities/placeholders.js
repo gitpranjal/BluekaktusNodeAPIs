@@ -458,7 +458,7 @@ const Placeholders = {
                   targetObject["saveInspList"][0]["DEFECT_LIST"].push(newDefectObject)
                 }
 
-                for (var defectObj of cleanDataFromScreen["measurementdefect"])
+                for (let defectObj of cleanDataFromScreen["measurementdefect"])
                 {
                   var newDefectObject = {
                     "MAJOR": defectObj.measurementdefect_maj,
@@ -473,7 +473,7 @@ const Placeholders = {
                  
                   if(defectObj.files != null)
                   {
-                    for(var fileObject of defectObj.files)
+                    for(let fileObject of defectObj.files)
                     {
                       var newDefectFileObj = {"FILE_NAME": fileObject["fileName"], "KEY_NAME": fileObject["fileName"]}
                       newDefectObject["DEFECT_FILES"].push(newDefectFileObj)
@@ -807,8 +807,8 @@ const Placeholders = {
                 
                 
             var cleanData = getCleanData({screenBackgroundInfo: CurrentScreenBackgroundInfo}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
-            //console.log("############################ Cleaned data for current screen ##########################")
-            //console.log(cleanData)
+            console.log("############################ Cleaned data for current screen ##########################")
+            console.log(cleanData)
         
 
 
@@ -837,7 +837,7 @@ const Placeholders = {
 
             let filesUriList = []
             Object.keys(HybridDataObjects).forEach(hybridObjectName => {
-              for(var defectObject of HybridDataObjects[hybridObjectName])
+              for(let defectObject of HybridDataObjects[hybridObjectName])
               {
                 if("files" in defectObject)
                 {
