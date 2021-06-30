@@ -597,46 +597,41 @@ const Placeholders = {
                 newFieldList["excessshortqty"] = ""
         `,
         "packedqty": `
-
-        {/*
-            var NestedAqlObject = DropdownList["aqllevel"].SelectedValue
-            var currentPackedQty = parseInt(newValue)
-            var sampleSize = ""
-            var smallestMinValue = Number.MAX_VALUE
-            var greatestMaxValue = Number.MIN_VALUE
-            var smallestMinValueRangeObject = {minValue: Number.MAX_VALUE}
-            var greatestMaxValueRangeObject = {maxValue: Number.MIN_VALUE}
-            var rangeFound = false
-            for(var rangeObject of NestedAqlObject.aqlDtDetails)
+        console.log("############ Current aql object ##############")
+        console.log(DropdownList["aqllevel"].SelectedValue)
+        try{
+        
+          let newPackedQty = parseInt(newValue)
+          let SelectedAqlObject = DropdownList["aqllevel"].SelectedValue
+          let rangeFound = false
+          for(let i = 0; i<(SelectedAqlObject.aqlDetails).length; i++)
+          {
+            let currentRangeObject = SelectedAqlObject.aqlDetails[i]
+            if(newPackedQty <= parseInt(currentRangeObject.maxValue) && newPackedQty >= parseInt(currentRangeObject.minValue))
             {
-            if(currentPackedQty <= rangeObject.maxValue &&  currentPackedQty >= rangeObject.minValue)
-            {
-                sampleSize = rangeObject.sampleSize.toString()
-                rangeFound = true
-                break
+              newFieldsObject["samplesize"] = (currentRangeObject.sampleSize).toString()
+              rangeFound = true
+              break
             }
-            if(rangeObject.minValue <= smallestMinValueRangeObject.minValue)
-                smallestMinValueRangeObject = {...rangeObject}
-            
+          }
 
-            if(rangeObject.maxValue >= greatestMaxValueRangeObject.maxValue )
-                greatestMaxValueRangeObject = {...rangeObject}
-            
-            }
+          if(!rangeFound)
+          {
+            let arrayLength = SelectedAqlObject.aqlDetails.length
 
-            if( !rangeFound)
-            {
-            if(currentPackedQty >= greatestMaxValueRangeObject.maxValue)
-                sampleSize = greatestMaxValueRangeObject.sampleSize
-            else if(currentPackedQty >= smallestMinValueRangeObject.minValue)
-                sampleSize = smallestMinValueRangeObject.sampleSize 
-            }
-
-            newFieldsObject["samplesize"] = currentPackedQty != "" ? sampleSize.toString() : ""    
-
-          */}
-          
-            newFieldsObject["samplesize"] = "5"
+            if(newPackedQty >= parseInt((SelectedAqlObject.aqlDetails)[arrayLength - 1].maxValue))
+              newFieldsObject["samplesize"] = ((SelectedAqlObject.aqlDetails)[ arrayLength - 1].sampleSize).toString()
+            else
+              newFieldsObject["samplesize"] = ((SelectedAqlObject.aqlDetails)[0].sampleSize).toString()
+          }
+        }
+        catch(e){
+          console.log("sample size couldn't be reset")
+          newFieldsObject["samplesize"] = ""
+          console.log(e)
+        }
+  
+            //newFieldsObject["samplesize"] = "5"
 
         `,
 

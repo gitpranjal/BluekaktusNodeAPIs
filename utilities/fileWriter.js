@@ -1944,8 +1944,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                    var newDropdownList = {...DropdownList}
                    newDropdownList.${fieldName}["SelectedValue"] = selectedObject
                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[ViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
-                   console.log("#### New dropdown list ######")
-                   console.log(newDropdownList)
+                 
                    SetDropdownList(newDropdownList)
                    storeData("DropdownList", newDropdownList, CurrentScreenId)
                  }}
