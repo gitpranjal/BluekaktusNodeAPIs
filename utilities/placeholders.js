@@ -599,6 +599,12 @@ const Placeholders = {
         "packedqty": `
         console.log("############ Current aql object ##############")
         console.log(DropdownList["aqllevel"].SelectedValue)
+
+        if(DropdownList["aqllevel"] == null || DropdownList["aqllevel"].SelectedValue == "")
+        {
+          Alert.alert("Please select an aql value")
+          return
+        }
         try{
         
           let newPackedQty = parseInt(newValue)
@@ -636,6 +642,8 @@ const Placeholders = {
         `,
 
         "fg1qty": `
+
+            
             var currentPackedQty = newFieldsObject["packedqty"]
             var currentFg1Qty = newValue
 
@@ -678,6 +686,23 @@ const Placeholders = {
 
         "maindefect_add": 
         `
+            if(FieldList["samplesize"] == "")
+            {
+              Alert.alert("Please enter packed quantity")
+              return
+            }
+
+            if(DropdownList["maindefect"].SelectedValue == "")
+            {
+              Alert.alert("Please select a defect")
+              return
+            }
+
+            if(newRowObject.maindefect_crit == "" && newRowObject.maindefect_maj == "" && newRowObject.maindefect_min == "")
+            {
+              Alert.alert("Please enter atleast one defect")
+              return
+            }
             
             var newFieldList = {...FieldList}
             
@@ -705,7 +730,24 @@ const Placeholders = {
 
             "measurementdefect_add": 
             `
-                
+                if(FieldList["samplesize"] == "")
+                {
+                  Alert.alert("Please enter packed quantity")
+                  return
+                }
+
+                if(FieldList["measurementdefect"] == "")
+                {
+                  Alert.alert("Please enter a defect")
+                  return
+                }
+
+                if(newRowObject.measurementdefect_crit == "" && newRowObject.measurementdefect_maj == "" && newRowObject.measurementdefect_min == "")
+                {
+                  Alert.alert("Please enter atleast one defect")
+                  return
+                } 
+
                 var totalCriticals = 0
                 var totalMajors = 0
                 var totalMinors  = 0
@@ -748,7 +790,23 @@ const Placeholders = {
 
                 "miscdefect_add": 
                 `
-                    
+                    if(FieldList["samplesize"] == "")
+                    {
+                      Alert.alert("Please enter packed quantity")
+                      return
+                    }
+                    if(FieldList["miscdefect"] == "")
+                    {
+                      Alert.alert("Please enter a defect")
+                      return
+                    }
+    
+                    if(newRowObject.miscdefect_crit == "" && newRowObject.miscdefect_maj == "" && newRowObject.miscdefect_min == "")
+                    {
+                      Alert.alert("Please enter atleast one defect")
+                      return
+                    } 
+
                     var totalCriticals = 0
                     var totalMajors = 0
                     var totalMinors  = 0
@@ -816,8 +874,21 @@ const Placeholders = {
 
             "finalSubmission": `
                 
+            if(RadioButtonList["result"] == "")
+            {
+              Alert.alert("Please select a result")
+              return
+            }
+
+            if(FieldList["totaldefect"] == "" || FieldList["totaldefect"] == "0")
+            {
+              Alert.alert("Please enter a defect")
+              return
+            }
             SetDataLoaded(false)
                 
+            
+
             var cleanData = getCleanData({screenBackgroundInfo: CurrentScreenBackgroundInfo}, {...FieldList}, {...DropdownList}, {...HybridDataObjects}, {...ChecklistDataObjects} , {...RadioButtonList})
             console.log("############################ Cleaned data for current screen ##########################")
             console.log(cleanData)

@@ -1757,6 +1757,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                   if(ViewMode == true)
                     return
 
+                    
+
                   var CurrentObjectId = null
                     var fieldNames = [] 
                     for(var obj of HybridDataObjects["${ViewObject.name}"])
@@ -1805,6 +1807,12 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     else
                       newRowObject["id"] = CurrentObjectId
 
+                    // ########################### Code from placeholder #########################
+                    
+                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+
+                    // ###########################################################################
+
                     var newHybridObjectList = {...HybridDataObjects}
                     newHybridObjectList["${ViewObject.name}"].push(newRowObject)
                     console.log("####### Adding new row to table for ${ViewObject.name} ############")
@@ -1818,7 +1826,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     SetFieldList(newFieldList)
                     SetRadioButtonList(newRadioButtonList)
 
-                    ${Placeholders.CodeSnippets != null && Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] != null ? Placeholders.CodeSnippets[subViewObject.fields[componentNumber].name] : "//Some code from placeholder"}
+                    
                     storeData("HybridDataObjects", newHybridObjectList, CurrentScreenId)
                   }}
               >
