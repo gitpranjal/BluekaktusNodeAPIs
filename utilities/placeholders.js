@@ -6,7 +6,11 @@ const Placeholders = {
       import { selectUser } from "../../../slices/authSlice";
       import * as SQLite from "expo-sqlite"
       import { InspectionDataTable as formDataTable} from "../../../DB/tables"
-      import { connection } from "../../../components/NetworkConnection"
+      //import { connection } from "../../../components/NetworkConnection"
+      import NetInfo, {
+        NetInfoStateType,
+        useNetInfo,
+      } from "@react-native-community/netinfo"
       
     //import { InspectionDataTable  as formDataTable} from "../DB/tables"
      import db from "@dbUtils"
@@ -93,15 +97,15 @@ const Placeholders = {
 
                 CurrentScreenBackgroundInfo = props.route.params.screenInformation
                 CurrentScreenId = CurrentScreenBackgroundInfo["formId"]
-                //const userId = jwt_decode(authToken).userID;
+                let connection = useNetInfo().isInternetReachable
                 
 
 
                 console.log("############ Current screen Id ################")
                 console.log(CurrentScreenId)
 
-                //console.log("############## Current screen background information #############")
-                //console.log(CurrentScreenBackgroundInfo)
+                console.log("############## Current screen background information #############")
+                console.log(CurrentScreenBackgroundInfo)
 
                 //const currentUser = useSelector(selectUser)
                 //console.log("########### Current user ##################")
@@ -164,7 +168,7 @@ const Placeholders = {
                     "AQL_LEVEL": cleanDataFromScreen.aqllevel["name"],
                     "MAX_MAJOR_ACCEPTANCE": "0",
                     "MAX_MINOR_ACCEPTANCE": "0",
-                    "INSPECTION_REQUEST_ID": "0",
+                    "INSPECTION_REQUEST_ID": cleanDataFromScreen.screenBackgroundInfo["requestId"],
                     "INSPECTION_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["activityID"],
                     "USER_ID": "801",
                     "MOBILE_APP_VERSION": "A_1.17",
@@ -961,6 +965,8 @@ const Placeholders = {
               await updateTable(formDataTable.tableName, statusUpdationQuery)
               
               await SaveInspectionDataOfflineSQL(cleanData, stringifiedFilesList, stringifiedRequestObject)
+              
+              console.log("################### Connection object value ####################", connection)
               
               if(connection == true && cleanData.result != "onhold")
               {
