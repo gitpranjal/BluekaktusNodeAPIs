@@ -2,7 +2,7 @@ const fs = require('fs');
 const fetch = require("node-fetch")
 var Placeholders = {}
 try{
-  const Placeholders = require("./placeholders").Placeholders
+  const Placeholders = require("./placeholders_final_inspection").Placeholders
 }
 catch(error){
   console.log("################### Placeholder.js file not containing js appropriate code")

@@ -1,5 +1,5 @@
 const { codeGenerator } = require("./fileWriter")
-const { Placeholders } = require("./placeholders")
+const { Placeholders } = require("./placeholders_final_inspection")
 const fs = require('fs');
 const fetch = require("node-fetch")
 const finalInspectionForm = {

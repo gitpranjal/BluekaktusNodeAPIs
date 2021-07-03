@@ -5,7 +5,8 @@ const Placeholders = {
       import { useSelector, useDispatch } from "react-redux"
       import { selectUser } from "../../../slices/authSlice";
       import * as SQLite from "expo-sqlite"
-      import { InspectionDataTable as formDataTable} from "../../../DB/tables"
+      import Toast from "react-native-root-toast"
+      import { InspectionDataTable as formDataTable, AdhocData} from "../../../DB/tables"
       //import { connection } from "../../../components/NetworkConnection"
       import NetInfo, {
         NetInfoStateType,
@@ -606,7 +607,15 @@ const Placeholders = {
 
         if(DropdownList["aqllevel"] == null || DropdownList["aqllevel"].SelectedValue == "")
         {
-          Alert.alert("Please select an aql value")
+          //Alert.alert("Please select an aql value")
+          Toast.show("Please select an AQL value", {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM - 50,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+          });
           return
         }
         try{
@@ -664,7 +673,15 @@ const Placeholders = {
                 newFieldsObject["fg2qty"] = ""
                 SetFieldList(newFieldsObject)
                 //storeData("FieldList", newFieldsObject)
-                Alert.alert("Pleae enter valid fg and packed quantities")
+                //Alert.alert("Pleae enter valid fg and packed quantities")
+                Toast.show("Pleae enter valid FG and Packed quantities", {
+                  duration: Toast.durations.SHORT,
+                  position: Toast.positions.BOTTOM - 50,
+                  shadow: true,
+                  animation: true,
+                  hideOnPress: true,
+                  delay: 0,
+                });
                 return
             }   
 
@@ -675,7 +692,16 @@ const Placeholders = {
                 newFieldsObject["fg2qty"] = ""
                 SetFieldList(newFieldsObject)
                 //storeData("FieldList", newFieldsObject)
-                Alert.alert("fg values cannot be greater than packed quantity")
+                //Alert.alert("fg values cannot be greater than packed quantity")
+                Toast.show("FG values cannot be greater than packed quantity", {
+                  duration: Toast.durations.SHORT,
+                  position: Toast.positions.BOTTOM - 50,
+                  shadow: true,
+                  animation: true,
+                  hideOnPress: true,
+                  delay: 0,
+                });
+                
                 return
             }
             currentPackedQty = parseInt(currentPackedQty)
@@ -692,19 +718,43 @@ const Placeholders = {
         `
             if(FieldList["samplesize"] == "")
             {
-              Alert.alert("Please enter packed quantity")
+              //Alert.alert("Please enter packed quantity")
+              Toast.show("Pleae Packed quantity", {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM - 50,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
               return
             }
 
             if(DropdownList["maindefect"].SelectedValue == "")
             {
-              Alert.alert("Please select a defect")
+              //Alert.alert("Please select a defect")
+              Toast.show("Please select a defect", {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM - 50,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
               return
             }
 
             if(newRowObject.maindefect_crit == "" && newRowObject.maindefect_maj == "" && newRowObject.maindefect_min == "")
             {
-              Alert.alert("Please enter atleast one defect")
+              //Alert.alert("Please enter atleast one defect")
+              Toast.show("Please enter atleast one defect", {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM - 50,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
               return
             }
             
@@ -736,19 +786,43 @@ const Placeholders = {
             `
                 if(FieldList["samplesize"] == "")
                 {
-                  Alert.alert("Please enter packed quantity")
+                  //Alert.alert("Please enter packed quantity")
+                  Toast.show("Please enter packed quantity", {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM - 50,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
                   return
                 }
 
                 if(FieldList["measurementdefect"] == "")
                 {
-                  Alert.alert("Please enter a defect")
+                  //Alert.alert("Please enter a defect")
+                  Toast.show("Please enter a defect", {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM - 50,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
                   return
                 }
 
                 if(newRowObject.measurementdefect_crit == "" && newRowObject.measurementdefect_maj == "" && newRowObject.measurementdefect_min == "")
                 {
-                  Alert.alert("Please enter atleast one defect")
+                  //Alert.alert("Please enter atleast one defect")
+                  Toast.show("Please enter atleast one defect", {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM - 50,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
                   return
                 } 
 
@@ -796,18 +870,42 @@ const Placeholders = {
                 `
                     if(FieldList["samplesize"] == "")
                     {
-                      Alert.alert("Please enter packed quantity")
+                      //Alert.alert("Please enter packed quantity")
+                      Toast.show("Please enter packed quantity", {
+                        duration: Toast.durations.SHORT,
+                        position: Toast.positions.BOTTOM - 50,
+                        shadow: true,
+                        animation: true,
+                        hideOnPress: true,
+                        delay: 0,
+                      });
                       return
                     }
                     if(FieldList["miscdefect"] == "")
                     {
-                      Alert.alert("Please enter a defect")
+                      //Alert.alert("Please enter a defect")
+                      Toast.show("Please enter a defect", {
+                        duration: Toast.durations.SHORT,
+                        position: Toast.positions.BOTTOM - 50,
+                        shadow: true,
+                        animation: true,
+                        hideOnPress: true,
+                        delay: 0,
+                      });
                       return
                     }
     
                     if(newRowObject.miscdefect_crit == "" && newRowObject.miscdefect_maj == "" && newRowObject.miscdefect_min == "")
                     {
-                      Alert.alert("Please enter atleast one defect")
+                      //Alert.alert("Please enter atleast one defect")
+                      Toast.show("Please enter atleast one defect", {
+                        duration: Toast.durations.SHORT,
+                        position: Toast.positions.BOTTOM - 50,
+                        shadow: true,
+                        animation: true,
+                        hideOnPress: true,
+                        delay: 0,
+                      });
                       return
                     } 
 
@@ -857,13 +955,29 @@ const Placeholders = {
 
                     if(Number.isNaN(totalCartons))
                     {
-                        Alert.alert("Enter valid number of total cartons")
+                        //Alert.alert("Enter valid number of total cartons")
+                        Toast.show("Enter valid number of total cartons", {
+                          duration: Toast.durations.SHORT,
+                          position: Toast.positions.BOTTOM - 50,
+                          shadow: true,
+                          animation: true,
+                          hideOnPress: true,
+                          delay: 0,
+                        });
                         return
                     }
 
                     if(currentSampleSize > totalCartons)
                     {
-                        Alert.alert("Carton sample size cannot be greater than total cartons")
+                        //Alert.alert("Carton sample size cannot be greater than total cartons")
+                        Toast.show("Carton sample size cannot be greater than total cartons", {
+                          duration: Toast.durations.SHORT,
+                          position: Toast.positions.BOTTOM - 50,
+                          shadow: true,
+                          animation: true,
+                          hideOnPress: true,
+                          delay: 0,
+                        });
                         return
                     }
                     
@@ -880,13 +994,29 @@ const Placeholders = {
                 
             if(RadioButtonList["result"] == "")
             {
-              Alert.alert("Please select a result")
+              //Alert.alert("Please select a result")
+              Toast.show("Please select a result", {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM - 50,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
               return
             }
 
             if(FieldList["totaldefect"] == "" || FieldList["totaldefect"] == "0")
             {
-              Alert.alert("Please enter a defect")
+              //Alert.alert("Please enter a defect")
+              Toast.show("Please enter a defect", {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM - 50,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
               return
             }
             SetDataLoaded(false)
@@ -977,8 +1107,18 @@ const Placeholders = {
                 {
                   try{
                     let currentFormRowDeletionQuery = "delete from "+formDataTable.tableName+" where formId = "+CurrentScreenId
+                    let updateAdhocDataQuery = "delete from "+AdhocData.tableName+" where tnaActivityID = "+cleanData.screenBackgroundInfo["tnaActivityID"]
                     await updateTable(formDataTable.tableName, currentFormRowDeletionQuery )
-                    Alert.alert("Data sent successfully to API")
+                    await updateTable(AdhocData.tableName, updateAdhocDataQuery)
+                    //Alert.alert("Data sent successfully to API")
+                    Toast.show("Form submitted successfully", {
+                      duration: Toast.durations.SHORT,
+                      position: Toast.positions.BOTTOM - 50,
+                      shadow: true,
+                      animation: true,
+                      hideOnPress: true,
+                      delay: 0,
+                    });
                   }
                   catch(e){
                     console.log("###################### Error in sending data to api ##############")
@@ -993,7 +1133,15 @@ const Placeholders = {
                 
               }
              else
-              Alert.alert("Data saved offline")
+              //Alert.alert(cleanData.result == "onhold" ? "Form saved Onhold" : "Form saved. Will be sent when internet available.")
+              Toast.show("Data saved offline", {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM - 50,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
              
 
 
