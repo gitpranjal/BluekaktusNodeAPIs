@@ -2359,6 +2359,7 @@ import moment from "moment"
 import { Audio, Video, AVPlaybackStatus } from 'expo-av'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+const inspectionStartTime = moment().format("DD-MMM-YYYY HH:mm:ss")
 
 ${Placeholders.ScreenSpecificImports != null ? Placeholders.ScreenSpecificImports: "//Screen specific imports from placeholder could be here"}
 
@@ -2753,6 +2754,7 @@ const ${ScreenName} = (props) => {
       let query = "UPDATE "+formDataTable.tableName+" SET "
       + formDataTable.formData + " = ?, "
       + formDataTable.files + " = ?, "
+      + formDataTable.tnaActivityId + " = ?, "
       + formDataTable.requestJSON + " = ? "
       + "WHERE " 
       + formDataTable.formId + " = ?" 
@@ -2763,6 +2765,7 @@ const ${ScreenName} = (props) => {
       let inputArray = [
         JSON.stringify(data),
         stringifiedFilesList, 
+        data.screenBackgroundInfo["tnaActivityID"],
         stringifiedRequestObject,
         CurrentScreenId
       ]

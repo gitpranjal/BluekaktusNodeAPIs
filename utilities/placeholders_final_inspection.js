@@ -17,7 +17,7 @@ const Placeholders = {
      import db from "@dbUtils"
      import { sendFormData } from "@utils"
   
-      //Chut ka basera
+  
     `,
     "ApiUrls": {
         //"ApiUrl1": "",
@@ -117,7 +117,7 @@ const Placeholders = {
                 useEffect(() => {
                   // ######### Effect hook to pre fill text fields #############
                   let prQty = CurrentScreenBackgroundInfo["prQty"] != null ? CurrentScreenBackgroundInfo["prQty"].toString() : ""
-                  let doneQty = CurrentScreenBackgroundInfo["Done Quantity"] != null ? CurrentScreenBackgroundInfo["Done Quantity"].toString() : ""
+                  let doneQty = CurrentScreenBackgroundInfo["totalPackedQty"] != null ? CurrentScreenBackgroundInfo["totalPackedQty"].toString() : ""
                   let cutQty = "0"
 
                   let newFieldList = {...FieldList}
@@ -400,8 +400,8 @@ const Placeholders = {
                     ],
                     "RESULT": cleanDataFromScreen.result ,
                     "IS_PARTIAL": "1",
-                    "START_TIME": "2021-03-20 12:22:07",
-                    "END_TIME": "2021-03-20 12:24:03",
+                    "START_TIME": inspectionStartTime,
+                    "END_TIME": moment().format("DD-MMM-YYYY HH:mm:ss"),
                     "LATITUDE": "28.6879133",
                     "LONGITUDE": "77.2797417",
                     "INVOICE_NO": "",
@@ -1136,7 +1136,7 @@ const Placeholders = {
               //Alert.alert(cleanData.result == "onhold" ? "Form saved Onhold" : "Form saved. Will be sent when internet available.")
               Toast.show("Data saved offline", {
                 duration: Toast.durations.SHORT,
-                position: Toast.positions.BOTTOM - 50,
+                position: Toast.positions.BOTTOM - 100,
                 shadow: true,
                 animation: true,
                 hideOnPress: true,
