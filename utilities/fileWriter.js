@@ -1728,6 +1728,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
         
 
           <TextInput
+              underlineColor="gray"
+              theme={{ colors: { text: "black" , placeholder: "grey"} }}
               label="${subViewObject.fields[componentNumber].title != null ? subViewObject.fields[componentNumber].title: subViewObject.fields[componentNumber].name}"
               keyboardType=${subViewObject.fields[componentNumber].inputType != null ? `"`+subViewObject.fields[componentNumber].inputType+`"` : `"default"`}
               maxLength={50}
@@ -2020,6 +2022,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
          
 
             <TextInput
+              underlineColor="gray"
+              theme={{ colors: { text: "black" , placeholder: "grey"} }}
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
               keyboardType=${ViewObject.fields[componentNumber].inputType != null ? `"`+ViewObject.fields[componentNumber].inputType+`"` : `"default"`}
               maxLength={50}
