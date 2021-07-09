@@ -2027,7 +2027,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
               theme={{ colors: { text: "black" , placeholder: "grey"} }}
               label="${ViewObject.fields[componentNumber].title != null ? ViewObject.fields[componentNumber].title :ViewObject.fields[componentNumber].name}"
               keyboardType=${ViewObject.fields[componentNumber].inputType != null ? `"`+ViewObject.fields[componentNumber].inputType+`"` : `"default"`}
-              maxLength={50}
+              maxLength={${ViewObject.fields[componentNumber].maxLength != null ? parseInt(ViewObject.fields[componentNumber].maxLength) : 40}}
+              multiline={${ViewObject.fields[componentNumber].multiline == true ? true : false}}
               value={FieldList["${ViewObject.fields[componentNumber].name}"]}
               editable={${ViewObject.fields[componentNumber].editable != null ? ViewObject.fields[componentNumber].editable : true} && !ViewMode}
               onChangeText = {(newValue) => {

@@ -173,7 +173,7 @@ const Placeholders = {
                     "INSPECTION_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["activityID"],
                     "USER_ID": "801",
                     "MOBILE_APP_VERSION": "A_1.17",
-                    "INSPECTION_RECORD_TYPE": "ADH",
+                    "INSPECTION_RECORD_TYPE": cleanDataFromScreen.screenBackgroundInfo["requestId"] == null || cleanDataFromScreen.screenBackgroundInfo["requestId"] == 0 ? "ADH" : IR,
                     "DEFECT_LIST": [
                       {
                         "MAJOR": "1",

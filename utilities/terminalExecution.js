@@ -615,6 +615,8 @@ const finalInspectionForm = {
             {
               "name": "finalRemarks",
               "title": "Comments",
+              "multiline": true,
+              "maxLength": 100
           }
         ],
         "groups": [],
