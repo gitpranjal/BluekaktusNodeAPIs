@@ -1247,7 +1247,7 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                     const InputKey = item["valueObject"].variableName
                     return (
                       <TextInput
-                      // style= {{marginLeft: 4, color: "blue"}}
+                      theme={{ colors: { text: "black" , placeholder: "grey"} }}
                       style={{...${JSON.stringify(StylingLibrary.textInputField)}, borderBottomColor:'black', paddingHorizontal: 15, fontSize: 10, borderBottomWidth: 1, marginHorizontal: 15, width: 90}}
                       placeholder={""}
                       placeholderTextColor={"grey"}
