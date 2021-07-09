@@ -48,7 +48,7 @@ const finalInspectionForm = {
             "componentPerRow": 3,
             "fields": [
                 {
-                    "name": "pqqty_val",
+                    "name": "prqty_val",
                     "title": "PR Quantity",
                     "size": "small",
                     "minLength": 0,

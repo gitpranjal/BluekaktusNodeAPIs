@@ -121,7 +121,7 @@ const Placeholders = {
                   let cutQty = "0"
 
                   let newFieldList = {...FieldList}
-                  newFieldList["pqqty_val"] = prQty
+                  newFieldList["prqty_val"] = prQty
                   newFieldList["doneqty_val"] = doneQty
                   newFieldList["cutqty_val"] = cutQty
 
@@ -421,7 +421,7 @@ const Placeholders = {
                     "CARTON_SELECTED": cleanDataFromScreen.cartonselected,
                     "FACTORY_REPRESENTATIVE": cleanDataFromScreen.factoryrepresentative,
                     "FINAL_SAMPLE_SIZE": "",
-                    "TOTAL_CARTONS_GOH": "2",
+                    "TOTAL_CORTONS_GOH": cleanDataFromScreen.inserttotalnoofcarton,
                     "RE_AUDIT": "0",
                     "TNA_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["tnaActivityID"],
                     "QFE_STATUS": "",
