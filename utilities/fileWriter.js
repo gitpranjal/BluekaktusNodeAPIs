@@ -1410,7 +1410,8 @@ for(var ViewObject of ObjectFromAPI.viewObjects)
                                                 return 
                                               } 
                                               else
-                                                SetCameraOpen(true)
+                                                //SetCameraOpen(true)
+                                                openImagePickerCamera()
                                             },
                              
                                           },
@@ -2928,6 +2929,40 @@ const ${ScreenName} = (props) => {
   
       }
 
+      const openImagePickerCamera= async () => {
+      
+        // let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    
+        const { status } = await Camera.requestPermissionsAsync();
+        if (status != "granted") {
+          alert("Permission to access camera is required!");
+          return;
+        }
+    
+        let pickerResult = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          quality: 1,
+          aspect: [3, 4],
+        });
+        let resizedPhoto = await ImageManipulator.manipulateAsync(
+          pickerResult.uri,
+          [{ resize: { width: 600, height: 800 } }],
+          { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+        );
+        // console.log("PickerResult", pickerResult.uri);
+        //uploadImage(resizedPhoto.uri);
+
+        if(!("files"in CurrentHybridTableRowObject))
+          CurrentHybridTableRowObject["files"] = []
+    
+        var newImageObject = {"fileName": resizedPhoto.uri, "fileUri": resizedPhoto.uri, "fileComment": "", fileType: "image"}
+        CurrentHybridTableRowObject["files"].push(newImageObject)
+    
+        SetHybridDataObjects({...HybridDataObjects})
+
+
+      };
+
   const takePicture = async (imageComment = "") => {
     if (!cameraReference) 
     {
@@ -2942,7 +2977,7 @@ const ${ScreenName} = (props) => {
     //props.callback(photo, props.currentDefectObject)
     console.log("##################### Current hybrid row object ###############")
     console.log(CurrentHybridTableRowObject)
-    //CurrentHybridTableRowObject["maindefect"] = "chutmaar department"
+    //CurrentHybridTableRowObject["maindefect"] = ""
 
     if(!("files"in CurrentHybridTableRowObject))
      CurrentHybridTableRowObject["files"] = []
@@ -4289,7 +4324,8 @@ const populateComponentsFromDB = async (componentsDataObjectList, notTobePopulat
                                             return 
                                           } 
                                           else
-                                            SetCameraOpen(true)
+                                            //SetCameraOpen(true)
+                                            openImagePickerCamera()
                                         },
                          
                                       },
