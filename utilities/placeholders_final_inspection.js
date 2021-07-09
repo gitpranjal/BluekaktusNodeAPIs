@@ -399,7 +399,7 @@ const Placeholders = {
                       }
                     ],
                     "RESULT": cleanDataFromScreen.result ,
-                    "IS_PARTIAL": "1",
+                    "IS_PARTIAL": cleanDataFromScreen.isPartInspection.toLowerCase() == "yes" ? "1" : "0",
                     "START_TIME": inspectionStartTime,
                     "END_TIME": moment().format("DD-MMM-YYYY HH:mm:ss"),
                     "LATITUDE": "28.6879133",
@@ -411,7 +411,7 @@ const Placeholders = {
                     "RE_INSPECTION": "N",
                     "CARTON_SAMPLE_SIZE": cleanDataFromScreen.cartonsamplesize,
                     "CUT_QTY": "0.000",
-                    "SELF_AUDIT": "0",
+                    "SELF_AUDIT": cleanDataFromScreen.isSelfAudit.toLowerCase() == "yes" ? "1" : "0",
                     "MOBILE_REF_NO": "21032012220737641686118466",
                     "INLINE_INSPECTION_FLAG": "0",
                     "INTERIM_INSPECTION_FLAG": "0",
@@ -422,7 +422,7 @@ const Placeholders = {
                     "FACTORY_REPRESENTATIVE": cleanDataFromScreen.factoryrepresentative,
                     "FINAL_SAMPLE_SIZE": "",
                     "TOTAL_CORTONS_GOH": cleanDataFromScreen.inserttotalnoofcarton,
-                    "RE_AUDIT": "0",
+                    "RE_AUDIT": cleanDataFromScreen.isReAudit.toLowerCase() == "yes" ? "1" : "0",
                     "TNA_ACTIVITY_ID": cleanDataFromScreen.screenBackgroundInfo["tnaActivityID"],
                     "QFE_STATUS": "",
                     "SUSTAINABILITY": cleanDataFromScreen.buyername,               // This means buyer name
@@ -621,6 +621,14 @@ const Placeholders = {
         try{
         
           let newPackedQty = parseInt(newValue)
+          let newRadioButtonList = {...RadioButtonList}
+          if(newFieldsObject["prqty_val"] != "" && newPackedQty < parseInt(newFieldsObject["prqty_val"]))
+            newRadioButtonList["isPartInspection"] = "Yes"
+          else
+            newRadioButtonList["isPartInspection"] = "No"
+          
+          SetRadioButtonList(newRadioButtonList)
+
           let SelectedAqlObject = DropdownList["aqllevel"].SelectedValue
           let rangeFound = false
           for(let i = 0; i<(SelectedAqlObject.aqlDetails).length; i++)

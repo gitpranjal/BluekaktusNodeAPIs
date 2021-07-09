@@ -185,6 +185,63 @@ const finalInspectionForm = {
             "columns": [],
             "rows": []
         },
+
+        {
+            "type": "radioButton",
+            "title": "Part Inspection",
+            "name": "isPartInspection",
+            "componentPerRow": 2,
+            "fields": [
+                {
+                    "name": "Yes",
+                },
+                {
+                    "name": "No",
+                },
+               
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+
+        {
+            "type": "radioButton",
+            "title": "Re-Audit",
+            "name": "isReAudit",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "Yes",
+                },
+                {
+                    "name": "No",
+                },
+               
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
+
+        {
+            "type": "radioButton",
+            "title": "Self-Audit",
+            "name": "isSelfAudit",
+            "componentPerRow": 1,
+            "fields": [
+                {
+                    "name": "Yes",
+                },
+                {
+                    "name": "No",
+                },
+               
+            ],
+            "groups": [],
+            "columns": [],
+            "rows": []
+        },
         
         {
             "type": "checklist",
@@ -615,7 +672,7 @@ const finalInspectionForm = {
             {
               "name": "finalRemarks",
               "title": "Comments",
-              "multiline": true,
+              //"multiline": true,
               "maxLength": 100
           }
         ],
